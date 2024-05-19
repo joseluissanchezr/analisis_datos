@@ -10,6 +10,7 @@ from tqdm import tqdm
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 installed = 'installedCapacity'
 available = 'availableCapacity'
@@ -168,24 +169,39 @@ print("-------------------------------------------------")
 
 valuesrow_with_nan=df[df.isnull().any(axis=1)]
 
-# Análisis outliers en las capacidades con Z-score#
+# Extracción de columnas no numéricos
+numValues=list(df.columns.drop(["MessageId","Market participant",
+                           "Publication date","Unavailability type",
+                           "Fuel type"]))
 
-cols=list(df.columns)
-cols.remove("MessageId")
-cols.remove("Market participant")
-cols.remove("Publication date")
-cols.remove("Unavailability type")
-cols.remove("Fuel type")
-# visualización de las columnas objetivo #
 print("Visualización de las columnas a las que se les calculará el Zscore")
-print(df[cols])
-
+print(df[numValues])
 # cálculo de la Z-score #
-for col in cols:
+for col in numValues:
     col_zscore= col + "_zscore"
-    df[col_zscore]=(df[col] - df[col].mean())/df[col].std(ddof=0)
+    df[col_zscore]=(df[col] - df[col].mean())/df[col].std(ddof=0) 
+    #CARLOS: Esto aún no sé para que lo voy a usar pero lo voy a usar
 
+#Se añade al dataframe original los zscores
+#de las columnas seleccionadas
 
-print (df)
-# Se añade al dataframe original los zscores de las columnas seleccionadas #
+print (df) 
+
+x=df["MessageId"]
+y=df["Installed capacity"]
+
+fig, ax = plt.subplots()
+ax.stem(x,y)
+ax.set(x,y)
+plt.show()
+
+# IMPORTANTE - se muestran los valores de potencia instalada
+# en las líneas de arriba (da error pero funciona)
+
+# PROPUESTAS SIGUIENTES PASOS (por favor visualizar datos) 
+# puedo seguir yo con:
+# Eliminar valores por encima de 500 ?
+# Eliminar valores = 0 ?
+# Buscar relaciones de valores, media, datos relevantes, etc.
+
 
