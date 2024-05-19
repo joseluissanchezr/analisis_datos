@@ -163,3 +163,29 @@ df = pd.DataFrame(data_list)
 print("-------------------------------------------------")
 print(df.head())
 print("-------------------------------------------------")
+
+# Analizar si los datos tienen algún registro con NaN (no es el caso) #
+
+valuesrow_with_nan=df[df.isnull().any(axis=1)]
+
+# Análisis outliers en las capacidades con Z-score#
+
+cols=list(df.columns)
+cols.remove("MessageId")
+cols.remove("Market participant")
+cols.remove("Publication date")
+cols.remove("Unavailability type")
+cols.remove("Fuel type")
+# visualización de las columnas objetivo #
+print("Visualización de las columnas a las que se les calculará el Zscore")
+print(df[cols])
+
+# cálculo de la Z-score #
+for col in cols:
+    col_zscore= col + "_zscore"
+    df[col_zscore]=(df[col] - df[col].mean())/df[col].std(ddof=0)
+
+
+print (df)
+# Se añade al dataframe original los zscores de las columnas seleccionadas #
+
