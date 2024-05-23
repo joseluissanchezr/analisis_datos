@@ -206,13 +206,20 @@ table=zip(values,maxval,minval)
 print(tabulate(table,headers=headers),"\n")
 #Eliminar las primeras filas que no son números.
 print("\n se muestran a continuación los datos de capacidad instalada sin filtrar \n ")
+
+#Esto de aqui es como estoy representando las cosas
 """
 try:
     x=df["MessageId"]
     y=df["Installed capacity"]
 
-
+    #fig, ax = plt.subplots()
+    #ax.stem(x,y)
+    #ax.set(x,y)
     plt.scatter(x,y,c="blue")
+    plt.xlabel("Proyectos")
+    plt.ylabel("Potencia Instalada")
+    plt.xticks([])
     plt.show()
     
 except:
