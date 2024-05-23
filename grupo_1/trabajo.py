@@ -160,7 +160,7 @@ for day in tqdm(last_month):
                         'Unavailable capacity': unavailable_capacity})
 
 df = pd.DataFrame(data_list)
-"test"
+
 # Visualización de los primeros registros del dataframe
 print("-------------------------------------------------")
 print(df.head())
@@ -187,6 +187,7 @@ for col in numValues:
     df[col_zscore]=(df[col] - df[col].mean())/df[col].std(ddof=0) 
     #CARLOS: Esto aún no sé para que lo voy a usar pero lo voy a usar
 
+
 #Se añade al dataframe original los zscores
 #de las columnas seleccionadas \n
 #Uso de la ZSCORE para limpiar datos más relevantes:
@@ -196,6 +197,24 @@ for col in numValues:
 
 print(" \nSe añaden al dataframe los Zscores de las columnas descritas anteriormente:")
 print (df.head()) 
+
+# BOXPLOT PARA VISUALISAR LOS ZSCORES DE LAS CAPACIDADES
+# Create el boxplot
+data_zscore = [df['Installed capacity_zscore'], df['Available capacity_zscore'], df['Unavailable capacity_zscore']]
+fig = plt.figure(figsize =(10, 5))
+ax = fig.add_subplot(111)
+bp = ax.boxplot(data_zscore, vert = 0)
+# Cambiar como aparecen las valores extranas
+for flier in bp['fliers']:
+    flier.set(marker ='D',
+              color ='#e7298a',
+              alpha = 0.2)
+# Dar un nombre al x-axis
+ax.set_yticklabels(['Installed capacity', 'Available capacity', 'Unavailable capacity'])
+# Dar un titulo al grafico
+plt.title("Boxplot de los zscores de las capacidades")
+# Mostrar el boxplot
+plt.show()
 
 
 print("\nvalores máximos y minimos \n")
@@ -233,3 +252,4 @@ print("Esto corresponderían a los percentiles 98 y 2")
 # Buscar relaciones de valores, media, datos relevantes, etc.
 
 
+print(df.columns)
