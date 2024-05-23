@@ -8,6 +8,7 @@ warnings.simplefilter('ignore', urllib3.exceptions.InsecureRequestWarning)
 
 from tqdm import tqdm
 
+from tabulate import tabulate
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -169,13 +170,17 @@ print("-------------------------------------------------")
 
 valuesrow_with_nan=df[df.isnull().any(axis=1)]
 
+print("\nValores nulos del dataframe: \n ")
+print("-"*49)
+print(valuesrow_with_nan) 
+print("-"*49)
 # Extracción de columnas no numéricos
 numValues=list(df.columns.drop(["MessageId","Market participant",
                            "Publication date","Unavailability type",
                            "Fuel type"]))
 
-print("Visualización de las columnas a las que se les calculará el Zscore")
-print(df[numValues])
+print("\nCálculo del Zscore a las siguientes columnas: \n")
+print(numValues)
 # cálculo de la Z-score #
 for col in numValues:
     col_zscore= col + "_zscore"
@@ -183,20 +188,43 @@ for col in numValues:
     #CARLOS: Esto aún no sé para que lo voy a usar pero lo voy a usar
 
 #Se añade al dataframe original los zscores
-#de las columnas seleccionadas
+#de las columnas seleccionadas \n
+#Uso de la ZSCORE para limpiar datos más relevantes:
+#la ZSCORE es un indicador de la desviacion estándar respecto a la media. 
+#Una ZSCORE de -2 indica que el valor está 2 desviaciones medias por debajo de la media. 
+#Siendo la desviación media .std
 
-print (df) 
+print(" \nSe añaden al dataframe los Zscores de las columnas descritas anteriormente:")
+print (df.head()) 
 
-x=df["MessageId"]
-y=df["Installed capacity"]
 
-fig, ax = plt.subplots()
-ax.stem(x,y)
-ax.set(x,y)
-plt.show()
+print("\nvalores máximos y minimos \n")
+#Cálculo de valores máximos y mínimos
+headers=["Values","maxVal","minVal"]
+values=list(df.columns)
+maxval=list(df.max(axis=0))
+minval=list(df.min(axis=0))
+table=zip(values,maxval,minval)
+print(tabulate(table,headers=headers),"\n")
 
+print("\n se muestran a continuación los datos de capacidad instalada sin filtrar \n ")
+
+try:
+    x=df["MessageId"]
+    y=df["Installed capacity"]
+
+    fig, ax = plt.subplots()
+    ax.stem(x,y)
+    ax.set(x,y)
+    plt.show()
+except:
+    pass
 # IMPORTANTE - se muestran los valores de potencia instalada
-# en las líneas de arriba (da error pero funciona)
+# en las líneas de arriba (da error pero funciona(por eso el try y el except))
+print(df['Installed capacity'].mean())
+
+print("\nSe eliminarán primero aquellos valores que tienen un zscore en cualquier columna  ")
+print("Esto corresponderían a los percentiles 98 y 2")
 
 # PROPUESTAS SIGUIENTES PASOS (por favor visualizar datos) 
 # puedo seguir yo con:
