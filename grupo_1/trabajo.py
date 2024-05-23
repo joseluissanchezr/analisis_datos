@@ -160,7 +160,7 @@ for day in tqdm(last_month):
                         'Unavailable capacity': unavailable_capacity})
 
 df = pd.DataFrame(data_list)
-
+"test"
 # Visualización de los primeros registros del dataframe
 print("-------------------------------------------------")
 print(df.head())
