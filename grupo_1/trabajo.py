@@ -109,7 +109,6 @@ def find_publication_date(summary):
     publication_date = summary[start_index+len('publicationDateTime')+1:stop_index]
     return publication_date
 
-
 # Recopilación de los datos con fecha de publicación del mes pasado
 current_date = datetime.now()
 
@@ -197,7 +196,6 @@ for col in numValues:
 print(" \nSe añaden al dataframe los Zscores de las columnas descritas anteriormente:")
 print (df.head()) 
 
-
 print("\nvalores máximos y minimos \n")
 #Cálculo de valores máximos y mínimos
 headers=["Values","maxVal","minVal"]
@@ -206,26 +204,61 @@ maxval=list(df.max(axis=0))
 minval=list(df.min(axis=0))
 table=zip(values,maxval,minval)
 print(tabulate(table,headers=headers),"\n")
-
+#Eliminar las primeras filas que no son números.
 print("\n se muestran a continuación los datos de capacidad instalada sin filtrar \n ")
-
+"""
 try:
     x=df["MessageId"]
     y=df["Installed capacity"]
 
-    fig, ax = plt.subplots()
-    ax.stem(x,y)
-    ax.set(x,y)
+
+    plt.scatter(x,y,c="blue")
     plt.show()
+    
 except:
     pass
+"""
 # IMPORTANTE - se muestran los valores de potencia instalada
 # en las líneas de arriba (da error pero funciona(por eso el try y el except))
 print(df['Installed capacity'].mean())
+#Se eliminan del dataframe los valores de capacidad instalada = 0
+countZeros=df["Installed capacity"].value_counts()[0]
+print("\nSe eliminarán primero aquellos valores que tienen una capacidad instalada = 0  ")
+print("Número de filas: ")
+print(len(df))
+df=df.drop(df[df["Installed capacity"]== 0].index)
+print("\nSe han eliminado: " + str(countZeros) + " valores")
+print("Número de filas: ")
+print(len(df))
 
-print("\nSe eliminarán primero aquellos valores que tienen un zscore en cualquier columna  ")
-print("Esto corresponderían a los percentiles 98 y 2")
 
+print("\nAhora se eliminarán los valores con un Zscore >2.")
+print("Esto se corresponde a eliminar los valores por encima del percentil 98.")
+
+
+filtro1=df["Installed capacity_zscore"]<2
+filtro2=df["Available capacity_zscore"]<2
+filtro3=df["Unavailable capacity_zscore"]<2
+df=df[filtro1 & filtro2 & filtro3]
+print("Número de filas: ")
+print(len(df))
+
+print("Datos tras primera limpieza")
+try:
+    x=df["MessageId"]
+    y=df["Installed capacity"]
+
+    #fig, ax = plt.subplots()
+    #ax.stem(x,y)
+    #ax.set(x,y)
+    plt.scatter(x,y,c="blue")
+    plt.xlabel("Proyectos")
+    plt.ylabel("Potencia Instalada")
+    plt.xticks([])
+    plt.show()
+    
+except:
+    pass
 # PROPUESTAS SIGUIENTES PASOS (por favor visualizar datos) 
 # puedo seguir yo con:
 # Eliminar valores por encima de 500 ?
