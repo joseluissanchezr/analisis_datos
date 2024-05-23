@@ -1,0 +1,12 @@
+Representations : Kanza
+
+* Aggregate curbs
+
+Data treatment : Jaime
+
+* Missing Data
+* Wrong Data 
+
+Data Mining optimization : Antonio
+
+Write the readme.md : Nicolas (and supervize the whole)
