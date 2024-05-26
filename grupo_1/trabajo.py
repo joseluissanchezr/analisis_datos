@@ -197,7 +197,6 @@ for col in numValues:
 print(" \nSe añaden al dataframe los Zscores de las columnas descritas anteriormente:")
 print (df.head()) 
 
-<<<<<<< HEAD
 # BOXPLOT PARA VISUALISAR LOS ZSCORES DE LAS CAPACIDADES
 # Create el boxplot
 data_zscore = [df['Installed capacity_zscore'], df['Available capacity_zscore'], df['Unavailable capacity_zscore']]
@@ -217,8 +216,6 @@ plt.title("Boxplot de los zscores de las capacidades")
 plt.show()
 
 
-=======
->>>>>>> 0baac9ec4f44f156abd26cf4be306a76461e7fa4
 print("\nvalores máximos y minimos \n")
 #Cálculo de valores máximos y mínimos
 headers=["Values","maxVal","minVal"]
