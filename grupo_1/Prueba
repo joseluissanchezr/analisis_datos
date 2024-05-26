@@ -255,5 +255,3 @@ funciones_graficos.grafico_tipo_combustible(df)
 funciones_graficos.grafico_indisponibilidad(df)
 funciones_graficos.grafico_de_razones(df)
 funciones_graficos.incidencia_por_combustible(df)
-
-
