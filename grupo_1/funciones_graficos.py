@@ -206,4 +206,3 @@ def incidencia_por_combustible(df):
         plt.show()
 
 
->>>>>>> db5614e918e366ff539602d68aee36f016fb4151
