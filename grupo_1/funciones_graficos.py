@@ -9,7 +9,7 @@ def grafico_tipo_combustible(df):
    
     #Tipo de combustible
     plt.figure(figsize=(10, 6))
-    sns.countplot(data=df, x='Fuel type', palette='viridis')
+    sns.countplot(data=df, x='Fuel type', palette='rainbow')
     plt.title('Frecuencia por Tipo de Combustible')
     plt.xlabel('Tipo de Combustible')
     plt.ylabel('Frecuencia')
@@ -20,7 +20,7 @@ def grafico_indisponibilidad(df):
     
     #Indisponibilidad por participante del mercado
     plt.figure(figsize=(12, 6))
-    sns.countplot(data=df, y='Market participant', hue='Unavailability type', palette='viridis')
+    sns.countplot(data=df, y='Market participant', hue='Unavailability type', palette='rainbow')
     plt.title('Tipo de Indisponibilidad por Participante del Mercado')
     plt.ylabel('Participante del Mercado')
     plt.xlabel('Conteo de Indisponibilidad')
@@ -90,7 +90,7 @@ def incidencia_por_combustible(df):
         reason_counts = df_fuel['Reason'].value_counts()
         
         # Crear el gráfico de barras
-        sns.barplot(x=reason_counts.values, y=reason_counts.index, palette='viridis')
+        sns.barplot(x=reason_counts.values, y=reason_counts.index, palette='rainbow')
         
         # Configurar el gráfico
         plt.title(f'Distribución de Razones de Indisponibilidad para {fuel}')
