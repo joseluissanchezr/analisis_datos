@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+    <div id="banniere">
+       <!-- Banner inserted in CSS -->
+    </div>
+
+    <div class="box">
+        
+        <h2> Choose a month</h2>
+        <p>Important : The programme will retrieve the data of the month you selected and .</p>
+
+        <div class="form-container">
+            <form action="/submit-month-year" method="POST">
+                <label for="month-year">Choose a month and year:</label>
+                <select name="month-year" id="month-year">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const select = document.getElementById('month-year');
+                const startDate = new Date(2024, 1); // February 2024 (month is 0-based)
+                const endDate = new Date(2018, 0); // January 2018 (month is 0-based)
+                
+                const options = [];
+                let currentDate = startDate;
+        
+                const monthNames = ["January", "February", "March", "April", "May", "June",
+                                    "July", "August", "September", "October", "November", "December"];
+        
+                while (currentDate >= endDate) {
+                    const month = currentDate.getMonth();
+                    const year = currentDate.getFullYear();
+                    options.push(`<option value="${year}-${String(month + 1).padStart(2, '0')}">${monthNames[month]} ${year}</option>`);
+                    currentDate.setMonth(currentDate.getMonth() - 1);
+                }
+        
+                select.innerHTML = options.join('');
+            });
+
+            
+        </script>
+                
+        <h2> Choose a time horizon (in months)</h2>
+        <p>Important : The programme will retrieve the data of the month you selected and of the <strong>n</strong> ones before,
+            in order to complete a well aggregated data analysis.</p>
+
+        <div class="form-container">
+            <form action="/submit-month-year" method="POST">
+                <label for="month-year">Choose a month and year:</label>
+                <select name="month-year" id="month-year">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <br>
+
+   
+    
+{% endblock %}

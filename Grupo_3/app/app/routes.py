@@ -22,4 +22,6 @@ Session(app)
 def index():
     return render_template('index.html',title='Home')
  
-
+@app.route('/datamining')
+def datamining():
+    return render_template('datamining.html', title="DataMining")
