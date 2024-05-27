@@ -11,11 +11,11 @@ from bs4 import BeautifulSoup
 from io import StringIO
 
 
-def download_last_3months_files(mes, año):
+def download_last_3months_files(m1, y1):
     # Calcular los últimos 3 meses
     fechas = []
     for i in range(3):
-        fecha = datetime(year=año, month=mes, day=1) - timedelta(days=30 * i)
+        fecha = datetime(year=y1, month=m1, day=1) - timedelta(days=30 * i)
         fechas.append(fecha.strftime('%Y%m'))
 
     # URL base
