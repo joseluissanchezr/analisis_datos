@@ -47,4 +47,20 @@ python extract_data_grupo_4.py
 
 This will create a data directory (if it does not already exist) and download the latest unavailability data files from the OMIE website.
 
+### Visualize Data
+
+To analyze and visualize the data, run the following command:
+
+```bash
+python visualize_data_grupo_4.py <top_n>
+```
+
+Replace <top_n> with the number of top occurrences you want to visualize. For example:
+
+```bash
+python visualize_data_grupo_4.py 30
+```
+
+![Exemple_of_usage](exemple_of_visualisation_30.png)
+
 Please wait for the others programs ! 
