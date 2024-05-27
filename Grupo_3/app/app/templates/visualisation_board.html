@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="box">
+    <h2>Visualisation tools</h2>
+    <p> Here, you will find several visualisation tools developped by our team to analyse the data you downloaded. </p>
+
+    <div class="element" id="one">
+        Draw aggregated curves of Offer & Demand !
+    </div>
+
+    <script>
+        const guideElement = document.getElementById("one");
+        guideElement.addEventListener("click", () =>
+        {
+            window.location.href = "/aggregated_curves_form";
+        });
+    </script>
+
+
+    <br>
+
+
+</div>
+
+{% endblock %}

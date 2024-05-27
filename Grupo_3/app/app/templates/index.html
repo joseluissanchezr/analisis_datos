@@ -1,12 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-
-    <div id="banniere">
-       <!-- Banner inserted in CSS -->
-    </div>
-
+ 
     <div class="box">
         <!-- NB : classe element pour avoir des boîtes stylées -->
         <!-- NB² : Pour être redirigé vers un autre site, fais le JS -->
@@ -30,32 +25,12 @@
         <h2> Second Step : Cleaning data</h2>
         <p>Important : You may have bad results if you skip this part.</p>
 
-        <div class="element" id="one">
-            Let's clean data !
-        </div>
-        <script>
-            const guideElement = document.getElementById("two");
-            guideElement.addEventListener("click", () =>
-            {
-                window.location.href = "/cleaning_data";
-            });
-        </script>
-
         <br>
 
-        <h2> Thirt Step : Analysing data</h2>
+        <h2> Third Step : Analysing data</h2>
         <p>Important : There are approximately many ways to represent data, so we had to choose a lower set.</p>
 
-        <div class="element" id="three">
-            Let's analyse data !
-        </div>
-        <script>
-            const guideElement = document.getElementById("one");
-            guideElement.addEventListener("click", () =>
-            {
-                window.location.href = "/analyse";
-            });
-        </script>
+        <br>
     
     </div>
 

@@ -11,10 +11,10 @@ from bs4 import BeautifulSoup
 from io import StringIO
 
 
-def download_last_3months_files(m1, y1):
-    # Calcular los últimos 3 meses
+def download_last_n_months_files(m1, y1, n):
+    # Calcular los últimos n meses
     fechas = []
-    for i in range(3):
+    for i in range(n):
         fecha = datetime(year=y1, month=m1, day=1) - timedelta(days=30 * i)
         fechas.append(fecha.strftime('%Y%m'))
 
@@ -87,76 +87,66 @@ def zil_file_extraction(directorio_origen, directorio_destino):
             print(f"El archivo {file_path} ya ha sido descomprimido en {directorio_destino}")
 
 
-# URL of the file I want to download
-url_page = "https://www.omie.es/en/file-access-list?parents%5B0%5D=/&parents%5B1%5D=Day-ahead%20Market&parents%5B2%5D=3.%20Curves&dir=Monthly%20files%20with%20aggregate%20supply%20and%20demand%20curves%20of%20Day-ahead%20market%20including%20bid%20units&realdir=curva_pbc_uof"
+def data_extraction(m1, y1, n):
+    # URL of the file I want to download
+    url_page = "https://www.omie.es/en/file-access-list?parents%5B0%5D=/&parents%5B1%5D=Day-ahead%20Market&parents%5B2%5D=3.%20Curves&dir=Monthly%20files%20with%20aggregate%20supply%20and%20demand%20curves%20of%20Day-ahead%20market%20including%20bid%20units&realdir=curva_pbc_uof"
 
-# Path where I want to save the file
-path = "data/webpage_omie.html"
+    # Path where I want to save the file
+    path = "data/webpage_omie.html"
 
-# GET request to try to access URL data
-response = requests.get(url_page)
+    # GET request to try to access URL data
+    response = requests.get(url_page)
 
-# I make sure the request succeeded
-if response.status_code == 200:
-    # ... so I write the data in a local file, in the specified path
-    with open(path, "wb") as f:
-        f.write(response.content)
-    print(f"File saved at {path}")
-else:
-    print(f"Request error code: {response.status_code}")
-
-# I read the HTML file
-with open(path, "r", encoding="utf-8") as file:
-    html_content = file.read()
-
-    # Pattern with characters before and after
-    pattern = r".*curva_pbc_uof_*."
-
-    # Find occurrences that match the pattern
-    matches = re.findall(pattern, html_content)
-
-    if matches:
-        print(len(matches), "occurences found on the webpage.")
+    # I make sure the request succeeded
+    if response.status_code == 200:
+        # ... so I write the data in a local file, in the specified path
+        with open(path, "wb") as f:
+            f.write(response.content)
+        print(f"File saved at {path}")
     else:
-        print("No occurence found.")
+        print(f"Request error code: {response.status_code}")
+
+    # I read the HTML file
+    with open(path, "r", encoding="utf-8") as file:
+        html_content = file.read()
+
+        # Pattern with characters before and after
+        pattern = r".*curva_pbc_uof_*."
+
+        # Find occurrences that match the pattern
+        matches = re.findall(pattern, html_content)
+
+        if matches:
+            print(len(matches), "occurences found on the webpage.")
+        else:
+            print("No occurence found.")
 
 
-download_last_3months_files(4, 2023)
+    download_last_n_months_files(m1, y1, n)
 
-# Llamada a la función para extraer archivos ZIP
-directorio_origen = 'data/'
-directorio_destino = 'descomprimido/'
-zil_file_extraction(directorio_origen, directorio_destino)
+    # Llamada a la función para extraer archivos ZIP
+    directorio_origen = 'data/'
+    directorio_destino = 'descomprimido/'
+    zil_file_extraction(directorio_origen, directorio_destino)
 
-# Obtener la lista de archivos descomprimidos
-archivos_descomprimidos = os.listdir(directorio_destino)
+    # Obtener la lista de archivos descomprimidos
+    archivos_descomprimidos = os.listdir(directorio_destino)
 
-# Cambiar el nombre de los archivos .1 a .csv
-for archivo in archivos_descomprimidos:
-    if archivo.endswith('.1'):
-        # Construir las rutas de origen y destino
-        ruta_origen = os.path.join(directorio_destino, archivo)
-        ruta_destino = os.path.join(directorio_destino, archivo[:-2] + '.csv')
-        # Verificar si el archivo .csv ya existe
-        if not os.path.exists(ruta_destino):
-            # Renombrar el archivo
-            os.rename(ruta_origen, ruta_destino)
-            #print(f"Renombrado {ruta_origen} a {ruta_destino}")
-        #else:
-            #print(f"El archivo {ruta_destino} ya existe y no se renombrará.")
+    # Cambiar el nombre de los archivos .1 a .csv
+    for archivo in archivos_descomprimidos:
+        if archivo.endswith('.1'):
+            # Construir las rutas de origen y destino
+            ruta_origen = os.path.join(directorio_destino, archivo)
+            ruta_destino = os.path.join(directorio_destino, archivo[:-2] + '.csv')
+            # Verificar si el archivo .csv ya existe
+            if not os.path.exists(ruta_destino):
+                # Renombrar el archivo
+                os.rename(ruta_origen, ruta_destino)
+                #print(f"Renombrado {ruta_origen} a {ruta_destino}")
+            #else:
+                #print(f"El archivo {ruta_destino} ya existe y no se renombrará.")
 
 
-# Obtener la lista de archivos CSV en el directorio
-archivos_descomprimidos = [f for f in os.listdir(directorio_destino) if f.endswith('.csv')]
-
-# Inicializar un DataFrame vacío para almacenar los datos combinados
-data_frame_combinado = pd.DataFrame()
-
-# Iterar sobre los archivos CSV y leerlos en el DataFrame
-for archivo in archivos_descomprimidos:
-    ruta_archivo = os.path.join(directorio_destino, archivo)
-    # Leer el archivo saltando las dos primeras filas y usando la tercera fila como encabezado
-    datos_archivo = pd.read_csv(ruta_archivo, skiprows=2,delimiter=';')
-    # Concatenar los datos al DataFrame combinado
-    data_frame_combinado = pd.concat([data_frame_combinado, datos_archivo], ignore_index=True)
+    # Obtener la lista de archivos CSV en el directorio
+    archivos_descomprimidos = [f for f in os.listdir(directorio_destino) if f.endswith('.csv')]
 

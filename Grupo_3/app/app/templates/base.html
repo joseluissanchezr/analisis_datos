@@ -43,14 +43,22 @@
     </head>
     
     <header>
-        <h1>Analisis de Datos - Grupo 3</h1><br>
+        <h1>{{title}} - Grupo 3</h1><br>
         <div>
             <a href="{{ url_for('index') }}">Home</a>
         </div>
     </header>
 
     <body>
+
+      <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+      <div id="banniere">
+         <!-- Banner inserted in CSS -->
+      </div>
+
     {% block content %}{% endblock %}
+    
     </body>
 
     <footer>
