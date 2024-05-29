@@ -29,8 +29,10 @@ def datamining():
 @app.route("/data_cleaning", methods=['GET', 'POST'])
 def datacleaning():
     global date
+    date = None
     # Was the form filled or skiped ?
     filled_form = request.form.get('filled_form', 'False') == 'True'
+    print("filled_form :", filled_form)
     if filled_form:
         # Retrieve form information
         date = request.form.get('month-year')
@@ -55,7 +57,7 @@ def visualisation_board():
 
 @app.route("/aggregated_curves_form")
 def aggregated_curves_form():
-    return render_template("aggregated_curves_form.html")
+    return render_template("aggregated_curves_form.html", title="Aggregated Curves")
 
 @app.route('/check-file', methods=['POST'])
 def check_file():
@@ -67,4 +69,4 @@ def check_file():
 
 @app.route("/aggregated_curves", methods=['GET', 'POST'])
 def aggregated_curves():
-    return render_template("aggregated_curves.html")
+    return render_template("aggregated_curves.html", title="Aggregated Curves")
