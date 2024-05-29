@@ -5,15 +5,16 @@ from datetime import datetime, timedelta
 import warnings
 import urllib3
 warnings.simplefilter('ignore', urllib3.exceptions.InsecureRequestWarning)
-
+warnings.simplefilter('ignore', FutureWarning)
 from tqdm import tqdm
 
 from tabulate import tabulate
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from bs4 import BeautifulSoup
 import seaborn as sns
+import funciones_graficos
+
 
 installed = 'installedCapacity'
 available = 'availableCapacity'
