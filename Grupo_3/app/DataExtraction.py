@@ -98,34 +98,13 @@ def rename_and_delete_files_in_subfolders(destination_directory):
                 # Rename the file
                 if not os.path.exists(dest_path):
                     os.rename(source_path, dest_path)
-                    #print(f"Renamed {source_path} to {dest_path}")
+                    print(f"Renamed {source_path} to {dest_path}")
                 else:
                     print(f"The file {dest_path} already exists and will not be renamed.")
                 # Remove the .1 file if it still exists
                 if os.path.exists(source_path):
                     os.remove(source_path)
-                    #print(f"Removed {source_path}")
-
-
-def create_dataframe_from_csv_files(destination_directory):
-    # Initialize an empty list to hold the DataFrame chunks
-    df_list = []
-
-    # Iterate through subdirectories to find CSV files
-    for subdir, _, files in os.walk(destination_directory):
-        for file in files:
-            if file.endswith('.csv'):
-                file_path = os.path.join(subdir, file)
-                # Read the CSV file, skipping the first two rows
-                df = pd.read_csv(file_path, skiprows=2, delimiter=';')
-                df_list.append(df)
-
-    # Concatenate all DataFrames in the list
-    if df_list:
-        combined_df = pd.concat(df_list, ignore_index=True)
-        return combined_df
-    else:
-        return pd.DataFrame()  # Return an empty DataFrame if no CSV files were found
+                    print(f"Removed {source_path}")
 
 
 def data_extraction(m1, y1, n):
@@ -172,12 +151,4 @@ def data_extraction(m1, y1, n):
     # Rename and delete .1 files in subfolders
     rename_and_delete_files_in_subfolders(destination_directory)
 
-    # Create a DataFrame from all CSV files
-    combined_df = create_dataframe_from_csv_files(destination_directory)
 
-    return combined_df
-
-
-# Example usage
-combined_df = data_extraction(2, 2024, 3)
-print(combined_df.head())  # Print the first 5 rows of the combined DataFrame
