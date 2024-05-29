@@ -12,79 +12,120 @@ from io import StringIO
 
 
 def download_last_n_months_files(m1, y1, n):
-    # Calcular los últimos n meses
-    fechas = []
+    # Calculate the last n months
+    dates = []
     for i in range(n):
-        fecha = datetime(year=y1, month=m1, day=1) - timedelta(days=30 * i)
-        fechas.append(fecha.strftime('%Y%m'))
+        date = datetime(year=y1, month=m1, day=1) - timedelta(days=30 * i)
+        dates.append(date.strftime('%Y%m'))
 
-    # URL base
+    # Base URL
     url_base = "https://www.omie.es/en/file-access-list?parents%5B0%5D=/&parents%5B1%5D=Intraday%20Auction%20Market&parents%5B2%5D=3.%20Curves&dir=Monthly%20files%20with%20aggregate%20supply%20and%20demnand%20curves%20of%20intraday%20auction%20market%20including%20bid%20units&realdir=curva_pibc_uof"
 
-    # Hacer una solicitud GET para obtener el contenido de la página
+    # Make a GET request to get the page content
     response = requests.get(url_base)
 
     if response.status_code == 200:
-        # Parsear el contenido HTML
+        # Parse the HTML content
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # Buscar todos los enlaces en la página que coincidan con el patrón de nombre del archivo
+        # Find all links on the page that match the file name pattern
         links = soup.find_all('a', href=True)
         file_names = [re.search(r'curva_pibc_uof_\d{6}.zip', link['href']).group(0) for link in links if re.search(r'curva_pibc_uof_\d{6}.zip', link['href'])]
 
         if file_names:
-            # Filtrar los archivos por los últimos 3 meses
-            archivos_a_descargar = [file for file in file_names if any(fecha in file for fecha in fechas)]
+            # Filter files for the last n months
+            files_to_download = [file for file in file_names if any(date in file for date in dates)]
 
-            if not archivos_a_descargar:
-                print("No se encontraron archivos para los últimos 3 meses especificados.")
+            if not files_to_download:
+                print("No files found for the specified last n months.")
                 return
 
-            # Descargar cada archivo
-            for archivo in archivos_a_descargar:
-                # Construir la URL completa del archivo
-                latest_file_url = f"https://www.omie.es/en/file-download?parents%5B0%5D=curva_pibc_uof&filename={archivo}"
-                # Nombre del archivo a guardar en el disco
-                file_name = f"data/{archivo}"
+            # Download each file
+            for file in files_to_download:
+                # Construct the full URL of the file
+                latest_file_url = f"https://www.omie.es/en/file-download?parents%5B0%5D=curva_pibc_uof&filename={file}"
+                # File name to save on disk
+                file_name = f"data/{file}"
 
-                # Hacer una solicitud GET para descargar el archivo ZIP
+                # Make a GET request to download the ZIP file
                 response = requests.get(latest_file_url)
 
                 if response.status_code == 200:
-                    # Guardar el archivo ZIP en la ruta especificada
+                    # Save the ZIP file to the specified path
                     os.makedirs(os.path.dirname(file_name), exist_ok=True)
                     with open(file_name, "wb") as f:
                         for chunk in response.iter_content(chunk_size=8192):
                             f.write(chunk)
-                    print(f"Descarga completa: {file_name}")
+                    print(f"Download complete: {file_name}")
                 else:
-                    print(f"Error al descargar el archivo: {response.status_code}")
+                    print(f"Error downloading the file: {response.status_code}")
         else:
-            print("No se encontraron archivos que coincidan con el patrón especificado.")
+            print("No files matching the specified pattern were found.")
     else:
-        print(f"Error en la solicitud a la página: {response.status_code}")
+        print(f"Error requesting the page: {response.status_code}")
 
 
+def zip_file_extraction(source_directory, destination_directory):
+    # Create the destination directory if it doesn't exist
+    if not os.path.exists(destination_directory):
+        os.makedirs(destination_directory)
 
-def zil_file_extraction(directorio_origen, directorio_destino):
-    # Crear el directorio destino si no existe
-    if not os.path.exists(directorio_destino):
-        os.makedirs(directorio_destino)
+    # Get the list of ZIP files in the source directory
+    zip_files = [file for file in os.listdir(source_directory) if file.endswith('.zip')]
 
-    # Obtener la lista de archivos ZIP en el directorio de origen
-    archivos_zip = [archivo for archivo in os.listdir(directorio_origen) if archivo.endswith('.zip')]
-
-    for archivo in archivos_zip:
-        file_path = os.path.join(directorio_origen, archivo)
-        archivo_descomprimido = os.path.join(directorio_destino, archivo[:-4])
-
-        # Comprobar si el archivo ya ha sido descomprimido
-        if not os.path.exists(archivo_descomprimido):
+    for file in zip_files:
+        file_path = os.path.join(source_directory, file)
+        # Create a subdirectory for each month
+        subdirectory = os.path.join(destination_directory, file[:-4])
+        # Check if the file has already been extracted
+        if not os.path.exists(subdirectory):
+            os.makedirs(subdirectory, exist_ok=True)
             with zipfile.ZipFile(file_path, 'r') as zip_ref:
-                zip_ref.extractall(directorio_destino)
-            print(f"Archivo {file_path} descomprimido en {directorio_destino}")
+                zip_ref.extractall(subdirectory)
+            print(f"File {file_path} extracted to {subdirectory}")
         else:
-            print(f"El archivo {file_path} ya ha sido descomprimido en {directorio_destino}")
+            print(f"The file {file_path} has already been extracted to {subdirectory}")
+
+
+def rename_and_delete_files_in_subfolders(destination_directory):
+    # Iterate through subdirectories
+    for subdir, _, files in os.walk(destination_directory):
+        for file in files:
+            if file.endswith('.1'):
+                # Build source and destination paths
+                source_path = os.path.join(subdir, file)
+                dest_path = os.path.join(subdir, file[:-2] + '.csv')
+                # Rename the file
+                if not os.path.exists(dest_path):
+                    os.rename(source_path, dest_path)
+                    #print(f"Renamed {source_path} to {dest_path}")
+                else:
+                    print(f"The file {dest_path} already exists and will not be renamed.")
+                # Remove the .1 file if it still exists
+                if os.path.exists(source_path):
+                    os.remove(source_path)
+                    #print(f"Removed {source_path}")
+
+
+def create_dataframe_from_csv_files(destination_directory):
+    # Initialize an empty list to hold the DataFrame chunks
+    df_list = []
+
+    # Iterate through subdirectories to find CSV files
+    for subdir, _, files in os.walk(destination_directory):
+        for file in files:
+            if file.endswith('.csv'):
+                file_path = os.path.join(subdir, file)
+                # Read the CSV file, skipping the first two rows
+                df = pd.read_csv(file_path, skiprows=2, delimiter=';')
+                df_list.append(df)
+
+    # Concatenate all DataFrames in the list
+    if df_list:
+        combined_df = pd.concat(df_list, ignore_index=True)
+        return combined_df
+    else:
+        return pd.DataFrame()  # Return an empty DataFrame if no CSV files were found
 
 
 def data_extraction(m1, y1, n):
@@ -97,16 +138,16 @@ def data_extraction(m1, y1, n):
     # GET request to try to access URL data
     response = requests.get(url_page)
 
-    # I make sure the request succeeded
+    # Ensure the request succeeded
     if response.status_code == 200:
-        # ... so I write the data in a local file, in the specified path
+        # Write the data to a local file at the specified path
         with open(path, "wb") as f:
             f.write(response.content)
         print(f"File saved at {path}")
     else:
         print(f"Request error code: {response.status_code}")
 
-    # I read the HTML file
+    # Read the HTML file
     with open(path, "r", encoding="utf-8") as file:
         html_content = file.read()
 
@@ -117,36 +158,26 @@ def data_extraction(m1, y1, n):
         matches = re.findall(pattern, html_content)
 
         if matches:
-            print(len(matches), "occurences found on the webpage.")
+            print(len(matches), "occurrences found on the webpage.")
         else:
-            print("No occurence found.")
-
+            print("No occurrence found.")
 
     download_last_n_months_files(m1, y1, n)
 
-    # Llamada a la función para extraer archivos ZIP
-    directorio_origen = 'data/'
-    directorio_destino = 'descomprimido/'
-    zil_file_extraction(directorio_origen, directorio_destino)
+    # Call the function to extract ZIP files
+    source_directory = 'data/'
+    destination_directory = 'extracted/'
+    zip_file_extraction(source_directory, destination_directory)
 
-    # Obtener la lista de archivos descomprimidos
-    archivos_descomprimidos = os.listdir(directorio_destino)
+    # Rename and delete .1 files in subfolders
+    rename_and_delete_files_in_subfolders(destination_directory)
 
-    # Cambiar el nombre de los archivos .1 a .csv
-    for archivo in archivos_descomprimidos:
-        if archivo.endswith('.1'):
-            # Construir las rutas de origen y destino
-            ruta_origen = os.path.join(directorio_destino, archivo)
-            ruta_destino = os.path.join(directorio_destino, archivo[:-2] + '.csv')
-            # Verificar si el archivo .csv ya existe
-            if not os.path.exists(ruta_destino):
-                # Renombrar el archivo
-                os.rename(ruta_origen, ruta_destino)
-                #print(f"Renombrado {ruta_origen} a {ruta_destino}")
-            #else:
-                #print(f"El archivo {ruta_destino} ya existe y no se renombrará.")
+    # Create a DataFrame from all CSV files
+    combined_df = create_dataframe_from_csv_files(destination_directory)
+
+    return combined_df
 
 
-    # Obtener la lista de archivos CSV en el directorio
-    archivos_descomprimidos = [f for f in os.listdir(directorio_destino) if f.endswith('.csv')]
-
+# Example usage
+combined_df = data_extraction(2, 2024, 3)
+print(combined_df.head())  # Print the first 5 rows of the combined DataFrame
