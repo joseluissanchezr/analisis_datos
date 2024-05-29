@@ -250,10 +250,8 @@ print("Esto corresponderían a los percentiles 98 y 2")
 # Eliminar valores por encima de 500 ?
 # Eliminar valores = 0 ?
 # Buscar relaciones de valores, media, datos relevantes, etc.
-#Funciones de gráficas
+
 funciones_graficos.grafico_tipo_combustible(df)
 funciones_graficos.grafico_indisponibilidad(df)
 funciones_graficos.grafico_de_razones(df)
 funciones_graficos.incidencia_por_combustible(df)
-
-
