@@ -1,14 +1,10 @@
 # Imports
 import requests
 import re
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 import zipfile
 import os
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
-from io import StringIO
 
 
 def download_last_n_months_files(m1, y1, n):
@@ -98,7 +94,6 @@ def rename_and_delete_files_in_subfolders(destination_directory):
                 # Rename the file
                 if not os.path.exists(dest_path):
                     os.rename(source_path, dest_path)
-                    print(f"Renamed {source_path} to {dest_path}")
                 else:
                     print(f"The file {dest_path} already exists and will not be renamed.")
                 # Remove the .1 file if it still exists

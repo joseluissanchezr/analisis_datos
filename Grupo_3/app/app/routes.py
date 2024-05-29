@@ -7,6 +7,7 @@ import matplotlib
 import sys
 
 from DataExtraction import *
+from DataCleaning import *
 
 matplotlib.use('Agg') # Non interactive backend mode
 
@@ -27,8 +28,8 @@ def datamining():
 
 @app.route("/data_cleaning", methods=['GET', 'POST'])
 def datacleaning():
+    global date
     # Was the form filled or skiped ?
-
     filled_form = request.form.get('filled_form', 'False') == 'True'
     if filled_form:
         # Retrieve form information
@@ -41,10 +42,16 @@ def datacleaning():
 
 @app.route("/visualisation_board", methods=["GET", "POST"])
 def visualisation_board():
-    # Compute data_cleaning
-    # ...
-
-    return render_template("visualisation_board.html", title="Visualisation Board")
+    are_data_clean = False
+    # Compute data_cleaning if files have just been downloaded
+    if date is not None:
+        folder_path = "extracted/curva_pibc_uof_" + date.replace("-", "")
+        for file in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, file)
+            if os.path.isfile(file_path):
+                cargar_y_procesar_archivo(file_path)
+        are_data_clean = True
+    return render_template("visualisation_board.html", title="Visualisation Board", are_data_clean=are_data_clean)
 
 @app.route("/aggregated_curves_form")
 def aggregated_curves_form():

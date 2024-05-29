@@ -3,6 +3,12 @@
 {% block content %}
 
 <div class="box">
+    {% if are_clean_data %}
+    <h2>Results</h2>
+    <p> Congratulations ! You have just cleaned data !</p>
+
+    {% endif %}
+
     <h2>Visualisation tools</h2>
     <p> Here, you will find several visualisation tools developped by our team to analyse the data you downloaded. </p>
 
