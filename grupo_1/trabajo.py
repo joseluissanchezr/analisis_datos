@@ -127,7 +127,28 @@ def find_reason_unavailability(summary):
     unavailability_reason = summary[start_index+len('unavailabilityReason')+1:stop_index]
     return unavailability_reason
 
+#Esta función crea una tabla de los valores máximos y mínimos del dataframe
+def createMinMax(dataFrame):
+    headers=["Values","maxVal","minVal"]
+    values=list(dataFrame.columns)
+    maxval=list(dataFrame.max(axis=0))
+    minval=list(dataFrame.min(axis=0))
+    table=zip(values,maxval,minval)
+    print(tabulate(table,headers=headers),"\n")
 
+def plotCapInst(dataFrame,xlabel,ylabel):
+    try:
+        x=dataFrame["MessageId"]
+        y=dataFrame["Installed capacity"]
+
+        plt.scatter(x,y,c="blue")
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.xticks([])
+        plt.show()
+    
+    except:
+        pass
 # Recopilación de los datos con fecha de publicación del mes pasado
 current_date = datetime.now()
 
@@ -187,7 +208,6 @@ print(df.head())
 print("-------------------------------------------------")
 
 # Analizar si los datos tienen algún registro con NaN (no es el caso) #
-"test"
 valuesrow_with_nan=df[df.isnull().any(axis=1)]
 
 print("\nValores nulos del dataframe: \n ")
@@ -198,59 +218,75 @@ print("-"*49)
 numValues=list(df.columns.drop(["MessageId","Market participant",
                            "Publication date","Unavailability type", 'Reason for Unavailability', 
                            "Fuel type"]))
+print("-"*49)
 print("\nCálculo del Zscore a las siguientes columnas: \n")
 print(numValues)
-# cálculo de la Z-score #
+print("-"*49)
+# cálculo de la Z-score 
 for col in numValues:
     col_zscore= col + "_zscore"
     df[col_zscore]=(df[col] - df[col].mean())/df[col].std(ddof=0) 
-    #CARLOS: Esto aún no sé para que lo voy a usar pero lo voy a usar
 
 #Se añade al dataframe original los zscores
-#de las columnas seleccionadas \n
+#de las columnas seleccionadas
 #Uso de la ZSCORE para limpiar datos más relevantes:
 #la ZSCORE es un indicador de la desviacion estándar respecto a la media. 
-#Una ZSCORE de -2 indica que el valor está 2 desviaciones medias por debajo de la media. 
+#Una ZSCORE de -2 indica que el valor está 2 desviaciones medias por debajo de la media y equivale al percentil -2. 
 #Siendo la desviación media .std
-
+print("-"*49)
 print(" \nSe añaden al dataframe los Zscores de las columnas descritas anteriormente:")
 print (df.head()) 
-
-
+print("-"*49)
 print("\nvalores máximos y minimos \n")
-#Cálculo de valores máximos y mínimos
-headers=["Values","maxVal","minVal"]
-values=list(df.columns)
-maxval=list(df.max(axis=0))
-minval=list(df.min(axis=0))
-table=zip(values,maxval,minval)
-print(tabulate(table,headers=headers),"\n")
-
-print("\n se muestran a continuación los datos de capacidad instalada sin filtrar \n ")
-
-try:
-    x=df["MessageId"]
-    y=df["Installed capacity"]
-
-    fig, ax = plt.subplots()
-    ax.stem(x,y)
-    ax.set(x,y)
-    plt.show()
-except:
-    pass
+#Tabulación de valores máximos y mínimos
+createMinMax(df)
+print("-"*49)
+print("\n Se muestran a continuación los datos de capacidad instalada sin filtrar \n ")
+plotCapInst(df,"Proyectos (sin limpieza)","Potencia Instalada")
+print("-"*49)
 # IMPORTANTE - se muestran los valores de potencia instalada
 # en las líneas de arriba (da error pero funciona(por eso el try y el except))
-print(df['Installed capacity'].mean())
+#Se eliminan del dataframe los valores de capacidad instalada = 0
+countZeros=df["Installed capacity"].value_counts()[0]
+print("Se eliminarán primero aquellos valores que tienen una capacidad instalada = 0  ")
+print("Número de filas antes de filtrar: ")
+print(len(df))
+df=df.drop(df[df["Installed capacity"]== 0].index)
+print("Se han eliminado: " + str(countZeros) + " valores")
+print("Número de filas: ")
+print(len(df))
+print("-"*49)
+#Se cuentan los valores negativos del dataframe y se eliminan
+countNegatives=len(df[df["Available capacity"]<0])
+print("En la columna de mínimos puede verse que ""Available Capacity"" tiene valores negativos. No tiene sentido y se eliminan.")
+df=df.drop(df[df["Available capacity"] < 0].index)
+print("Se han eliminado: " + str(countNegatives) + " valores")
+print("Número de filas: ")
+print(len(df))
+print("-"*49)
+#Uso de la Zscore para eliminar valores.
+print("Ahora se eliminarán los valores con un Zscore >2.")
+print("Esto se corresponde a eliminar los valores por encima del percentil 98.")
+#Estas tres líneas siguientes filtran los valores del df con aquellos cuyo Zscore es menor que dos
+lenBeforeZscoreFilter=len(df)
+filtro1=df["Installed capacity_zscore"]<2
+filtro2=df["Available capacity_zscore"]<2
+filtro3=df["Unavailable capacity_zscore"]<2
+#Se cambian los valores del df por los valores del df con los filtros
+df=df[filtro1 & filtro2 & filtro3]
+print("Se han eliminado: " + str(lenBeforeZscoreFilter-len(df)) + " valores")
+print("Numero de filas:")
+print(len(df))
+print("-"*49)
+print("Datos tras primera limpieza:")
+plotCapInst(df,"Proyectos","Potencia Instalada")
+print("máximos y mínimos tras primera limpieza:")
+createMinMax(df)
+print("-"*49)
+print("Las capacidades parecen dividirse en tres grandes tramos:")
+print("De 0 a 200 MW, de 200 a 350 MW y mas de 400 MW.")
 
-print("\nSe eliminarán primero aquellos valores que tienen un zscore en cualquier columna  ")
-print("Esto corresponderían a los percentiles 98 y 2")
-
-# PROPUESTAS SIGUIENTES PASOS (por favor visualizar datos) 
-# puedo seguir yo con:
-# Eliminar valores por encima de 500 ?
-# Eliminar valores = 0 ?
-# Buscar relaciones de valores, media, datos relevantes, etc.
-#Funciones de gráficas
+# Se añaden gráficos
 funciones_graficos.grafico_tipo_combustible(df)
 funciones_graficos.grafico_indisponibilidad(df)
 funciones_graficos.grafico_de_razones(df)
@@ -297,4 +333,4 @@ plt.xlabel('Installed Capacity')
 plt.ylabel('Available Capacity')
 plt.title('Installed vs Available Capacity')
 plt.tight_layout()
-plt.show()fd
+plt.show()
