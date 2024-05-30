@@ -2,3 +2,12 @@ pandas
 matplotlib
 lxml
 requests
+flask
+flask_session 
+sys
+bs4
+datetime
+zipfile
+os
+re
+scipy
