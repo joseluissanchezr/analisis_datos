@@ -39,9 +39,12 @@ Be careful, downloading new data erases the old ones.
 You can also skip the datamining part by clicking on "Skip this part" if you have already downloaded the data you're interested in.
 
 3. You are now on the data cleaning page. All you have to do is click on "Let's clean data".
-It will use the code of DataCleaning.py in order to remove NaN and process data (from string to number for example).
+It will use the code of ``DataCleaning.py`` in order to remove NaN and process data (from string to number for example).
 
 4. You are now on the visualisation board. You can choose which tools you want to use to analyse data. We grouped in "Aggregated
 Curves" three tools : build the aggregated curve for a specified market at a specified hour, build the evolution of the market
 price this day and same for the equilibrium quantity of energy (hour after hour). For that, fill the form on the corresponding page and enjoy !  
 Be careful, javascript is here to prevent you from using nonexistent files.
+The code used to generate images is in `visualisation.py`
+
+NB : All relevant .py files are in the app folder. The notebooks at the root have illustrative purpose, they show how the code was constructed and the choices made behind.
