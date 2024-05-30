@@ -30,16 +30,16 @@ def datamining():
 @app.route("/data_cleaning", methods=['GET', 'POST'])
 def datacleaning():
     global date
+    global downloaded_files
     date = None
     # Was the form filled or skiped ?
     filled_form = request.form.get('filled_form', 'False') == 'True'
-    print("filled_form :", filled_form)
     if filled_form:
         # Retrieve form information
         date = request.form.get('month-year')
         n = request.form.get('number')
         # Compute datamining
-        data_extraction(m1=int(date[5:]), y1=int(date[:4]), n=int(n))
+        downloaded_files = data_extraction(m1=int(date[5:]), y1=int(date[:4]), n=int(n))
         return render_template("data_cleaning.html", title="DataCleaning", date=date, n=n)
     return render_template("data_cleaning.html", title="DataCleaning")
 
@@ -48,11 +48,12 @@ def visualisation_board():
     are_data_clean = False
     # Compute data_cleaning if files have just been downloaded
     if date is not None:
-        folder_path = "extracted/curva_pibc_uof_" + date.replace("-", "")
-        for file in os.listdir(folder_path):
-            file_path = os.path.join(folder_path, file)
-            if os.path.isfile(file_path):
-                cargar_y_procesar_archivo(file_path)
+        for file_zip in downloaded_files:
+            folder_path = f"extracted/{file_zip[5:-4]}"
+            for file in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, file)
+                if os.path.isfile(file_path):
+                    cargar_y_procesar_archivo(file_path)
         are_data_clean = True
     return render_template("visualisation_board.html", title="Visualisation Board", are_data_clean=are_data_clean)
 

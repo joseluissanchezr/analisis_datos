@@ -41,6 +41,7 @@ def delete_existing_files_and_directories(source_directory, destination_director
 
 def download_last_n_months_files(m1, y1, n):
     dates = []
+    downloaded_files = []
     for i in range(n):
         date = datetime(year=y1, month=m1, day=1) - timedelta(days=30 * i)
         dates.append(date.strftime('%Y%m'))
@@ -73,12 +74,15 @@ def download_last_n_months_files(m1, y1, n):
                         for chunk in response.iter_content(chunk_size=8192):
                             f.write(chunk)
                     print(f"Download complete: {file_name}")
+                    downloaded_files.append(file_name)
                 else:
                     print(f"Error downloading the file: {response.status_code}")
         else:
             print("No files matching the specified pattern were found.")
     else:
         print(f"Error requesting the page: {response.status_code}")
+
+    return downloaded_files
 
 def zip_file_extraction(source_directory, destination_directory):
     if not os.path.exists(destination_directory):
@@ -112,10 +116,12 @@ def data_extraction(m1, y1, n):
     delete_existing_files_and_directories(source_directory, destination_directory)
     
     # Download the new files
-    download_last_n_months_files(m1, y1, n)
+    downloaded_files = download_last_n_months_files(m1, y1, n)
     
     # Extract the ZIP files
     zip_file_extraction(source_directory, destination_directory)
     
     # Rename and delete .1 files in subfolders
     rename_and_delete_files_in_subfolders(destination_directory)
+
+    return downloaded_files
