@@ -119,6 +119,3 @@ def data_extraction(m1, y1, n):
     
     # Rename and delete .1 files in subfolders
     rename_and_delete_files_in_subfolders(destination_directory)
-
-# Example of execution
-data_extraction(1, 2023, 2)
