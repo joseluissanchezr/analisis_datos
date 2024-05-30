@@ -77,4 +77,6 @@ def aggregated_curves():
     hour = int(request.form.get('hour'))
     file_path = f"extracted/curva_pibc_uof_{day[:-2]}/curva_pibc_uof_{day}0{number}.csv"
     aggregated_curve(file_path, hour, day, number)
+    quantity(file_path, day, number)
+    price(file_path, day, number)
     return render_template("aggregated_curves.html", title="Aggregated Curves")
