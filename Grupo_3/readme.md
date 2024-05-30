@@ -4,6 +4,11 @@ All rights reserved.
 
 # How to run the flask application ?
 
+Requirements are in requirements.txt  
+You might need to install what is missing on your computer thanks to :  
+`$ pip install [extension_name]`
+
+
 In a Git Bash terminal and in the "/Grupo_3/app" folder (where there is the `run.py`) :
 
 1. define environment variable  
