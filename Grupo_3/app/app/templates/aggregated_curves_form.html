@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="box">
+    <h2>Draw Aggregated Curves</h2>
+    <p> Select the desired date & market number (there are 6 intradaily markets).
+        <br> Important : Stick to the data you downloaded ! JS won't agree either ! </p>
+
+    <form action="/aggregated_curves" method="post" id="search_form">
+        <label for="date">Choose a date :</label>
+        <input type="date" id="date" name="date" required>
+        
+        <label for="number">Chosse the number of the intradaily market :</label>
+        <input type="number" id="number" name="number" min="1" max="6" required>
+        <br>
+        <label for="number">Choose a hour for the aggregated curve (posterior to the selected market) :</label>
+        <input type="number" id="hour" name="hour" min="1" max="24" required>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Intercept Date Error
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('search_form').addEventListener('submit', function (event) {
+                event.preventDefault(); // Empêche la soumission par défaut du formulaire
+    
+                // Récupère la date saisie par l'utilisateur
+                const selectedDate = document.getElementById('date').value;
+                const selectedNumber = document.getElementById('number').value;
+    
+                // Effectue une requête POST pour vérifier l'existence du fichier
+                fetch('/check-file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ date: selectedDate, number: selectedNumber }) // Ajout de 'number' dans le corps de la requête
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        // Si le fichier existe, soumet le formulaire
+                        document.getElementById('search_form').submit();
+                    } else {
+                        // Si le fichier n'existe pas, affiche un message d'erreur
+                        alert('The desired file "curva_pbc_uof_' + selectedDate + '" does not exist.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>    
+
+    <br>
+
+
+</div>
+
+{% endblock %}
