@@ -6,152 +6,148 @@ from scipy import interpolate
 def aggregated_curve(file_path, hour, day, number):
 
     df = pd.read_csv(file_path, sep=";", encoding="latin1")
-    df_hora = df[df['Hora'] == hour]
+    df_hour = df[df['Hora'] == hour]
 
-    # Filtrer les données pour séparer les types d'offres de vente (V) et d'achat (C)
-    offre = df_hora[df_hora['Tipo Oferta'] == 'V']
-    demande = df_hora[df_hora['Tipo Oferta'] == 'C']
+    # Filter data to separate types of sale (V) and purchase (C) offers
+    offer = df_hour[df_hour['Tipo Oferta'] == 'V']
+    demand = df_hour[df_hour['Tipo Oferta'] == 'C']
 
-    # Agréger les données par quantité cumulée et calculer le prix moyen pour chaque quantité cumulée
-    offre_aggregated = offre.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
-    demande_aggregated = demande.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
+    # Aggregate data by cumulative quantity and calculate the average price for each cumulative quantity
+    offer_aggregated = offer.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
+    demand_aggregated = demand.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
 
-    # Trier les données pour que l'offre soit croissante et la demande décroissante
-    offre_aggregated = offre_aggregated.sort_values(by='Precio Compra/Venta')
-    demande_aggregated = demande_aggregated.sort_values(by='Precio Compra/Venta', ascending=False)
+    # Sort data so that the offer is ascending and the demand is descending
+    offer_aggregated = offer_aggregated.sort_values(by='Precio Compra/Venta')
+    demand_aggregated = demand_aggregated.sort_values(by='Precio Compra/Venta', ascending=False)
 
-    # Calculer la quantité cumulée pour l'offre et la demande
-    offre_aggregated['Quantité Cumulée'] = offre_aggregated['Energía Compra/Venta'].cumsum()
-    demande_aggregated['Quantité Cumulée'] = demande_aggregated['Energía Compra/Venta'].cumsum()
+    # Calculate the cumulative quantity for the offer and demand
+    offer_aggregated['Cumulative Quantity'] = offer_aggregated['Energía Compra/Venta'].cumsum()
+    demand_aggregated['Cumulative Quantity'] = demand_aggregated['Energía Compra/Venta'].cumsum()
 
-    # Tracer les courbes d'offre et de demande
+    # Plot the offer and demand curves
     plt.figure(figsize=(12, 8))
 
-    plt.plot(offre_aggregated['Quantité Cumulée'], offre_aggregated['Precio Compra/Venta'], label='Offre (V)', color='blue', marker='o')
-    plt.plot(demande_aggregated['Quantité Cumulée'], demande_aggregated['Precio Compra/Venta'], label='Demande (C)', color='red', marker='o')
+    plt.plot(offer_aggregated['Cumulative Quantity'], offer_aggregated['Precio Compra/Venta'], label='Offer (V)', color='blue', marker='o')
+    plt.plot(demand_aggregated['Cumulative Quantity'], demand_aggregated['Precio Compra/Venta'], label='Demand (C)', color='red', marker='o')
 
-    plt.title(f"Courbes d'Offre (Vente) et de Demande (Achat) pour l'heure {hour}, la date {day} et le marché intraquotidien numéro {number}")
-    plt.xlabel('Quantité Cumulée (MWh)')
-    plt.ylabel('Prix (€)')
+    plt.title(f"Offer (Sale) and Demand (Purchase) Curves for hour {hour}, date {day}, and intraday market number {number}")
+    plt.xlabel('Cumulative Quantity (MWh)')
+    plt.ylabel('Price (€)')
     plt.legend()
     plt.grid(True)
 
     plt.savefig("app/static/aggregated_curve.png")
 
-
-
 def quantity(file_path, day, number):
 
     df = pd.read_csv(file_path, sep=";", encoding="latin1")
-    # visualisation de la quantité totale sur l'horizon d'un temps 
+    # Visualization of the total quantity over the time horizon
 
-    # Liste pour stocker les quantités d'équilibre pour chaque heure
+    # List to store equilibrium quantities for each hour
     equilibrium_quantities = []
 
-    # Calculer la quantité d'équilibre pour chaque heure
-    for hora in sorted(df['Hora'].unique()):
-        df_hora = df[df['Hora'] == hora]
+    # Calculate the equilibrium quantity for each hour
+    for hour in sorted(df['Hora'].unique()):
+        df_hour = df[df['Hora'] == hour]
 
-        # Filtrer les données pour séparer les types d'offres de vente (V) et d'achat (C)
-        offre = df_hora[df_hora['Tipo Oferta'] == 'V']
-        demande = df_hora[df_hora['Tipo Oferta'] == 'C']
+        # Filter data to separate types of sale (V) and purchase (C) offers
+        offer = df_hour[df_hour['Tipo Oferta'] == 'V']
+        demand = df_hour[df_hour['Tipo Oferta'] == 'C']
 
-        if offre.empty or demande.empty:
+        if offer.empty or demand.empty:
             continue
 
-        # Agréger les données par quantité cumulée et calculer le prix moyen pour chaque quantité cumulée
-        offre_aggregated = offre.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
-        demande_aggregated = demande.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
+        # Aggregate data by cumulative quantity and calculate the average price for each cumulative quantity
+        offer_aggregated = offer.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
+        demand_aggregated = demand.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
 
-        # Trier les données pour que l'offre soit croissante et la demande décroissante
-        offre_aggregated = offre_aggregated.sort_values(by='Precio Compra/Venta')
-        demande_aggregated = demande_aggregated.sort_values(by='Precio Compra/Venta', ascending=False)
+        # Sort data so that the offer is ascending and the demand is descending
+        offer_aggregated = offer_aggregated.sort_values(by='Precio Compra/Venta')
+        demand_aggregated = demand_aggregated.sort_values(by='Precio Compra/Venta', ascending=False)
 
-        # Calculer la quantité cumulée pour l'offre et la demande
-        offre_aggregated['Quantité Cumulée'] = offre_aggregated['Energía Compra/Venta'].cumsum()
-        demande_aggregated['Quantité Cumulée'] = demande_aggregated['Energía Compra/Venta'].cumsum()
+        # Calculate the cumulative quantity for the offer and demand
+        offer_aggregated['Cumulative Quantity'] = offer_aggregated['Energía Compra/Venta'].cumsum()
+        demand_aggregated['Cumulative Quantity'] = demand_aggregated['Energía Compra/Venta'].cumsum()
 
-        # Créer des fonctions d'interpolation
-        offre_interpol = interpolate.interp1d(offre_aggregated['Quantité Cumulée'], offre_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
-        demande_interpol = interpolate.interp1d(demande_aggregated['Quantité Cumulée'], demande_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
+        # Create interpolation functions
+        offer_interpol = interpolate.interp1d(offer_aggregated['Cumulative Quantity'], offer_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
+        demand_interpol = interpolate.interp1d(demand_aggregated['Cumulative Quantity'], demand_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
 
-        # Trouver la quantité où les prix sont égaux (approximation)
-        quantities = np.linspace(max(offre_aggregated['Quantité Cumulée'].min(), demande_aggregated['Quantité Cumulée'].min()), 
-                                min(offre_aggregated['Quantité Cumulée'].max(), demande_aggregated['Quantité Cumulée'].max()), 500)
-        intersection_qty = quantities[np.abs(offre_interpol(quantities) - demande_interpol(quantities)).argmin()]
+        # Find the quantity where prices are equal (approximation)
+        quantities = np.linspace(max(offer_aggregated['Cumulative Quantity'].min(), demand_aggregated['Cumulative Quantity'].min()), 
+                                min(offer_aggregated['Cumulative Quantity'].max(), demand_aggregated['Cumulative Quantity'].max()), 500)
+        intersection_qty = quantities[np.abs(offer_interpol(quantities) - demand_interpol(quantities)).argmin()]
         
-        # Stocker la quantité d'équilibre pour cette heure
-        equilibrium_quantities.append((hora, intersection_qty))
+        # Store the equilibrium quantity for this hour
+        equilibrium_quantities.append((hour, intersection_qty))
 
-        # Convertir la liste des quantités d'équilibre en DataFrame
-        equilibrium_df = pd.DataFrame(equilibrium_quantities, columns=['Hora', 'Quantité d\'Équilibre'])
+        # Convert the list of equilibrium quantities to a DataFrame
+        equilibrium_df = pd.DataFrame(equilibrium_quantities, columns=['Hour', 'Equilibrium Quantity'])
 
-    # Tracer la courbe de la quantité d'équilibre en fonction des heures
+    # Plot the equilibrium quantity over time
     plt.figure(figsize=(12, 8))
-    plt.plot(equilibrium_df['Hora'], equilibrium_df['Quantité d\'Équilibre'], marker='o', linestyle='-')
-    plt.title(f"Quantité d'Équilibre en Fonction du Temps pour le jour {day}, marché numéro {number}")
-    plt.xlabel('Heure')
-    plt.ylabel('Quantité cumulée equilibre (MWh)')
+    plt.plot(equilibrium_df['Hour'], equilibrium_df['Equilibrium Quantity'], marker='o', linestyle='-')
+    plt.title(f"Equilibrium Quantity Over Time for day {day}, market number {number}")
+    plt.xlabel('Hour')
+    plt.ylabel('Cumulative Equilibrium Quantity (MWh)')
     plt.grid(True)
 
     plt.savefig("app/static/quantity.png")
 
-
-
 def price(file_path, day, number):
 
-    #visualisation de l evolution du prix de l 'electrecité sur le temps 
-    # Liste pour stocker les prix d'équilibre pour chaque heure
+    # Visualization of the evolution of electricity prices over time
+    # List to store equilibrium prices for each hour
     equilibrium_prices = []
     df = pd.read_csv(file_path, sep=";", encoding="latin1")
 
-    # Calculer le prix d'équilibre pour chaque heure
-    for hora in sorted(df['Hora'].unique()):
+    # Calculate the equilibrium price for each hour
+    for hour in sorted(df['Hora'].unique()):
             
         df = pd.read_csv(file_path, sep=";", encoding="latin1")
-        df_hora = df[df['Hora'] == hora]
+        df_hour = df[df['Hora'] == hour]
 
-        # Filtrer les données pour séparer les types d'offres de vente (V) et d'achat (C)
-        offre = df_hora[df_hora['Tipo Oferta'] == 'V']
-        demande = df_hora[df_hora['Tipo Oferta'] == 'C']
+        # Filter data to separate types of sale (V) and purchase (C) offers
+        offer = df_hour[df_hour['Tipo Oferta'] == 'V']
+        demand = df_hour[df_hour['Tipo Oferta'] == 'C']
 
-        if offre.empty or demande.empty:
+        if offer.empty or demand.empty:
             continue
 
-        # Agréger les données par quantité cumulée et calculer le prix moyen pour chaque quantité cumulée
-        offre_aggregated = offre.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
-        demande_aggregated = demande.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
+        # Aggregate data by cumulative quantity and calculate the average price for each cumulative quantity
+        offer_aggregated = offer.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
+        demand_aggregated = demand.groupby('Precio Compra/Venta')['Energía Compra/Venta'].sum().reset_index()
 
-        # Trier les données pour que l'offre soit croissante et la demande décroissante
-        offre_aggregated = offre_aggregated.sort_values(by='Precio Compra/Venta')
-        demande_aggregated = demande_aggregated.sort_values(by='Precio Compra/Venta', ascending=False)
+        # Sort data so that the offer is ascending and the demand is descending
+        offer_aggregated = offer_aggregated.sort_values(by='Precio Compra/Venta')
+        demand_aggregated = demand_aggregated.sort_values(by='Precio Compra/Venta', ascending=False)
 
-        # Calculer la quantité cumulée pour l'offre et la demande
-        offre_aggregated['Quantité Cumulée'] = offre_aggregated['Energía Compra/Venta'].cumsum()
-        demande_aggregated['Quantité Cumulée'] = demande_aggregated['Energía Compra/Venta'].cumsum()
+        # Calculate the cumulative quantity for the offer and demand
+        offer_aggregated['Cumulative Quantity'] = offer_aggregated['Energía Compra/Venta'].cumsum()
+        demand_aggregated['Cumulative Quantity'] = demand_aggregated['Energía Compra/Venta'].cumsum()
 
-        # Créer des fonctions d'interpolation
-        offre_interpol = interpolate.interp1d(offre_aggregated['Quantité Cumulée'], offre_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
-        demande_interpol = interpolate.interp1d(demande_aggregated['Quantité Cumulée'], demande_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
+        # Create interpolation functions
+        offer_interpol = interpolate.interp1d(offer_aggregated['Cumulative Quantity'], offer_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
+        demand_interpol = interpolate.interp1d(demand_aggregated['Cumulative Quantity'], demand_aggregated['Precio Compra/Venta'], bounds_error=False, fill_value="extrapolate")
 
-        # Trouver la quantité où les prix sont égaux (approximation)
-        quantities = np.linspace(max(offre_aggregated['Quantité Cumulée'].min(), demande_aggregated['Quantité Cumulée'].min()), 
-                                min(offre_aggregated['Quantité Cumulée'].max(), demande_aggregated['Quantité Cumulée'].max()), 500)
-        intersection_qty = quantities[np.abs(offre_interpol(quantities) - demande_interpol(quantities)).argmin()]
-        intersection_price = offre_interpol(intersection_qty)
+        # Find the quantity where prices are equal (approximation)
+        quantities = np.linspace(max(offer_aggregated['Cumulative Quantity'].min(), demand_aggregated['Cumulative Quantity'].min()), 
+                                min(offer_aggregated['Cumulative Quantity'].max(), demand_aggregated['Cumulative Quantity'].max()), 500)
+        intersection_qty = quantities[np.abs(offer_interpol(quantities) - demand_interpol(quantities)).argmin()]
+        intersection_price = offer_interpol(intersection_qty)
         
-        # Stocker le prix d'équilibre pour cette heure
-        equilibrium_prices.append((hora, intersection_price))
+        # Store the equilibrium price for this hour
+        equilibrium_prices.append((hour, intersection_price))
 
-    # Convertir la liste des prix d'équilibre en DataFrame
-    equilibrium_df = pd.DataFrame(equilibrium_prices, columns=['Hora', 'Prix d\'Équilibre'])
+    # Convert the list of equilibrium prices to a DataFrame
+    equilibrium_df = pd.DataFrame(equilibrium_prices, columns=['Hour', 'Equilibrium Price'])
 
-    # Tracer la courbe du prix d'équilibre en fonction des heures
+    # Plot the equilibrium price over time
     plt.figure(figsize=(12, 8))
-    plt.plot(equilibrium_df['Hora'], equilibrium_df['Prix d\'Équilibre'], marker='o', linestyle='-')
-    plt.title(f"Prix d'Équilibre en Fonction du Temps pour le jour {day}, marché numéro {number}")
-    plt.xlabel('Heure')
-    plt.ylabel('Prix d\'Équilibre (€)')
+    plt.plot(equilibrium_df['Hour'], equilibrium_df['Equilibrium Price'], marker='o', linestyle='-')
+    plt.title(f"Equilibrium Price Over Time for day {day}, market number {number}")
+    plt.xlabel('Hour')
+    plt.ylabel('Equilibrium Price (€)')
     plt.grid(True)
 
     plt.savefig("app/static/price.png")

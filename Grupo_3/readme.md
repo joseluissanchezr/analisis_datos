@@ -4,7 +4,7 @@ All rights reserved.
 
 # How to run the flask application ?
 
-In a Git Bash terminal :
+In a Git Bash terminal and in the "/Grupo_3/app" folder (where there is the `run.py`) :
 
 1. define environment variable  
 ``$ export FLASK_APP=run.py``  
