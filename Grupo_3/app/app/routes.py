@@ -8,6 +8,7 @@ import sys
 
 from DataExtraction import *
 from DataCleaning import *
+from visualisation import *
 
 matplotlib.use('Agg') # Non interactive backend mode
 
@@ -61,12 +62,19 @@ def aggregated_curves_form():
 
 @app.route('/check-file', methods=['POST'])
 def check_file():
-    date = request.json.get('date').replace("-", "")
-    print("date :", date)
-    file_path = f"../descomprimido/curva_pbc_uof_{date}.csv"
+    day = request.json.get('date').replace("-", "")
+    number = request.json.get("number")
+    file_path = f"extracted/curva_pibc_uof_{day[:-2]}/curva_pibc_uof_{day}0{number}.csv"
+    print(file_path)
     file_exists = os.path.isfile(file_path)
     return jsonify({"exists": file_exists})
 
 @app.route("/aggregated_curves", methods=['GET', 'POST'])
 def aggregated_curves():
+    # Retrieve form data
+    day = request.form.get("date").replace("-", "")
+    number = request.form.get("number")
+    hour = int(request.form.get('hour'))
+    file_path = f"extracted/curva_pibc_uof_{day[:-2]}/curva_pibc_uof_{day}0{number}.csv"
+    aggregated_curve(file_path, hour, day, number)
     return render_template("aggregated_curves.html", title="Aggregated Curves")
