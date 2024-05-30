@@ -1,4 +1,3 @@
-# Empezamos con la importacion de todos los modulos necesarios
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
@@ -6,17 +5,16 @@ from datetime import datetime, timedelta
 import warnings
 import urllib3
 warnings.simplefilter('ignore', urllib3.exceptions.InsecureRequestWarning)
-warnings.simplefilter('ignore', FutureWarning)
+
 from tqdm import tqdm
 
 from tabulate import tabulate
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from bs4 import BeautifulSoup
 import seaborn as sns
-import funciones_graficos
 
-# Definimos tres valores con referencia a la capacidad
 installed = 'installedCapacity'
 available = 'availableCapacity'
 unavailable = 'unavailableCapacity'
@@ -99,7 +97,7 @@ def find_messageId(summary):
     return messageId
 
 def find_publication_date(summary):
-    '''_
+    '''
     inputs:
         summary: str, element of soup.find_all('summary') converted with '.text'
     output:
@@ -151,14 +149,17 @@ def plotCapInst(dataFrame,xlabel,ylabel):
     
     except:
         pass
-
 # Recopilación de los datos con fecha de publicación del mes pasado
 current_date = datetime.now()
+
 first_day_of_current_month = current_date.replace(day=1)
+
 last_day_of_last_month = first_day_of_current_month - timedelta(days=1)
 first_day_of_last_month = last_day_of_last_month.replace(day=1)
+
 day = first_day_of_last_month
 last_month = []
+
 while day <= last_day_of_last_month:
     last_month.append(day.strftime('%Y-%m-%d'))
     day += timedelta(days=1)
@@ -208,42 +209,11 @@ print("-------------------------------------------------")
 
 # Analizar si los datos tienen algún registro con NaN (no es el caso) #
 valuesrow_with_nan=df[df.isnull().any(axis=1)]
+
 print("\nValores nulos del dataframe: \n ")
 print("-"*49)
 print(valuesrow_with_nan) 
 print("-"*49)
-
-# BARPLOT PARA VISUALISAR LOS PARTICIPANTES DEL MERCADO
-fig = plt.figure(figsize = (10, 5))
-# Creacion del bar plot
-values_counts = df['Market participant'].value_counts()
-values_counts.plot(kind='bar')
-# Titulo y axis 
-plt.xlabel("Participante")
-plt.ylabel("No. de ocurencias")
-plt.title("Frecuencia de unavailabilities segun el participante")
-plt.show()
-
-# PARETO PLOT DE LOS PARTICIPANTES
-# Ocurencias y % cumulativo
-values_counts = df['Market participant'].value_counts().sort_values(ascending=False)
-cumulative_percentage = values_counts.cumsum() / values_counts.sum() * 100
-# Creacion del grafico
-fig, ax1 = plt.subplots()
-ax1.bar(values_counts.index, values_counts, color='C0')
-ax1.set_xlabel('Participante')
-ax1.set_ylabel('No. de ocurencias', color='C0')
-ax1.tick_params(axis='y', labelcolor='C0')
-# Creacion del segundo grafico
-ax2 = ax1.twinx()
-ax2.plot(values_counts.index, cumulative_percentage, color='C1', marker='o', linestyle='-')
-ax2.set_ylabel('"%" cumulado', color='C1')
-ax2.tick_params(axis='y', labelcolor='C1')
-ax2.set_ylim(0, 100)
-# Titulo
-plt.title('Pareto de los participantes')
-plt.show()
-
 # Extracción de columnas no numéricos
 numValues=list(df.columns.drop(["MessageId","Market participant",
                            "Publication date","Unavailability type", 'Reason for Unavailability', 
@@ -257,31 +227,12 @@ for col in numValues:
     col_zscore= col + "_zscore"
     df[col_zscore]=(df[col] - df[col].mean())/df[col].std(ddof=0) 
 
-# BOXPLOT PARA VISUALISAR LOS ZSCORES DE LAS CAPACIDADES
-# Crear el boxplot
-data_zscore = [df['Installed capacity_zscore'], df['Available capacity_zscore'], df['Unavailable capacity_zscore']]
-fig = plt.figure(figsize =(10, 5))
-ax = fig.add_subplot(111)
-bp = ax.boxplot(data_zscore, vert = 0)
-# Cambiar como aparecen las valores extranas
-for flier in bp['fliers']:
-    flier.set(marker ='D',
-              color ='#e7298a',
-              alpha = 0.2)
-# Dar un nombre al x-axis
-ax.set_yticklabels(['Installed capacity', 'Available capacity', 'Unavailable capacity'])
-# Dar un titulo al grafico
-plt.title("Boxplot de los zscores de las capacidades")
-# Mostrar el boxplot
-plt.show()
-
-#Se añade al dataframe original los zscores de las columnas seleccionadas
-'''
-Uso de la ZSCORE para limpiar datos más relevantes:
-La ZSCORE es un indicador de la desviacion estándar respecto a la media. 
-Una ZSCORE de -2 indica que el valor está 2 desviaciones medias por debajo de la media y equivale al percentil -2. 
-Siendo la desviación media .std
-'''
+#Se añade al dataframe original los zscores
+#de las columnas seleccionadas
+#Uso de la ZSCORE para limpiar datos más relevantes:
+#la ZSCORE es un indicador de la desviacion estándar respecto a la media. 
+#Una ZSCORE de -2 indica que el valor está 2 desviaciones medias por debajo de la media y equivale al percentil -2. 
+#Siendo la desviación media .std
 print("-"*49)
 print(" \nSe añaden al dataframe los Zscores de las columnas descritas anteriormente:")
 print (df.head()) 
@@ -293,8 +244,9 @@ print("-"*49)
 print("\n Se muestran a continuación los datos de capacidad instalada sin filtrar \n ")
 plotCapInst(df,"Proyectos (sin limpieza)","Potencia Instalada")
 print("-"*49)
-# IMPORTANTE - se muestran los valores de potencia instalada en las líneas de arriba (da error pero funciona(por eso el try y el except))
-# Se eliminan del dataframe los valores de capacidad instalada = 0
+# IMPORTANTE - se muestran los valores de potencia instalada
+# en las líneas de arriba (da error pero funciona(por eso el try y el except))
+#Se eliminan del dataframe los valores de capacidad instalada = 0
 countZeros=df["Installed capacity"].value_counts()[0]
 print("Se eliminarán primero aquellos valores que tienen una capacidad instalada = 0  ")
 print("Número de filas antes de filtrar: ")
@@ -333,15 +285,112 @@ createMinMax(df)
 print("-"*49)
 print("Las capacidades parecen dividirse en tres grandes tramos:")
 print("De 0 a 200 MW, de 200 a 350 MW y mas de 400 MW.")
-#### CONCLUSION (LO VOY A HACER)
 
+# Funciones para graficar y analizar la columna extraida  de causas de falla
 
+def grafico_tipo_combustible(df):
+    
+     #Tipo de combustible
+    plt.figure(figsize=(10, 6))
+    sns.countplot(data=df, x='Fuel type', palette='rainbow')
+    plt.title('Frecuencia por Tipo de Combustible')
+    plt.xlabel('Tipo de Combustible')
+    plt.ylabel('Frecuencia')
+    plt.xticks(rotation=45)
+    plt.show()
 
-# Se añaden gráficos
-funciones_graficos.grafico_tipo_combustible(df)
-funciones_graficos.grafico_indisponibilidad(df)
-funciones_graficos.grafico_de_razones(df)
-funciones_graficos.incidencia_por_combustible(df)
+def grafico_indisponibilidad(df):
+    
+    #Indisponibilidad por participante del mercado
+    plt.figure(figsize=(12, 6))
+    sns.countplot(data=df, y='Market participant', hue='Unavailability type', palette='rainbow')
+    plt.title('Tipo de Indisponibilidad por Participante del Mercado')
+    plt.ylabel('Participante del Mercado')
+    plt.xlabel('Conteo de Indisponibilidad')
+    plt.show()
+
+def grafico_de_razones(df, columna_original='Reason for Unavailability', nueva_columna='Reason'):
+    """
+    Función para estandarizar las razones de indisponibilidad en un DataFrame
+    utilizando un diccionario de relaciones entre frases.
+
+    Parámetros:
+        df (DataFrame): El DataFrame de pandas que contiene los datos.
+        diccionario (dict): Un diccionario que relaciona las frases originales con las estandarizadas.
+        columna_original (str): El nombre de la columna que contiene las razones originales.
+        nueva_columna (str): El nombre de la nueva columna que se creará para las razones estandarizadas.
+
+    """
+    diccionario ={
+        "Generador no disponible": ["generator partially unavailable","generator unavailable"],
+        "Falla mecánica": ["fallo feeding screw failure","fallo feeding crew failure","mechanical failure", "pumping mode unavailable","fallo turbine failure", "fallo trip turbine", "fallo stop turbine","failure", "fallo", "fallo boiler failure", "fallo engine failure","problems with a turbine","fallo boiler leak","valve failure","fallo redler failure","fallo high volumen flow","trip"],
+        "Indisponibilidad": ["unplanned unavailability","indisponibilidad","fuera de servicio","paro planta"],
+        "Corto plazo": ["short term"],
+        "Mantenimiento": [ "indisponibilidad operacional, trabajos inspección alta tensión","parada programada por mantenimiento de la unidad","indisponibilidad planificada, trabajos mtto planificado en sistema agua enfriamiento","trabajos mtto planificado en generador","mantenimiento previsto", "planes de mantenimiento", "hrsg maintenance", "revision de mantenimiento", "fallo lacking biomass", "mantenimiento previsto scheduled maintenance", "major maintenance - gt"],
+        "Falla operativa": ["fallo maintenance","fallo scheduled stop", "yearly scheduling", "fallo annual stop", "stop","fallo opertional issues", "indisponibilidad operacional", "fallo operational issues", "fallo operational isuues", "fallo operational failure", "fallo operarional issues","averia"],
+        "Falla eléctrica": ["fallo electrical failure", "fallo electrofilter failure", "parada total de fabrica y corte electrico general incluida planta d e energia"]
+    }
+
+    def aplicar_diccionario(razon):
+        for clave, valor in diccionario.items():
+            if razon.lower() in valor:
+                return clave
+        return 'Unknown'
+    
+    # Aplicar la función a la columna original y crear la nueva columna
+    df[nueva_columna] = df[columna_original].apply(aplicar_diccionario)
+    
+    # Contar las ocurrencias de cada razón
+    reason_counts = df['Reason'].value_counts()
+
+    # Crear el gráfico de pastel
+    plt.figure(figsize=(10, 8))
+    plt.pie(reason_counts, labels=reason_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette('rainbow', len(reason_counts)))
+
+    # Añadir título
+    plt.title('Distribución de las Razones de Indisponibilidad')
+
+    # Mostrar el gráfico
+    plt.axis('equal')  # Asegura que el pie chart sea circular
+    plt.show()
+
+def incidencia_por_combustible(df):
+    fuel_types = df['Fuel type'].unique()
+
+    # Configuración del estilo de los gráficos
+    sns.set(style="whitegrid")
+
+    # Crear un gráfico de barras para cada tipo de combustible
+    for fuel in fuel_types:
+        plt.figure(figsize=(12, 6))
+        
+        # Filtrar el DataFrame para el tipo de combustible actual
+        df_fuel = df[df['Fuel type'] == fuel]
+        
+        # Contar las ocurrencias de cada razón para el tipo de combustible actual
+        reason_counts = df_fuel['Reason'].value_counts()
+        
+        # Crear el gráfico de barras
+        sns.barplot(x=reason_counts.values, y=reason_counts.index,palette='rainbow')
+        
+        # Configurar el gráfico
+        plt.title(f'Distribución de Razones de Indisponibilidad para {fuel}')
+        plt.xlabel('Conteo de Indisponibilidad')
+        plt.ylabel('Razón')
+        
+        # Mostrar el gráfico
+        plt.show()
+
+# Se añaden gráficos     
+grafico_tipo_combustible(df)
+plt.show()
+grafico_indisponibilidad(df)
+plt.show()
+grafico_de_razones(df)
+plt.show()
+incidencia_por_combustible(df)
+plt.show()
+
 
 # Visualización de la evolución temporal de la capacidad instalada, disponible y no disponible
 plt.figure(figsize=(10, 6))
@@ -383,5 +432,3 @@ plt.ylabel('Available Capacity')
 plt.title('Installed vs Available Capacity')
 plt.tight_layout()
 plt.show()
-
-#### CONCLUSION (LO VOY A HACER)

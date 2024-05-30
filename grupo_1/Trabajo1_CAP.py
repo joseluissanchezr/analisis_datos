@@ -1,4 +1,3 @@
-# Empezamos con la importacion de todos los modulos necesarios
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
@@ -6,17 +5,16 @@ from datetime import datetime, timedelta
 import warnings
 import urllib3
 warnings.simplefilter('ignore', urllib3.exceptions.InsecureRequestWarning)
-warnings.simplefilter('ignore', FutureWarning)
+
 from tqdm import tqdm
 
 from tabulate import tabulate
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+#Importo función con gráficas creadas aparte, que tienen como argumento el data frame df
 import funciones_graficos
 
-# Definimos tres valores con referencia a la capacidad
 installed = 'installedCapacity'
 available = 'availableCapacity'
 unavailable = 'unavailableCapacity'
@@ -99,7 +97,7 @@ def find_messageId(summary):
     return messageId
 
 def find_publication_date(summary):
-    '''_
+    '''
     inputs:
         summary: str, element of soup.find_all('summary') converted with '.text'
     output:
@@ -128,7 +126,7 @@ def find_reason_unavailability(summary):
     stop_index = summary.find('</umm:unavailabilityReason')
     unavailability_reason = summary[start_index+len('unavailabilityReason')+1:stop_index]
     return unavailability_reason
-        
+
 #Esta función crea una tabla de los valores máximos y mínimos del dataframe
 def createMinMax(dataFrame):
     headers=["Values","maxVal","minVal"]
@@ -151,14 +149,17 @@ def plotCapInst(dataFrame,xlabel,ylabel):
     
     except:
         pass
-
 # Recopilación de los datos con fecha de publicación del mes pasado
 current_date = datetime.now()
+
 first_day_of_current_month = current_date.replace(day=1)
+
 last_day_of_last_month = first_day_of_current_month - timedelta(days=1)
 first_day_of_last_month = last_day_of_last_month.replace(day=1)
+
 day = first_day_of_last_month
 last_month = []
+
 while day <= last_day_of_last_month:
     last_month.append(day.strftime('%Y-%m-%d'))
     day += timedelta(days=1)
@@ -207,43 +208,13 @@ print(df.head())
 print("-------------------------------------------------")
 
 # Analizar si los datos tienen algún registro con NaN (no es el caso) #
+"test"
 valuesrow_with_nan=df[df.isnull().any(axis=1)]
+
 print("\nValores nulos del dataframe: \n ")
 print("-"*49)
 print(valuesrow_with_nan) 
 print("-"*49)
-
-# BARPLOT PARA VISUALISAR LOS PARTICIPANTES DEL MERCADO
-fig = plt.figure(figsize = (10, 5))
-# Creacion del bar plot
-values_counts = df['Market participant'].value_counts()
-values_counts.plot(kind='bar')
-# Titulo y axis 
-plt.xlabel("Participante")
-plt.ylabel("No. de ocurencias")
-plt.title("Frecuencia de unavailabilities segun el participante")
-plt.show()
-
-# PARETO PLOT DE LOS PARTICIPANTES
-# Ocurencias y % cumulativo
-values_counts = df['Market participant'].value_counts().sort_values(ascending=False)
-cumulative_percentage = values_counts.cumsum() / values_counts.sum() * 100
-# Creacion del grafico
-fig, ax1 = plt.subplots()
-ax1.bar(values_counts.index, values_counts, color='C0')
-ax1.set_xlabel('Participante')
-ax1.set_ylabel('No. de ocurencias', color='C0')
-ax1.tick_params(axis='y', labelcolor='C0')
-# Creacion del segundo grafico
-ax2 = ax1.twinx()
-ax2.plot(values_counts.index, cumulative_percentage, color='C1', marker='o', linestyle='-')
-ax2.set_ylabel('"%" cumulado', color='C1')
-ax2.tick_params(axis='y', labelcolor='C1')
-ax2.set_ylim(0, 100)
-# Titulo
-plt.title('Pareto de los participantes')
-plt.show()
-
 # Extracción de columnas no numéricos
 numValues=list(df.columns.drop(["MessageId","Market participant",
                            "Publication date","Unavailability type", 'Reason for Unavailability', 
@@ -252,49 +223,33 @@ print("-"*49)
 print("\nCálculo del Zscore a las siguientes columnas: \n")
 print(numValues)
 print("-"*49)
-# cálculo de la Z-score 
+# cálculo de la Z-score #
 for col in numValues:
     col_zscore= col + "_zscore"
     df[col_zscore]=(df[col] - df[col].mean())/df[col].std(ddof=0) 
+    #CARLOS: Esto aún no sé para que lo voy a usar pero lo voy a usar
 
-# BOXPLOT PARA VISUALISAR LOS ZSCORES DE LAS CAPACIDADES
-# Crear el boxplot
-data_zscore = [df['Installed capacity_zscore'], df['Available capacity_zscore'], df['Unavailable capacity_zscore']]
-fig = plt.figure(figsize =(10, 5))
-ax = fig.add_subplot(111)
-bp = ax.boxplot(data_zscore, vert = 0)
-# Cambiar como aparecen las valores extranas
-for flier in bp['fliers']:
-    flier.set(marker ='D',
-              color ='#e7298a',
-              alpha = 0.2)
-# Dar un nombre al x-axis
-ax.set_yticklabels(['Installed capacity', 'Available capacity', 'Unavailable capacity'])
-# Dar un titulo al grafico
-plt.title("Boxplot de los zscores de las capacidades")
-# Mostrar el boxplot
-plt.show()
-
-#Se añade al dataframe original los zscores de las columnas seleccionadas
-'''
-Uso de la ZSCORE para limpiar datos más relevantes:
-La ZSCORE es un indicador de la desviacion estándar respecto a la media. 
-Una ZSCORE de -2 indica que el valor está 2 desviaciones medias por debajo de la media y equivale al percentil -2. 
-Siendo la desviación media .std
-'''
+#Se añade al dataframe original los zscores
+#de las columnas seleccionadas \n
+#Uso de la ZSCORE para limpiar datos más relevantes:
+#la ZSCORE es un indicador de la desviacion estándar respecto a la media. 
+#Una ZSCORE de -2 indica que el valor está 2 desviaciones medias por debajo de la media. 
+#Siendo la desviación media .std
 print("-"*49)
 print(" \nSe añaden al dataframe los Zscores de las columnas descritas anteriormente:")
 print (df.head()) 
 print("-"*49)
 print("\nvalores máximos y minimos \n")
-#Tabulación de valores máximos y mínimos
+#Cálculo de valores máximos y mínimos
 createMinMax(df)
 print("-"*49)
+#Eliminar las primeras filas que no son números.
 print("\n Se muestran a continuación los datos de capacidad instalada sin filtrar \n ")
 plotCapInst(df,"Proyectos (sin limpieza)","Potencia Instalada")
 print("-"*49)
-# IMPORTANTE - se muestran los valores de potencia instalada en las líneas de arriba (da error pero funciona(por eso el try y el except))
-# Se eliminan del dataframe los valores de capacidad instalada = 0
+# IMPORTANTE - se muestran los valores de potencia instalada
+# en las líneas de arriba (da error pero funciona(por eso el try y el except))
+#Se eliminan del dataframe los valores de capacidad instalada = 0
 countZeros=df["Installed capacity"].value_counts()[0]
 print("Se eliminarán primero aquellos valores que tienen una capacidad instalada = 0  ")
 print("Número de filas antes de filtrar: ")
@@ -304,7 +259,6 @@ print("Se han eliminado: " + str(countZeros) + " valores")
 print("Número de filas: ")
 print(len(df))
 print("-"*49)
-#Se cuentan los valores negativos del dataframe y se eliminan
 countNegatives=len(df[df["Available capacity"]<0])
 print("En la columna de mínimos puede verse que ""Available Capacity"" tiene valores negativos. No tiene sentido y se eliminan.")
 df=df.drop(df[df["Available capacity"] < 0].index)
@@ -312,10 +266,10 @@ print("Se han eliminado: " + str(countNegatives) + " valores")
 print("Número de filas: ")
 print(len(df))
 print("-"*49)
-#Uso de la Zscore para eliminar valores.
 print("Ahora se eliminarán los valores con un Zscore >2.")
 print("Esto se corresponde a eliminar los valores por encima del percentil 98.")
 #Estas tres líneas siguientes filtran los valores del df con aquellos cuyo Zscore es menor que dos
+#Eliminando los valores con zscore >2
 lenBeforeZscoreFilter=len(df)
 filtro1=df["Installed capacity_zscore"]<2
 filtro2=df["Available capacity_zscore"]<2
@@ -333,15 +287,15 @@ createMinMax(df)
 print("-"*49)
 print("Las capacidades parecen dividirse en tres grandes tramos:")
 print("De 0 a 200 MW, de 200 a 350 MW y mas de 400 MW.")
-#### CONCLUSION (LO VOY A HACER)
-
-
-
-# Se añaden gráficos
+dfTwoH=df[df["Installed capacity"]<200]
+dfThreeH=df[df["Installed capacity"]>200 & df["Installed capacity"]<350]
+dfPlusFourH=df[df["Installed capacity"]>400]
 funciones_graficos.grafico_tipo_combustible(df)
 funciones_graficos.grafico_indisponibilidad(df)
 funciones_graficos.grafico_de_razones(df)
 funciones_graficos.incidencia_por_combustible(df)
+
+import seaborn as sns
 
 # Visualización de la evolución temporal de la capacidad instalada, disponible y no disponible
 plt.figure(figsize=(10, 6))
@@ -383,5 +337,3 @@ plt.ylabel('Available Capacity')
 plt.title('Installed vs Available Capacity')
 plt.tight_layout()
 plt.show()
-
-#### CONCLUSION (LO VOY A HACER)
