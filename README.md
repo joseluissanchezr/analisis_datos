@@ -1,7 +1,13 @@
 # analisis_datos
 Este es el repositorio oficial de la asignatura "ANALISIS DE DATOS" del Master Universitario de Ingeniería de la Energía MUIE
 
-# Grupo 4 Codigo 
+# Hechos Relevantes. Extrae automa ticamente los Hechos Relevantes del ultimo mes que pueden afectar al mercado ele ctrico en https://umm.omie.es/electricity-list
+
+# Ficheros mensuales con curvas agregadas de oferta y demanda del mercado diario “Day ahead “incluyendo ofertas” para mercado electrico contenidas en los archivos “curva_pbc_uof”  https://www.omie.es/en/file-accesslist#Mercado%20DiarioCurvas?parent=Mercado%20Diario 
+
+# Ficheros mensuales con curvas agregadas de oferta y demanda del mercado diario “intra-day“ incluyendo ofertas para mercado electrico contenidas en los archivos  “curva_pibc_uof”
+
+# Extraccion de las indisponibilidades del u ltimo mes. “indisp2024_0X”
 
 ## Overview
 
