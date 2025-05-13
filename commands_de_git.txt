@@ -1,0 +1,53 @@
+Esta guía contiene los comandos de Git más comunes que se usarán en el proyecto. Los comandos cubren funciones típicas como crear una rama local, hacer push a una rama específica, usar git fetch y git pull, hacer merge de ramas, y más.
+________________________________________
+1. Crear una rama local
+Para crear una nueva rama local, usa el siguiente comando:
+git checkout -b <nombre-de-rama>
+Este comando crea una nueva rama y cambia a ella. Reemplaza <nombre-de-rama> con el nombre que desees para la nueva rama.
+________________________________________
+2. Especificar a qué rama hacer push
+Para enviar los cambios a una rama específica en el repositorio remoto, usa:
+git push origin <nombre-de-rama>
+Reemplaza <nombre-de-rama> con el nombre de la rama deseada.
+________________________________________
+3. Usar git fetch y git pull
+•	git fetch: Trae los últimos cambios del repositorio remoto, pero no modifica tu rama local.
+git fetch origin
+•	git pull: Trae los últimos cambios del repositorio remoto y trata de combinarlos con tu rama local.
+git pull origin <nombre-de-rama>
+________________________________________
+4. Combinar ramas locales (merge)
+Para combinar una rama local dentro de otra:
+1.	Cambia a la rama de destino:
+git checkout <nombre-de-rama>
+2.	Realiza el merge de la otra rama:
+git merge <rama-a-combinar>
+________________________________________
+5. Preparar cambios (staging)
+Para agregar cambios al área de preparación (staging):
+•	Para un archivo específico:
+git add <nombre-de-archivo>
+•	Para todos los cambios:
+git add .
+________________________________________
+6. Ver ramas existentes
+•	Para ver las ramas locales:
+git branch
+•	Para ver ramas locales y remotas:
+git branch -a
+________________________________________
+7. Guardar cambios temporalmente (stash)
+•	Para guardar cambios sin hacer commit:
+git stash
+•	Para recuperar los cambios guardados:
+git stash pop
+________________________________________
+8. Eliminar una rama
+•	Para eliminar una rama local:
+git branch -d <nombre-de-rama>
+•	Para eliminar una rama remota:
+¡NUNCA ELIMINES REMOTE DEV NI REMOTE MAIN!
+git push origin --delete <nombre-de-rama>
+________________________________________
+🔁 Recomendación importante
+¡Siempre usa git pull y git fetch antes de trabajar en una rama, para asegurarte de tener los últimos cambios!
