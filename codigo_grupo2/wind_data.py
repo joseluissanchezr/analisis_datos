@@ -1,6 +1,6 @@
 mport requests
 from datetime import datetime, timedelta
-
+#AQUI HICE UN CAMBIO DE PRUEBAAAAAAAAAAAAAAAAAAAAAAAAAA-MARITE
 # Configura los datos
 TOKEN = "2ae5923f7cafb2edb1eedd917ebb30d5"  # sacamos el token dado por el profe o el que nos envien por email
 headers = {
