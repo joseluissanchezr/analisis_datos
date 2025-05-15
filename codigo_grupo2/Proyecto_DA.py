@@ -4,8 +4,9 @@
 # - Previsión de producción eólica (ID 541)
 # - Generación total real eólica (ID 551)
 
+
 import requests
-import pandas as pd
+import pandas as pd 
 from datetime import datetime, timedelta
 
 # --- CONFIGURACIÓN DEL TOKEN PERSONAL ---
@@ -41,6 +42,35 @@ def get_esios_data(indicator_id, start_date, end_date):
         print(f"Error {response.status_code}: {response.text}")
         return pd.DataFrame(columns=['datetime', f'indicator_{indicator_id}'])
 
+#
+
+def merge_and_clean_data(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
+    df = pd.merge(df1, df2, on='datetime', how='outer').sort_values('datetime')
+
+    # Índice datetime para interpolación temporal
+    df.set_index('datetime', inplace=True)
+    
+    # Interpolación para rellenar valores faltantes basados en tiempo
+    df.interpolate(method='time', inplace=True)
+    
+    # Eliminar filas que sigan con valores NaN (por ejemplo, al inicio o fin)
+    df.dropna(inplace=True)
+
+    # Eliminación de outliers usando método IQR para cada columna numérica
+    for col in df.select_dtypes(include=['float', 'int']).columns:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        df.loc[~df[col].between(lower_bound, upper_bound), col] = pd.NA
+
+    # Segunda interpolación para rellenar los valores NaN generados por outliers
+    df.interpolate(method='time', inplace=True)
+    
+    df.reset_index(inplace=True)
+    return df
+
 # --- DESCARGA DE DATOS ---
 df_forecast = get_esios_data(541, start, end)   # Previsión de eólica
 print("Previsión descargada:")
@@ -51,7 +81,7 @@ print("Producción real descargada:")
 print(df_real.head())
 
 # --- MERGE DE AMBAS SERIES ---
-df = pd.merge(df_forecast, df_real, on='datetime', how='outer').sort_values('datetime')
+df = merge_and_clean_data(df_forecast, df_real)
 
 # --- EXPORTACIÓN OPCIONAL A CSV ---
 df.to_csv("datos_eolica_541_551.csv", index=False)
