@@ -102,20 +102,20 @@ def get_daily_datos_range(start_day: str,
 if __name__ == "__main__":
 
     # Todas las estaciones, para el día deseado
-    df_all = get_daily_datos("2025-04-28")
-    df_all.to_csv("daily_wind_all_stations_date.csv", index=False)
+   # df_all = get_daily_datos("2025-04-28")
+    #df_all.to_csv("daily_wind_all_stations_date.csv", index=False)
 
     #Estacion deseada, para el día deseado
-    df_Station = get_daily_datos("2025-04-28", station_id="9073X")
-    print(df_Station)
-    df_Station.to_csv("daily_wind_stationdesired_date.csv", index=False)
+    #df_Station = get_daily_datos("2025-04-28", station_id="9073X")
+    #print(df_Station)
+    #df_Station.to_csv("daily_wind_stationdesired_date.csv", index=False)
 
     # Todas las estaciones, para el rango de fechas deseado
-    df_all_range = get_daily_datos_range("2025-04-25", "2025-04-30")
-    print(df_all_range)
-    df_all_range.to_csv("daily_wind_all_station_range.csv", index=False)
+    #df_all_range = get_daily_datos_range("2025-04-25", "2025-04-30")
+    #print(df_all_range)
+    #df_all_range.to_csv("daily_wind_all_station_range.csv", index=False)
 
     # Estacion deseada, para el rango de fechas deseado
-    df_Station = get_daily_datos_range("2025-04-25", "2025-04-30", station_id="9073X")
+    df_Station = get_daily_datos_range("2025-03-25", "2025-04-13", station_id="9073X")
     print(df_Station)
     df_Station.to_csv("daily_wind_stationdesired_range.csv", index=False)
