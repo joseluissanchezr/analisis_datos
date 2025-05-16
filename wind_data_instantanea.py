@@ -22,7 +22,10 @@ def extraer_wind_data(obs_list):
         speed_raw = obs.get("vv")
         if speed_raw is None:
             continue
-
+#vv = velocidad del viento (m/s)
+#Vmax = velocidad maxima del viento (m/s)
+#dv = direccion del viento (grados)
+#dmax = direccion maxima del viento (grados)
         records.append({
             "station_id":      obs.get("idema"),                 
             "timestamp":       pd.to_datetime(obs.get("fint")),
