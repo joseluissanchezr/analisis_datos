@@ -106,6 +106,19 @@ if __name__ == "__main__":
     #df_all.to_csv("daily_wind_all_stations_date.csv", index=False)
 
     #Estacion deseada, para el día deseado
+<<<<<<< HEAD
+    #df_Station = get_daily_datos("2025-04-28", station_id="9073X")
+    #print(df_Station)
+    #df_Station.to_csv("daily_wind_stationdesired_date.csv", index=False)
+
+    # Todas las estaciones, para el rango de fechas deseado
+    #df_all_range = get_daily_datos_range("2025-04-25", "2025-04-30")
+    #print(df_all_range)
+    #df_all_range.to_csv("daily_wind_all_station_range.csv", index=False)
+
+    # Estacion deseada, para el rango de fechas deseado
+    df_Station = get_daily_datos_range("2025-03-25", "2025-04-13", station_id="9073X")
+=======
   #  df_Station = get_daily_datos("2025-04-28", station_id="9073X")
    # print(df_Station)
    # df_Station.to_csv("daily_wind_stationdesired_date.csv", index=False)
@@ -117,5 +130,6 @@ if __name__ == "__main__":
 
     # Estacion deseada, para el rango de fechas deseado
     df_Station = get_daily_datos_range("2024-04-25", "2024-08-25", station_id="9073X")
+>>>>>>> 81cbd9ff3700f9afbdacae81173a79fadee44c59
     print(df_Station)
     df_Station.to_csv("daily_wind_stationdesired_range.csv", index=False)
