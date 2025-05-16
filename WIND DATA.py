@@ -7,14 +7,17 @@ import unicodedata
 import csv
 from datetime import datetime
 
+# Configuración inicial de la API AEMET
 API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqaW5lbGEuZ29uemFsZXpAYWx1bW5vcy51cG0uZXMiLCJqdGkiOiJmZjU4ZTJlNi1iMjVhLTQ1ZTAtYTUzYi0xZDBmNDY3OGJhZDgiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTc0NjgyMjkxNywidXNlcklkIjoiZmY1OGUyZTYtYjI1YS00NWUwLWE1M2ItMWQwZjQ2NzhiYWQ4Iiwicm9sZSI6IiJ9.Cy_fCJ8NZSgQHadQEOoH-feniDOlu6CgaJ1ZBFX4y5c"
 BASE_URL = "https://opendata.aemet.es/opendata/api"
 
+# Función para normalizar nombres de archivo
 def slugify(text: str) -> str:
     text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
     text = re.sub(r'[^0-9A-Za-z]+', '_', text)
     return text.strip('_').lower()
 
+# Sistema de menús interactivos
 def seleccionar_opcion(opciones, mensaje):
     print(f"\n{mensaje}")
     for i, opcion in enumerate(opciones, 1):
@@ -22,6 +25,7 @@ def seleccionar_opcion(opciones, mensaje):
     idx = int(input("Seleccione una opción: ").strip())
     return opciones[idx - 1]
 
+# Obtener listado completo de estaciones
 def obtener_estaciones():
     path = "/valores/climatologicos/inventarioestaciones/todasestaciones"
     resp = requests.get(BASE_URL + path, params={"api_key": API_KEY})
@@ -29,12 +33,15 @@ def obtener_estaciones():
     datos_url = resp.json().get("datos")
     return requests.get(datos_url).json()
 
+# Filtrar estaciones por provincia seleccionada
 def filtrar_provincia(estaciones, provincia):
     return [e for e in estaciones if e.get("provincia") == provincia]
 
+# Captura de parámetros según tipo de consulta
 def pedir_parametros(tipo):
     params = {}
     if tipo == "Climatologías diarias":
+        # Validación de formato de fechas
         while True:
             start = input("Fecha inicio (YYYY-MM-DD): ").strip()
             end = input("Fecha fin    (YYYY-MM-DD): ").strip()
@@ -46,6 +53,7 @@ def pedir_parametros(tipo):
             except ValueError:
                 print("Formato de fecha inválido. Use YYYY-MM-DD")
     elif tipo == "Climatologías mensuales/anuales":
+        # Rango válido de años
         current_year = datetime.now().year
         while True:
             year = input(f"Año (1900-{current_year}): ").strip()
@@ -55,6 +63,7 @@ def pedir_parametros(tipo):
             print(f"Año inválido. Debe ser entre 1900 y {current_year}")
     return params
 
+# Constructor de URLs para diferentes endpoints
 def obtener_url_datos(tipo, estacion_id, **kw):
     if tipo == "Climatologías diarias":
         ini = f"{kw['start']}T00:00:00UTC"
@@ -78,13 +87,16 @@ def obtener_url_datos(tipo, estacion_id, **kw):
         raise RuntimeError(f"AEMET error {j.get('estado')}: {j.get('descripcion')}")
     return j["datos"]
 
+# Descargar datos JSON desde la URL proporcionada
 def descargar_json(datos_url):
     resp = requests.get(datos_url)
     resp.raise_for_status()
     return resp.json()
 
+# Procesamiento específico para cada tipo de datos
 def procesar_registros(tipo, records):
     if tipo == "Extremos registrados":
+        # Estructura especial para ráfagas de viento
         n_registros = len(records["rachMax"])
         return pd.DataFrame({
             "estacion": [records["indicativo"]] * n_registros,
@@ -105,14 +117,29 @@ def procesar_registros(tipo, records):
             ]
         })
     
-    elif tipo == "Climatologías mensuales/anuales":
+    elif tipo == "Valores normales":
+        # Campos dinámicos para normales climáticos
         rows = []
         for registro in records:
             fila = {
                 "estacion": registro.get("indicativo"),
                 "fecha": registro.get("fecha")
             }
-            # Agregar todos los campos dinámicamente
+            # Agregar TODOS los campos dinámicamente
+            for clave, valor in registro.items():
+                if clave not in ["indicativo", "fecha"]:
+                    fila[clave] = valor
+            rows.append(fila)
+        return pd.DataFrame(rows)
+    
+    elif tipo == "Climatologías mensuales/anuales":
+        # Estructura genérica para datos mensuales
+        rows = []
+        for registro in records:
+            fila = {
+                "estacion": registro.get("indicativo"),
+                "fecha": registro.get("fecha")
+            }
             for clave, valor in registro.items():
                 if clave not in ["indicativo", "fecha"]:
                     fila[clave] = valor
@@ -120,6 +147,7 @@ def procesar_registros(tipo, records):
         return pd.DataFrame(rows)
     
     else:
+        # Procesamiento para datos diarios
         rows = []
         for r in records:
             base = {"estacion": r.get("indicativo"), "fecha": r.get("fecha")}
@@ -136,6 +164,7 @@ def procesar_registros(tipo, records):
             rows.append(base)
         return pd.DataFrame(rows)
 
+# Flujo principal de la aplicación
 def main():
     print("\n=== DESCARGA AEMET INTERACTIVA ===")
     tipos = [
@@ -161,6 +190,7 @@ def main():
     print("📥 Descargando datos...")
     records = descargar_json(url_datos)
 
+    # Generación del archivo CSV final
     df = procesar_registros(tipo, records)
     output_dir = os.path.expanduser(r"~\Documents\AEMET_output")
     os.makedirs(output_dir, exist_ok=True)
