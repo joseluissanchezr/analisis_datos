@@ -5,7 +5,8 @@ import os
 import re
 import unicodedata
 import csv
-#clave API
+from datetime import datetime
+
 API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqaW5lbGEuZ29uemFsZXpAYWx1bW5vcy51cG0uZXMiLCJqdGkiOiJmZjU4ZTJlNi1iMjVhLTQ1ZTAtYTUzYi0xZDBmNDY3OGJhZDgiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTc0NjgyMjkxNywidXNlcklkIjoiZmY1OGUyZTYtYjI1YS00NWUwLWE1M2ItMWQwZjQ2NzhiYWQ4Iiwicm9sZSI6IiJ9.Cy_fCJ8NZSgQHadQEOoH-feniDOlu6CgaJ1ZBFX4y5c"
 BASE_URL = "https://opendata.aemet.es/opendata/api"
 
@@ -57,9 +58,9 @@ def obtener_url_datos(tipo, estacion_id, **kw):
     elif tipo == "Valores normales":
         path = f"/valores/climatologicos/normales/estacion/{estacion_id}"
     elif tipo == "Extremos registrados":
-        var = "velmedia"  # Variable fija (puedes implementar selección)
-        # CORRECCIÓN: Orden correcto variable/estación
-        path = f"/valores/climatologicos/extremos/variable/{var}/estacion/{estacion_id}"
+        # CORRECCIÓN PARA OPCIÓN 4
+        parametro = "V"  # Código fijo para viento
+        path = f"/valores/climatologicos/valoresextremos/parametro/{parametro}/estacion/{estacion_id}/"
     else:
         raise ValueError("Tipo no soportado")
 
@@ -78,23 +79,41 @@ def descargar_json(datos_url):
 
 
 def procesar_registros(tipo, records):
-    rows = []
-    for r in records:
-        base = {"estacion": r.get("indicativo"), "fecha": r.get("fecha")}
-        if tipo == "Climatologías diarias":
-            if r.get("velmedia") is None: continue
-            base.update({
-                "velmedia_m_s": float(str(r["velmedia"]).replace(",", ".")),
-                "racha_m_s": float(str(r.get("racha")).replace(",", ".")) if r.get("racha") else None,
-                "dir_racha": float(str(r.get("dir")).replace(",", ".")) if r.get("dir") else None,
-            })
-        elif tipo == "Extremos registrados":
-            base.update({"valor": r.get("valor"), "unidad": r.get("unidad")})
-        else:
-            rows.append({**base, **r})
-            continue
-        rows.append(base)
-    return pd.DataFrame(rows)
+    if tipo == "Extremos registrados":
+        # PROCESAMIENTO ESPECÍFICO PARA OPCIÓN 4
+        n_registros = len(records["rachMax"])
+        return pd.DataFrame({
+            "estacion": [records["indicativo"]] * n_registros,
+            "ubicacion": [records["ubicacion"]] * n_registros,
+            "mes": [records["mes"]] * n_registros,
+            "rachMax_kmh": list(map(int, records["rachMax"])),
+            "dirRachMax_grados": list(map(int, records["dirRachMax"])),
+            "hora": records["hora"],
+            "dia": list(map(int, records["dia"])),
+            "anio": list(map(int, records["anio"])),
+            "fecha_ocurrencia": [
+                f"{a}-{m}-{str(d).zfill(2)}" 
+                for a, m, d in zip(
+                    records["anio"], 
+                    [records["mes"]] * n_registros, 
+                    records["dia"]
+                )
+            ]
+        })
+    else:
+        # PROCESAMIENTO ORIGINAL PARA OPCIONES 1-3
+        rows = []
+        for r in records:
+            base = {"estacion": r.get("indicativo"), "fecha": r.get("fecha")}
+            if tipo == "Climatologías diarias":
+                if r.get("velmedia") is None: continue
+                base.update({
+                    "velmedia_m_s": float(str(r["velmedia"]).replace(",", ".")),
+                    "racha_m_s": float(str(r.get("racha")).replace(",", ".")) if r.get("racha") else None,
+                    "dir_racha": float(str(r.get("dir")).replace(",", ".")) if r.get("dir") else None,
+                })
+            rows.append(base)
+        return pd.DataFrame(rows)
 
 
 def main():
