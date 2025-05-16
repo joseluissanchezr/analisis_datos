@@ -44,9 +44,12 @@ def descargar_daily_datos(datos_url):
 def procesar_daily_datos(records):
     
     #cada registro es un diccionario con los siguientes campos:
-    # - 'fecha'      : date string
-    # - 'indicativo' : station code
-    #- 'velmedia'   : mean wind speed (m/s)
+    
+    # indicativo : ID de la estación
+    # velmedia   : velocidad media del viento (m/s)
+    # racha    : racha máxima del viento (m/s)
+    # dir        : dirección del viento (grados)
+
     
     rows = []
     for r in records:
