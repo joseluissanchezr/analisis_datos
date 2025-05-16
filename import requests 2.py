@@ -56,10 +56,10 @@ def pedir_parametros(tipo):
 
 
 def obtener_url_datos(tipo, estacion_id, **kw):
-    """
-    Construye el endpoint correcto según el tipo y los parámetros.
-    Devuelve la URL de descarga en kw['datos'].
-    """
+    
+    #Construye el endpoint correcto según el tipo y los parámetros.
+    #Devuelve la URL de descarga en kw['datos'].
+    
     if tipo == "Climatologías diarias":
         ini = f"{kw['start']}T00:00:00UTC"
         fin = f"{kw['end']}T23:59:59UTC"
