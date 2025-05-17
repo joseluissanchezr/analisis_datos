@@ -23,7 +23,7 @@ end = datetime.utcnow()
 start = end - timedelta(days=2)  # últimos 2 días
 
 # --- FUNCIÓN GENERAL PARA CONSULTAR INDICADORES POR HORA ---
-def get_esios_data(indicator_id, start_date, end_date):
+def get_esios_data(indicator_id, start_date, end_date, column_name):
     url = f'https://api.esios.ree.es/indicators/{indicator_id}'
     params = {
         'start_date': start_date.isoformat(),
@@ -36,11 +36,11 @@ def get_esios_data(indicator_id, start_date, end_date):
         values = data['indicator']['values']
         df = pd.DataFrame(values)
         df['datetime'] = pd.to_datetime(df['datetime'])
-        df = df[['datetime', 'value']].rename(columns={'value': f'indicator_{indicator_id}'})
+        df = df[['datetime', 'value']].rename(columns={'value': column_name})
         return df
     else:
         print(f"Error {response.status_code}: {response.text}")
-        return pd.DataFrame(columns=['datetime', f'indicator_{indicator_id}'])
+        return pd.DataFrame(columns=['datetime',column_name])
 
 #
 
@@ -72,11 +72,11 @@ def merge_and_clean_data(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
     return df
 
 # --- DESCARGA DE DATOS ---
-df_forecast = get_esios_data(541, start, end)   # Previsión de eólica
+df_forecast = get_esios_data(541, start, end, "Prevision Eolica")   # Previsión de eólica
 print("Previsión descargada:")
 print(df_forecast.head())
 
-df_real = get_esios_data(551, start, end)       # Producción real eólica
+df_real = get_esios_data(551, start, end, "Generacion Eolica Real")       # Producción real eólica
 print("Producción real descargada:")
 print(df_real.head())
 
