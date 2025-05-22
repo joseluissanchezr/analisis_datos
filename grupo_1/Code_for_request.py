@@ -111,6 +111,7 @@ def get_gen(geo_id, start_date, end_date):
 # Call API
 df = get_gen(geo_id, start, end)
 
+
 if df.empty:
     print("❗ No data found. Please verify your input.")
 else:
@@ -120,6 +121,29 @@ else:
     end_str   = end.strftime("%Y%m%d")
 
     # Export to Excel
-    archivo_excel = f"generacion_{region_name.replace(' ', '_').lower()}_{start_str}_{end_str}.xlsx"
     df.to_excel(archivo_excel, index=False)
     print(f"✅ Data saved to: {archivo_excel}")
+
+    
+    # Remove duplicates for each (datetime, technology) pair
+    df_unique = df.drop_duplicates(subset=["datetime", "technology"])
+
+    # Pivot: rows = datetime, columns = technology, values = generation
+    df_wide = df_unique.pivot(index="datetime", columns="technology", values="value")
+
+    # Sort columns alphabetically
+    df_wide = df_wide.sort_index(axis=1)
+
+    # Sort rows by datetime
+    df_wide = df_wide.sort_index()
+
+    # ✅ Make 'datetime' a regular column instead of index
+    df_wide = df_wide.reset_index()
+
+    # Preview the resulting table
+    print(df_wide.head())
+
+    # Save to Excel
+    archivo_excel = f"generacion_{region_name.replace(' ', '_').lower()}_{start_str}_{end_str}.xlsx"
+    df_wide.to_excel(output_file, index=False)
+    print(f"✅ Data saved to: {output_file}")
