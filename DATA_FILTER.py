@@ -16,8 +16,8 @@ if not os.path.exists(ruta_csv) or not os.path.isfile(ruta_csv):
 print("\nSelecciona el tipo de datos del CSV:")
 print("  1. Climatología diaria")
 print("  2. Climatología mensual/anual")
-print("  3. Extremos Registrados")
-print("  4. Valores Normales")
+print("  3. Valores Normales")
+print("  4. Extremos Registrados")
 tipo = input("Número de opción: ").strip()
 
 try:
