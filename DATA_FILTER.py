@@ -66,6 +66,7 @@ match tipo_int:
         columnas_viento = ["fecha", "estacion", "w_racha", "w_med", "w_rec"]
         df_viento = df[columnas_viento].copy()
         df_viento["fecha"] = pd.to_datetime(df_viento["fecha"].astype(str) + "-01", format="%Y-%m-%d", errors="coerce")
+        df_viento["mes_anio"] = df_viento["fecha"].dt.strftime("%Y-%m")
 
   # 🔧 Limpiar valores antes de validar
         for col in ["w_racha", "w_med", "w_rec"]:
@@ -82,7 +83,14 @@ match tipo_int:
                 return False
 
         df_limpio = df_viento[df_viento.apply(es_valido_mensual, axis=1)]
-        df_limpio = df_limpio.sort_values(by="fecha")
+        # Ordenamos por 'mes_anio' (string tipo 'YYYY-MM') para ordenar cronológicamente
+        df_limpio = df_limpio.sort_values(by="mes_anio")
+
+        # Reemplazamos la columna 'fecha' por 'mes_anio' para guardar solo mes y año
+        df_limpio["fecha"] = df_limpio["mes_anio"]
+
+        # Opcional: eliminar columna auxiliar para no guardar dos columnas similares
+        df_limpio = df_limpio.drop(columns=["mes_anio"])
     case 3:  # Extremos registrados
         print("🧹 Procesando extremos registrados (viento)...")
 
