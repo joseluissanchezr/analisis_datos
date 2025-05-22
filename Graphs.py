@@ -11,14 +11,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# 1. Résoudre le ~ vers le chemin absolu
 folder = os.path.expanduser(r"~\Documents\AEMET_output")
 
-# 2. Lister tous les CSV du dossier avec _limpio
+# 2. All CSV file with _limpio
 pattern = os.path.join(folder, "*_limpio.csv")
 csv_files = glob.glob(pattern)
 
-# 3. Affichage pour vérification
+
 if not csv_files:
     print("❌ No file *_limpio.csv find.")
 else:
@@ -28,7 +27,11 @@ else:
 
 
 def custom_autopct(pct, values):
-    # Si la valeur est inférieure à un seuil, on met le pourcentage en dehors
+    """
+    This function is for the creation of the pie chart
+    """
+    
+    
     if pct<1: 
         return ''
     elif pct>1 and pct <1.5:  # Seuil de 5%
@@ -205,7 +208,7 @@ def graph_daily(df):
     plt.savefig(save_path, bbox_inches='tight')
     plt.show()
 
-# 3. Boucler pour lire chaque CSV
+
 for file_path in csv_files:
     filename = os.path.splitext(os.path.basename(file_path))[0]
     df = pd.read_csv(file_path, sep=';', decimal=',', quoting=2)
@@ -215,6 +218,6 @@ for file_path in csv_files:
     elif filename == "climatologias_diarias_viento_limpio":
         graph_daily(df)
     else:
-        print("Fichier non reconnu :", filename)
+        print("Non recognized file :", filename)
 
 
