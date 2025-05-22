@@ -86,6 +86,7 @@ def get_gen(geo_id, start_date, end_date):
     }
 
     response = requests.get(url, headers=headers, params=params)
+    print(response.url)
     
     if response.status_code != 200:
         print(f"⛔ Error {response.status_code}")
