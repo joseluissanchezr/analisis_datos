@@ -9,6 +9,7 @@ import os
 import glob
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 
 # 1. Résoudre le ~ vers le chemin absolu
@@ -205,6 +206,88 @@ def graph_daily(df):
     plt.savefig(save_path, bbox_inches='tight')
     plt.show()
 
+
+def staggered_xticks(ax, dates, min_spacing=25):
+    """
+    Custom function for graph_extreme to stagger x-tick labels vertically if they are too close.
+    `min_spacing` is in pixels.
+    """
+    ax.set_xticks(dates)
+    ax.set_xticklabels([d.strftime('%Y-%m-%d') for d in dates], rotation=45, ha='right')
+
+    fig = plt.gcf()
+    fig.canvas.draw()  # Needed to get correct positions
+
+    tick_labels = ax.get_xticklabels()
+    positions = [label.get_window_extent().x0 for label in tick_labels]
+
+    for i in range(1, len(positions)):
+        if abs(positions[i] - positions[i - 1]) < min_spacing:
+            # Move every second one down
+            tick_labels[i].set_y(-0.15)  # Lower it (tweak as needed)
+
+    fig.canvas.draw()
+
+
+def graph_extreme(df):
+
+    """
+
+    Parameters
+    ----------
+    df : file in csv
+
+    Returns 
+    ------- 
+    Error plot showing the wind speed max
+    bar graph showing the wind maximum speed
+
+    """
+
+
+    df['fecha_dt'] = pd.to_datetime(df['fecha_ocurrencia'], format='%Y-%m-%d')
+    date_1 = df['fecha_dt'].dt.date.iloc[1]
+    date_2 = df['fecha_dt'].dt.date.iloc[-1]
+    station = df["estacion"].iloc[1]
+    yerr = df["dirRachMax_grados"] / 24
+
+    fig, ax = plt.subplots(figsize=(18, 6))
+    ax.set_title(f"Wind speed of {date_1} to {date_2} at station {station}")
+    ax.errorbar(df['fecha_dt'], df["rachMax_kmh"], yerr=yerr, fmt='o-', label="max wind run", uplims=True)
+
+    # Staggered x-ticks to avoid overlap
+    staggered_xticks(ax, df["fecha_dt"])
+
+    ax.legend()
+    plt.tight_layout()
+    save_path = os.path.join(folder, f"max wind_{station}.svg")
+    plt.savefig(save_path, bbox_inches='tight')
+    plt.show()
+
+    #Bar plot
+
+    plt.figure(figsize=(10, 5))
+    plt.title(f"Maximum wind speed of {date_1} to {date_2} at station {station}")
+    
+    bars = plt.bar(df['fecha_dt'], df["rachMax_kmh"], width=50)
+    
+    plt.xticks(df["fecha_dt"], rotation=45, ha='right')
+    
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(
+            bar.get_x() + bar.get_width(),  # position horizontale (centre de la barre)
+            height,                              # position verticale (au sommet)
+            f"{height:.1f}",                     # texte (formaté à 1 décimale)
+            ha='center',                        # alignement horizontal
+            va='bottom'                         # alignement vertical
+        )
+    plt.tight_layout()
+    save_path = os.path.join(folder, f"max_wind_{station}.svg")
+    plt.savefig(save_path, bbox_inches='tight')
+    plt.show()
+
+
 # 3. Boucler pour lire chaque CSV
 for file_path in csv_files:
     filename = os.path.splitext(os.path.basename(file_path))[0]
@@ -214,7 +297,12 @@ for file_path in csv_files:
         graph_annuals(df)
     elif filename == "climatologias_diarias_viento_limpio":
         graph_daily(df)
+    elif filename == "extremos_registrados_viento_limpio":
+        graph_extreme(df)
     else:
-        print("Fichier non reconnu :", filename)
+        print("Non-recognized file :", filename)
+
+
+
 
 
