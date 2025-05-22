@@ -28,7 +28,7 @@ else:
 
 def custom_autopct(pct, values):
     """
-    This function is for the creation of the pie chart
+    This is for the creation of the pie chart
     """
     
     
