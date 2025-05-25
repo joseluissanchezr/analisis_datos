@@ -14,3 +14,27 @@ HEADERS = {
     'x-api-key'   : TOKEN,
     'User-Agent'  : 'esios-api-client'
 }
+
+start = datetime.strptime((input("Introduce una fecha Inicio en formato dd/mm/yyyy: ")), "%d/%m/%Y")
+end =  datetime.strptime((input("Introduce una fecha Fin en formato dd/mm/yyyy: ")), "%d/%m/%Y")
+
+
+# FUNCIÓN CODIGO ORIGINAL FECHAS
+def get_esios_data(indicator_id, start_date, end_date):
+    url = f'https://api.esios.ree.es/indicators/{indicator_id}'
+    params = {
+        'start_date': start_date.isoformat(),
+        'end_date': end_date.isoformat(),
+        'time_trunc': 'hour'
+    }
+    response = requests.get(url, headers=HEADERS, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        values = data['indicator']['values']
+        df = pd.DataFrame(values)
+        df['datetime'] = pd.to_datetime(df['datetime'])
+        df = df[['datetime', 'value']].rename(columns={'value': f'indicator_{indicator_id}'})
+        return df
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+        return pd.DataFrame(columns=['datetime', f'indicator_{indicator_id}'])
