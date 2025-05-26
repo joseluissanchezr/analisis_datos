@@ -38,3 +38,14 @@ def get_esios_data(indicator_id, start_date, end_date):
     else:
         print(f"Error {response.status_code}: {response.text}")
         return pd.DataFrame(columns=['datetime', f'indicator_{indicator_id}'])
+
+# Descarga y combinación de datos
+
+df_forecast = get_esios_data(541, start, end)   # Previsión
+print("Previsión descargada:\n", df_forecast.head())
+
+df_real     = get_esios_data(551, start, end)   # Producción real
+print("Producción real descargada:\n", df_real.head())
+
+df = (pd.merge(df_forecast, df_real, on='datetime', how='outer')
+        .sort_values('datetime'))

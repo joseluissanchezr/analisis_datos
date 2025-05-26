@@ -2,6 +2,7 @@
 
 Este repositorio contiene un proyecto desarrollado dentro del curso de Data Analysis, enfocado en la extracción, procesamiento y análisis de datos de viento marítimo proporcionados por la API pública del NOAA - National Data Buoy Center. El análisis se centra en estaciones ubicadas en proximidad a las costas españolas.
 
+
 ## 📌 Objetivos del proyecto
 
 - Automatizar la descarga de observaciones de viento desde NOAA
