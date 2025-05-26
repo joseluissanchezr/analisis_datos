@@ -18,13 +18,20 @@ params = {
     'limit': 1000
 }
 
+# Hacer la petición
 response = requests.get(url, headers=headers, params=params)
-print(response.status_code)
-print(response.json())
 
-data = response.json()
+# Validar la respuesta
+if response.status_code == 200:
+    data = response.json()
 
-df = pd.DataFrame(data['results'])
+    if 'results' in data:
+        df = pd.DataFrame(data['results'])
+        df.to_csv('data/stations_espana.csv', index=False)
 
-df
-df.to_csv('data/stations_espana.csv', index=False)
+        print("✅ Datos descargados correctamente.")
+        print("💾 Archivo guardado en: data/stations_espana.csv")
+    else:
+        print("⚠️ No se encontraron resultados en la respuesta.")
+else:
+    print(f"❌ Error {response.status_code}: No se pudo acceder a la API.")
