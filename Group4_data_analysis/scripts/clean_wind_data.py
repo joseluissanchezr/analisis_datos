@@ -48,7 +48,7 @@ if 'date' in df_clean.columns:
     try:
         df_clean['date'] = pd.to_datetime(df_clean['date'], errors='coerce')
         df_clean = df_clean.dropna(subset=['date'])
-        print("📆 Fechas convertidas correctamente.")
+        print("📆 Fechas convertidas correctamente")
     except Exception as e:
         print(f"⚠️ Error al convertir fechas: {e}")
         sys.exit(1)
