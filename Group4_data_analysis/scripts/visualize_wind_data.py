@@ -46,3 +46,40 @@ plt.ylabel("Velocidad del viento (m/s)")
 plt.tight_layout()
 plt.savefig("Group4_data_analysis/data/plot_boxplot_mensual.png")
 print("✅ Boxplot mensual guardado.")
+
+# 🎻 4. Violin plot mensual: distribución y densidad por mes
+plt.figure()
+sns.violinplot(x="month", y="value", data=df, palette="muted")
+plt.title("Distribución mensual del viento (Violin Plot)")
+plt.xlabel("Mes")
+plt.ylabel("Velocidad del viento (m/s)")
+plt.tight_layout()
+plt.savefig("Group4_data_analysis/data/plot_violin_mensual.png")
+print("✅ Violin plot mensual guardado.")
+
+# 📆 5. Evolución mensual mejorada (agrupado por año y mes)
+df["year_month"] = df["date"].dt.to_period("M").astype(str)
+monthly_avg = df.groupby("year_month")["value"].mean().reset_index()
+
+plt.figure(figsize=(12, 6))
+sns.lineplot(
+    x="year_month",
+    y="value",
+    data=monthly_avg,
+    marker="o",
+    linewidth=2.5,
+    color="royalblue"
+)
+xticks_to_show = monthly_avg["year_month"].iloc[::6]
+plt.xticks(
+    ticks=range(0, len(monthly_avg), 6),
+    labels=xticks_to_show,
+    rotation=45
+)
+plt.title("📈 Velocidad media mensual del viento (2015–2023)", fontsize=14)
+plt.xlabel("Año-Mes", fontsize=12)
+plt.ylabel("Velocidad del viento (m/s)", fontsize=12)
+plt.grid(True, linestyle="--", alpha=0.4)
+plt.tight_layout()
+plt.savefig("Group4_data_analysis/data/plot_media_mensual_evolucion_mejorado.png")
+print("✅ Media mensual del viento (mejorada) guardada.")
