@@ -34,7 +34,7 @@ def fetch_monthly_wind_data():
             return
         df = pd.DataFrame(results)
         os.makedirs("data", exist_ok=True)
-        df.to_csv("data/noaa_wind_miami_2015_2023.csv", index=False)
+        df.to_csv("Group4_data_analysis/data/noaa_wind_miami_2015_2023.csv", index=False)
         print("✅ Datos guardados en data/noaa_wind_miami_2015_2023.csv")
     else:
         print("❌ Error al consultar datos NOAA:")
