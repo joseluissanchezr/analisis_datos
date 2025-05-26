@@ -1,40 +1,69 @@
-# scripts/clean_wind_data.py
-
 import pandas as pd
 import os
+import sys
 
-# Cargar los datos
-file_path = "Group4_data_analysis/data/noaa_wind_miami_2015_2023.csv"
-df = pd.read_csv(file_path)
+# ==== CONFIGURACIÓN ====
+INPUT_PATH = "Group4_data_analysis/data/noaa_wind_miami_2015_2023.csv"
+OUTPUT_PATH = "Group4_data_analysis/data/noaa_wind_miami_cleaned.csv"
 
-# Imprimir información inicial
-print("📊 Dimensiones originales:", df.shape)
-print("🧼 Limpiando datos nulos...")
+# ==== FUNCIONES AUXILIARES ====
 
-# Eliminar filas con valores nulos
+def log(msg, symbol="🔹"):
+    print(f"{symbol} {msg}")
+
+def check_columns(df, required_cols):
+    missing = [col for col in required_cols if col not in df.columns]
+    if missing:
+        log(f"❌ Columnas faltantes: {missing}", "⚠️")
+        sys.exit(1)
+
+def clean_column_names(df):
+    df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
+    return df
+
+# ==== INICIO ====
+
+log("📥 Cargando archivo CSV...")
+try:
+    df = pd.read_csv(INPUT_PATH)
+except Exception as e:
+    log(f"❌ Error al cargar el archivo: {e}", "⚠️")
+    sys.exit(1)
+
+log(f"✅ Archivo cargado: {INPUT_PATH}")
+log(f"📊 Dimensiones originales: {df.shape}")
+
+# Limpieza de nombres de columnas
+df = clean_column_names(df)
+
+# Verificación de columnas esenciales
+check_columns(df, ['value', 'date'])
+
+# Eliminar filas nulas
+log("🧼 Eliminando filas con valores nulos...")
 df_clean = df.dropna()
-print("✅ Después de eliminar nulos:", df_clean.shape)
+log(f"✅ Dimensiones tras eliminar nulos: {df_clean.shape}")
 
-# Filtrar outliers usando el método IQR
-print("📦 Filtrando outliers con método IQR...")
-
+# Filtrar outliers con IQR
+log("📦 Aplicando método IQR para detectar outliers...")
 Q1 = df_clean['value'].quantile(0.25)
 Q3 = df_clean['value'].quantile(0.75)
 IQR = Q3 - Q1
-lower_bound = Q1 - 1.5 * IQR
-upper_bound = Q3 + 1.5 * IQR
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+df_clean = df_clean[(df_clean['value'] >= lower) & (df_clean['value'] <= upper)]
+log(f"✅ Dimensiones tras eliminar outliers: {df_clean.shape}")
 
-df_clean = df_clean[(df_clean['value'] >= lower_bound) & (df_clean['value'] <= upper_bound)]
+# Convertir fechas
+log("🗓️ Convirtiendo columna 'date' a formato datetime...")
+try:
+    df_clean['date'] = pd.to_datetime(df_clean['date'], errors='coerce')
+    df_clean = df_clean.dropna(subset=['date'])
+except Exception as e:
+    log(f"⚠️ Error al convertir fechas: {e}")
+    sys.exit(1)
 
-print("✅ Después de eliminar outliers:", df_clean.shape)
-
-# Convertir fechas si existen
-if 'date' in df_clean.columns:
-    df_clean['date'] = pd.to_datetime(df_clean['date'])
-
-# Guardar el resultado limpio
-output_path = "Group4_data_analysis/data/noaa_wind_miami_cleaned.csv"
-os.makedirs("data", exist_ok=True)
-df_clean.to_csv(output_path, index=False)
-
-print(f"📁 Datos limpios guardados en: {output_path}")
+# Guardar archivo limpio
+os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+df_clean.to_csv(OUTPUT_PATH, index=False)
+log(f"📁 Datos limpios guardados en: {OUTPUT_PATH}", "✅")
