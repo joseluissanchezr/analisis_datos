@@ -1,0 +1,16 @@
+import pandas as pd
+
+# Cargar el CSV
+df = pd.read_csv('data/stations_espana.csv')
+
+# Mostrar las primeras filas para verificar columnas
+print(df.head())
+
+# Filtrar filas donde la elevación sea menor a 50
+df_filtrado = df[df['elevation'] < 35]
+
+# Verificar resultado
+print(df_filtrado)
+
+# Guardar nuevo CSV con las estaciones filtradas
+df_filtrado.to_csv('data/stations_espana_filtrado.csv', index=False)
