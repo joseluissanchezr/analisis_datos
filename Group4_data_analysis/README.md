@@ -24,6 +24,32 @@ Proyecto_Data_Analysis/
 ├── notebooks/          # (Opcional) Jupyter Notebooks
 └── README.md           # Descripción general del proyecto
 ```
+## 🖼️ Visualizaciones generadas y su utilidad
+
+El script `visualize_wind_data.py` genera los siguientes gráficos automáticamente:
+
+1. **Gráfico de líneas – Evolución temporal**  
+   Muestra cómo varía la velocidad del viento a lo largo del tiempo. Útil para ver la tendencia general.
+
+2. **Histograma – Distribución de velocidades**  
+   Representa la frecuencia de distintas velocidades del viento. Ayuda a identificar valores típicos o extremos.
+
+3. **Boxplot mensual – Variación por mes**  
+   Muestra la dispersión y los valores atípicos por cada mes. Útil para detectar estacionalidad.
+
+4. **Violin plot mensual – Distribución y densidad**  
+   Visualiza la distribución mensual con densidad y simetría. Más rico que el boxplot para datos asimétricos.
+
+5. **Evolución mensual (Año-Mes)**  
+   Muestra la media mensual agrupada por año. Permite detectar tendencias de largo plazo.
+
+6. **Heatmap hora vs mes**  
+   Visualiza la velocidad media del viento por hora del día y mes. Útil para ver patrones horarios estacionales.
+
+7. **Media móvil (30 días)**  
+   Suaviza las fluctuaciones diarias para mostrar la tendencia a corto y medio plazo.
+
+---
 
 ## 🔧 Tecnologías utilizadas
 
@@ -46,7 +72,7 @@ pip install requests pandas matplotlib seaborn
 ```bash
 python scripts/extract_noaa_data.py
 python scripts/clean_noaa_data.py
-python scripts/visualize_noaa_data.py
+python scripts/visualize_wind_data.py
 ```
 
 ## 🔗 Fuente de datos
