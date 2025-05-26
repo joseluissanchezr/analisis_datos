@@ -28,7 +28,19 @@ else:
 
 def custom_autopct(pct, values):
     """
+<<<<<<< Updated upstream
     This is for the creation of the pie chart
+=======
+    Parameters
+    ----------
+    pct : 
+
+    Returns 
+    ------- 
+    Error plot showing the wind speed
+    bar graph showing the wind maximum speed
+    Pie chart showing which months have more wind
+>>>>>>> Stashed changes
     """
     
     
