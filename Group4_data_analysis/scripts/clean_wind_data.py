@@ -56,4 +56,4 @@ if 'date' in df_clean.columns:
 # === Guardar archivo limpio ===
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 df_clean.to_csv(output_path, index=False)
-print(f"💾 Archivo limpio guardado en: {output_path}")
+print(f"💾 Archivo limpio  guardado en: {output_path}")
