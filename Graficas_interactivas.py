@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objs as go
 import numpy as np
 
-# 1. Resolver la ruta ~ al path absoluto
+# 1. Resolver la ruta al path absoluto
 folder = os.path.expanduser(r"~\Documents\AEMET_output")
 
 # 2. Buscar archivos *_limpio.csv
