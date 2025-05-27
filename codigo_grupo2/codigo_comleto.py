@@ -51,7 +51,7 @@ print("Producción real descargada:\n", df_real.head())
 df = (pd.merge(df_forecast, df_real, on='datetime', how='outer')
         .sort_values('datetime'))
 
-# === PART 4 ─ Cleaning and handling of outliers ===
+
 
 def cleaning(df):
     df = df.copy()
@@ -70,3 +70,21 @@ df = cleaning(df)     #Second pass after removing outliers
 
 # From the current hour onward, there is no actual generation → 0 MW
 df.loc[df['datetime'] > datetime.now(), 'indicator_551'] = 0
+df['datetime'] = df['datetime'].astype(str)
+df.to_excel("WIND_DATAv2.xlsx", index=False)
+print("Datos limpios exportados a 'WIND_DATAv2.xlsx'")
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df_corr    = df.dropna(subset=['indicator_541', 'indicator_551'])
+correlation = df_corr['indicator_541'].corr(df_corr['indicator_551'])
+print("Coeficiente de correlación:", correlation)
+
+plt.figure(figsize=(10, 6))
+sns.regplot(data=df_corr,
+            x='indicator_541', y='indicator_551',
+            line_kws={'color':'red'}, scatter_kws={'alpha':0.5})
+plt.title(f'Correlación previsión vs real (r = {correlation:.2f})')
+plt.xlabel('Previsión eólica (MW)');  plt.ylabel('Producción real (MW)')
+plt.grid(True);  plt.tight_layout();  plt.show()
