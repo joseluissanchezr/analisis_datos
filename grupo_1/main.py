@@ -35,7 +35,7 @@ else:
 #print(df_clean.head())
 #print(df_clean.tail())"""
 
-df = df[df['technology'] != 'Generación total']
+#df = df[df['technology'] != 'Generación total']
 
 # 6. Check data for outliers
 # create boxplot
@@ -51,7 +51,14 @@ Q3 = df['value'].quantile(0.75)
 IQR = Q3 - Q1
 
 outliers = df[(df['value'] < Q1 - 1.5 * IQR) | (df['value'] > Q3 + 1.5 * IQR)]
-print(outliers)
+#print(outliers.head())
+if outliers.empty == False:
+    df_clean = df[~((df['value'] < Q1 - 1.5 * IQR) | (df['value'] > Q3 + 1.5 * IQR))]
+    print("Outliers of column value were detected and removed. Head of cleaned dataframe:")
+    print(df_clean.head())
+else:
+    print("No outliers detected")
+
 
 # 7. Check for duplicates
 if df.duplicated().sum() == 0:
@@ -61,7 +68,6 @@ else:
     print(f"Duplicates found in Dataframe: {sum}. Data has to be cleaned")
     df = df.drop_duplicates()
     print("Data was cleaned")
-
 
 
 # Save cleaned data to excel
