@@ -7,7 +7,7 @@ import unicodedata
 import csv
 from datetime import datetime
 from dateutil.relativedelta import relativedelta  # NUEVA IMPORTACIÓN
-
+from DATA_FILTER import filtrar_y_guardar
 # Configuración inicial de la API AEMET
 API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqaW5lbGEuZ29uemFsZXpAYWx1bW5vcy51cG0uZXMiLCJqdGkiOiJmZjU4ZTJlNi1iMjVhLTQ1ZTAtYTUzYi0xZDBmNDY3OGJhZDgiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTc0NjgyMjkxNywidXNlcklkIjoiZmY1OGUyZTYtYjI1YS00NWUwLWE1M2ItMWQwZjQ2NzhiYWQ4Iiwicm9sZSI6IiJ9.Cy_fCJ8NZSgQHadQEOoH-feniDOlu6CgaJ1ZBFX4y5c"
 BASE_URL = "https://opendata.aemet.es/opendata/api"
@@ -177,7 +177,13 @@ def main():
         "Extremos registrados"
     ]
     tipo = seleccionar_opcion(tipos, "¿Qué datos desea obtener?")
-
+    tipo_map = {
+        "Climatologías diarias": 1,
+        "Climatologías mensuales/anuales": 2,
+        "Valores normales": 4,
+        "Extremos registrados": 3,
+    }
+    tipo_int = tipo_map[tipo]
     estaciones = obtener_estaciones()
     provincias = sorted({e["provincia"] for e in estaciones if e.get("provincia")})
     provincia = seleccionar_opcion(provincias, "Seleccione una provincia:")
@@ -217,12 +223,15 @@ def main():
         time.sleep(1)
         records = descargar_json(url_datos)
         df_total = procesar_registros(tipo, records)
-
+        
+    df = procesar_registros(tipo, records)
     output_dir = os.path.expanduser(r"~\Documents\AEMET_output")
     os.makedirs(output_dir, exist_ok=True)
     nombre_csv = os.path.join(output_dir, slugify(tipo) + ".csv")
     df_total.to_csv(nombre_csv, index=False, sep=';', decimal=',', quoting=csv.QUOTE_NONNUMERIC)
     print(f"✅ Guardado {len(df_total)} registros en '{nombre_csv}'")
+
+    filtrar_y_guardar(df, tipo_int, nombre_csv)
 
 if __name__ == "__main__":
     main()
