@@ -230,7 +230,7 @@ def main():
     nombre_csv = os.path.join(output_dir, slugify(tipo) + ".csv")
     df_total.to_csv(nombre_csv, index=False, sep=';', decimal=',', quoting=csv.QUOTE_NONNUMERIC)
     print(f"✅ Guardado {len(df_total)} registros en '{nombre_csv}'")
-
+    #LIMPIAMOS LOS DATOS Y GUARDAMOS EN EL CSV
     filtrar_y_guardar(df, tipo_int, nombre_csv)
 
 if __name__ == "__main__":
