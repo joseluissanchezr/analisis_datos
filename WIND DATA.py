@@ -8,6 +8,8 @@ import csv
 from datetime import datetime
 from dateutil.relativedelta import relativedelta  # NUEVA IMPORTACIÓN
 from DATA_FILTER import filtrar_y_guardar
+from Graficas_interactivas_combinado import visualizar_datos_aemet
+
 # Configuración inicial de la API AEMET
 API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqaW5lbGEuZ29uemFsZXpAYWx1bW5vcy51cG0uZXMiLCJqdGkiOiJmZjU4ZTJlNi1iMjVhLTQ1ZTAtYTUzYi0xZDBmNDY3OGJhZDgiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTc0NjgyMjkxNywidXNlcklkIjoiZmY1OGUyZTYtYjI1YS00NWUwLWE1M2ItMWQwZjQ2NzhiYWQ4Iiwicm9sZSI6IiJ9.Cy_fCJ8NZSgQHadQEOoH-feniDOlu6CgaJ1ZBFX4y5c"
 BASE_URL = "https://opendata.aemet.es/opendata/api"
@@ -228,10 +230,19 @@ def main():
     output_dir = os.path.expanduser(r"~\Documents\AEMET_output")
     os.makedirs(output_dir, exist_ok=True)
     nombre_csv = os.path.join(output_dir, slugify(tipo) + ".csv")
+    
+    
     df_total.to_csv(nombre_csv, index=False, sep=';', decimal=',', quoting=csv.QUOTE_NONNUMERIC)
     print(f"✅ Guardado {len(df_total)} registros en '{nombre_csv}'")
     #LIMPIAMOS LOS DATOS Y GUARDAMOS EN EL CSV
     filtrar_y_guardar(df, tipo_int, nombre_csv)
 
+
+    if tipo_int in [1, 2]:
+        visualizar_datos_aemet(tipo_int)
+   
+
 if __name__ == "__main__":
     main()
+
+ 
