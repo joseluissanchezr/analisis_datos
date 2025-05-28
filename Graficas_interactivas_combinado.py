@@ -4,90 +4,110 @@ import pandas as pd
 import plotly.graph_objs as go
 
 def graph_annuals(df):
-    df['fecha_dt'] = pd.to_datetime(df['fecha'], format='%Y-%m-%d', errors='coerce')
+    df['fecha_dt'] = pd.to_datetime(df['fecha'], errors='coerce')
     df = df.dropna(subset=['fecha_dt'])
 
     if df.empty or len(df) < 2:
-        print("❌ El DataFrame está vacío o tiene menos de 2 filas válidas para annuals.")
-        print(df.head())
+        print("❌ DataFrame vacío para anual.")
         return
 
-    year = df['fecha_dt'].dt.year.iloc[1]
-    station = df["estacion"].iloc[1]
+    year = df['fecha_dt'].dt.year.iloc[0]
+    station = df["estacion"].iloc[0]
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['w_med'], mode='lines+markers', name='Velocidad media (m/s)'))
-    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['w_racha'], mode='lines+markers', name='Racha máxima (m/s)'))
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['w_med'], mode='lines+markers', name='Velocidad media'))
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['w_racha'], mode='lines+markers', name='Racha máxima'))
     fig.add_trace(go.Bar(x=df['fecha_dt'], y=df['w_rec'], name='Recorrido viento'))
 
     fig.update_layout(
-        title=f"Variables de viento en {year} - Estación {station}",
+        title=f"Climatología mensual - {year} - Estación {station}",
         xaxis_title='Fecha',
-        yaxis_title='Velocidad / Racha (m/s) y Recorrido viento',
-        updatemenus=[
-            dict(
-                type="buttons",
-                direction="down",
-                buttons=[
-                    dict(label="Todas", args=[{"visible": [True, True, True]}], method="update"),
-                    dict(label="Sólo Velocidad media", args=[{"visible": [True, False, False]}], method="update"),
-                    dict(label="Sólo Racha máxima", args=[{"visible": [False, True, False]}], method="update"),
-                    dict(label="Sólo Recorrido viento", args=[{"visible": [False, False, True]}], method="update"),
-                ],
-                showactive=True
-            )
-        ],
+        yaxis_title='Valores',
         legend_title_text='Variable'
     )
     fig.show()
 
 def graph_daily(df):
-    df['fecha_dt'] = pd.to_datetime(df['fecha'], format='%Y-%m-%d', errors='coerce')
+    df['fecha_dt'] = pd.to_datetime(df['fecha'], errors='coerce')
     df = df.dropna(subset=['fecha_dt'])
 
     if df.empty or len(df) < 2:
-        print("❌ El DataFrame está vacío o tiene menos de 2 filas válidas para daily.")
-        print(df.head())
+        print("❌ DataFrame vacío para diaria.")
         return
 
-    date_1 = df['fecha_dt'].dt.date.iloc[0]
-    date_2 = df['fecha_dt'].dt.date.iloc[-1]
     station = df["estacion"].iloc[0]
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['velmedia'], mode='lines+markers', name='Velocidad media (m/s)', yaxis='y1'))
-    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['racha'], mode='lines+markers', name='Racha máxima (m/s)', yaxis='y1'))
-    fig.add_trace(go.Bar(x=df['fecha_dt'], y=df['dir_racha'], name='Dirección de racha (°)', yaxis='y2', opacity=0.5))
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['velmedia'], mode='lines+markers', name='Vel. media'))
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['racha'], mode='lines+markers', name='Racha máx.'))
+    fig.add_trace(go.Bar(x=df['fecha_dt'], y=df['dir_racha'], name='Dir. racha', opacity=0.4, yaxis='y2'))
 
     fig.update_layout(
-        title=f"Viento diario del {date_1} al {date_2} - Estación {station}",
+        title=f"Climatología diaria - Estación {station}",
         xaxis_title='Fecha',
-        yaxis=dict(title='Velocidad (m/s)', side='left', visible=True),
-        yaxis2=dict(title='Dirección (°)', overlaying='y', side='right', visible=True),
-        updatemenus=[
-            dict(
-                type="buttons",
-                direction="down",
-                buttons=[
-                    dict(label="Todas", args=[{"visible": [True, True, True]}, {"yaxis.visible": True, "yaxis2.visible": True}], method="update"),
-                    dict(label="Solo Velocidad media", args=[{"visible": [True, False, False]}, {"yaxis.visible": True, "yaxis2.visible": False}], method="update"),
-                    dict(label="Solo Racha máxima", args=[{"visible": [False, True, False]}, {"yaxis.visible": True, "yaxis2.visible": False}], method="update"),
-                    dict(label="Solo Dirección de racha", args=[{"visible": [False, False, True]}, {"yaxis.visible": False, "yaxis2.visible": True}], method="update"),
-                ],
-                showactive=True
-            )
-        ],
+        yaxis=dict(title='Vel. / Racha', side='left'),
+        yaxis2=dict(title='Dirección (°)', overlaying='y', side='right'),
+        legend_title_text='Variable'
+    )
+    fig.show()
+
+def graph_extremos(df):
+    df['fecha_dt'] = pd.to_datetime(df['fecha_ocurrencia'], errors='coerce')
+    df = df.dropna(subset=['fecha_dt'])
+
+    if df.empty or len(df) < 2:
+        print("❌ DataFrame vacío para extremos.")
+        return
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['rachMax_kmh'], mode='markers', name='Racha máx (km/h)'))
+    fig.add_trace(go.Bar(x=df['fecha_dt'], y=df['dirRachMax_grados'], name='Dirección racha (°)', opacity=0.5, yaxis='y2'))
+
+    fig.update_layout(
+        title="Extremos registrados",
+        xaxis_title='Fecha',
+        yaxis=dict(title='Racha máxima (km/h)', side='left'),
+        yaxis2=dict(title='Dirección (°)', overlaying='y', side='right'),
+        legend_title_text='Variable'
+    )
+    fig.show()
+
+def graph_normales(df):
+    columnas_viento = [
+        "w_racha_max", "w_racha_min", "w_racha_md", "w_racha_cv",
+        "w_med_max", "w_med_min", "w_med_md", "w_med_cv",
+        "w_med_n", "w_med_s"
+    ]
+
+    if df.empty or len(df) < 2:
+        print("❌ DataFrame vacío para normales.")
+        return
+
+    station = df["estacion"].iloc[0] if "estacion" in df.columns else "Desconocida"
+    fig = go.Figure()
+
+    eje_x = df.index  # Eje X artificial: 0, 1, 2, ...
+
+    for col in columnas_viento:
+        if col in df.columns:
+            fig.add_trace(go.Scatter(x=eje_x, y=df[col], mode='lines+markers', name=col))
+
+    fig.update_layout(
+        title=f"Valores normales de viento - Estación {station}",
+        xaxis_title='Índice (sin fecha)',
+        yaxis_title='Velocidad del viento (km/h o m/s)',
         legend_title_text='Variable'
     )
     fig.show()
 
 def visualizar_datos_aemet(tipo_int):
     """
-    Visualiza las gráficas de datos climáticos según tipo:
-    - tipo_int = 1: Climatologías diarias
-    - tipo_int = 2: Climatologías mensuales/anuales
+    tipo_int:
+    - 1: Climatología diaria
+    - 2: Climatología mensual/anual
+    - 3: Extremos registrados
+    - 4: Valores normales
     """
-
     folder = os.path.expanduser(r"~\Documents\AEMET_output")
     pattern = os.path.join(folder, "*_limpio.csv")
     csv_files = glob.glob(pattern)
@@ -104,7 +124,11 @@ def visualizar_datos_aemet(tipo_int):
         filename = os.path.basename(file_path).lower()
         df = pd.read_csv(file_path, sep=';', decimal=',', quoting=2)
 
-        if "diaria" in filename and tipo_int == 1:
+        if tipo_int == 1 and "diaria" in filename:
             graph_daily(df)
-        elif "anual" in filename and tipo_int == 2:
+        elif tipo_int == 2 and ("mensual" in filename or "anual" in filename):
             graph_annuals(df)
+        elif tipo_int == 3 and "extremo" in filename:
+            graph_extremos(df)
+        elif tipo_int == 4 and "normal" in filename:
+            graph_normales(df)

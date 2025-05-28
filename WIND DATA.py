@@ -175,8 +175,8 @@ def main():
     tipos = [
         "Climatologías diarias",
         "Climatologías mensuales/anuales",
+        "Extremos registrados",
         "Valores normales",
-        "Extremos registrados"
     ]
     tipo = seleccionar_opcion(tipos, "¿Qué datos desea obtener?")
     tipo_map = {
@@ -238,7 +238,7 @@ def main():
     filtrar_y_guardar(df, tipo_int, nombre_csv)
 
 
-    if tipo_int in [1, 2]:
+    if tipo_int in [1, 2, 3 ,4]:
         visualizar_datos_aemet(tipo_int)
    
 
