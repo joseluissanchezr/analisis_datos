@@ -71,18 +71,29 @@ def filtrar_y_guardar(df, tipo_int, ruta_csv):
                 df_limpio = df[df.apply(valido_extremo, axis=1)]
 
         case 4:  # Valores normales
-            # Asumiendo estructura similar, validamos que ciertas columnas sean numéricas y plausibles
-            # Puedes ajustar columnas y rangos según datos reales
-            cols_numericas = [col for col in df.columns if col not in ["estacion", "fecha"]]
-            for col in cols_numericas:
+        # Lista de columnas relevantes del viento
+            columnas_viento = [
+        "w_racha_max", "w_racha_min", "w_racha_md", "w_racha_cv",
+        "w_med_max", "w_med_min", "w_med_md", "w_med_cv",
+        "w_med_n", "w_med_s"
+            ]
+
+    # Filtra solo las columnas de viento presentes en el DataFrame
+            columnas_presentes = [col for col in columnas_viento if col in df.columns]
+
+    # Aplica limpieza y convierte a float
+            for col in columnas_presentes:
                 df[col] = df[col].apply(limpiar_valor)
-            # Filtro ejemplo: valores entre 0 y 300 para todos los numéricos
-            def valido_normal(row):
+
+    # Filtro: viento entre 0 y 200 (puedes ajustar)
+            def es_valido_viento(row):
                 try:
-                    return all(0 <= (row[col] if row[col] is not None else 0) <= 300 for col in cols_numericas)
+                    return all(0 <= row[col] <= 200 for col in columnas_presentes if pd.notnull(row[col]))
                 except:
                     return False
-            df_limpio = df[df.apply(valido_normal, axis=1)]
+
+    # Filtra el DataFrame con los datos válidos
+            df_limpio = df[df.apply(es_valido_viento, axis=1)]
 
         case _:
             print("❌ Tipo de archivo no soportado para filtrado.")

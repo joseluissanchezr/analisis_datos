@@ -9,7 +9,10 @@ import os
 import glob
 import pandas as pd
 import matplotlib.pyplot as plt
+<<<<<<< HEAD
+=======
 import matplotlib.dates as mdates
+>>>>>>> 2c83d9c46197ff55c552010b216dc688c72f455a
 import numpy as np
 
 # 1. Résoudre le ~ vers le chemin absolu
@@ -206,6 +209,8 @@ def graph_daily(df):
     plt.savefig(save_path, bbox_inches='tight')
     plt.show()
 
+<<<<<<< HEAD
+=======
 
 def staggered_xticks(ax, dates, min_spacing=25):
     """
@@ -288,6 +293,7 @@ def graph_extreme(df):
     plt.show()
 
 
+>>>>>>> 2c83d9c46197ff55c552010b216dc688c72f455a
 # 3. Boucler pour lire chaque CSV
 for file_path in csv_files:
     filename = os.path.splitext(os.path.basename(file_path))[0]
@@ -297,6 +303,10 @@ for file_path in csv_files:
         graph_annuals(df)
     elif filename == "climatologias_diarias_viento_limpio":
         graph_daily(df)
+<<<<<<< HEAD
+    else:
+        print("Fichier non reconnu :", filename)
+=======
     elif filename == "extremos_registrados_viento_limpio":
         graph_extreme(df)
     else:
@@ -304,5 +314,6 @@ for file_path in csv_files:
 
 
 
+>>>>>>> 2c83d9c46197ff55c552010b216dc688c72f455a
 
 
