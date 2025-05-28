@@ -69,6 +69,7 @@ for col in ['indicator_541', 'indicator_551']:      # IQR outliers
 df = cleaning(df)     #Second pass after removing outliers
 
 # From the current hour onward, there is no actual generation → 0 MW
+df['datetime'] = df['datetime'].dt.tz_localize(None)
 df.loc[df['datetime'] > datetime.now(), 'indicator_551'] = 0
 df['datetime'] = df['datetime'].astype(str)
 df.to_excel("WIND_DATAv2.xlsx", index=False)
@@ -88,3 +89,64 @@ sns.regplot(data=df_corr,
 plt.title(f'Correlación previsión vs real (r = {correlation:.2f})')
 plt.xlabel('Previsión eólica (MW)');  plt.ylabel('Producción real (MW)')
 plt.grid(True);  plt.tight_layout();  plt.show()
+
+#Interactive graphics
+import numpy as np
+import plotly.graph_objs as go
+from plotly.offline import plot
+
+df_corr = df.dropna(subset=['indicator_541', 'indicator_551'])
+correlation = df_corr['indicator_541'].corr(df_corr['indicator_551'])
+
+# Gráfico 1: Líneas de forecast y real vs tiempo
+fig_time = go.Figure()
+fig_time.add_trace(go.Scatter(
+    x=df_corr['datetime'], y=df_corr['indicator_541'],
+    mode='lines', name='Forecast Power',
+    line=dict(color='blue')
+))
+fig_time.add_trace(go.Scatter(
+    x=df_corr['datetime'], y=df_corr['indicator_551'],
+    mode='lines', name='Real Power',
+    line=dict(color='green')
+))
+fig_time.update_layout(
+    title="Forecast vs Real Power over Time",
+    xaxis_title="Datetime",
+    yaxis_title="Power (MW)",
+    template='plotly_white'
+)
+
+plot(fig_time, filename="forecast_vs_real_time.html", auto_open=False)
+
+
+# Calcular la regresión lineal
+m, b = np.polyfit(df_corr['indicator_541'], df_corr['indicator_551'], 1)
+
+# Gráfico 2: Dispersión + línea de tendencia
+fig_scatter = go.Figure()
+fig_scatter.add_trace(go.Scatter(
+    x=df_corr['indicator_541'], y=df_corr['indicator_551'],
+    mode='markers',
+    name='Data Points',
+    marker=dict(color='dodgerblue')
+))
+fig_scatter.add_trace(go.Scatter(
+    x=df_corr['indicator_541'], y=m * df_corr['indicator_541'] + b,
+    mode='lines',
+    name='Trend Line',
+    line=dict(color='firebrick', dash='dash', width=2)
+))
+fig_scatter.update_layout(
+    title=f'Forecast vs Real Correlation (r = {correlation:.2f})',
+    xaxis_title='Forecast Wind Power (MW)',
+    yaxis_title='Real Wind Power (MW)',
+    template='plotly_white'
+)
+
+plot(fig_scatter, filename="forecast_vs_real_scatter.html", auto_open=False)
+
+import webbrowser
+
+webbrowser.open("forecast_vs_real_time.html")
+webbrowser.open("forecast_vs_real_scatter.html")
