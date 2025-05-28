@@ -24,6 +24,27 @@ Proyecto_Data_Analysis/
 ├── notebooks/          # (Opcional) Jupyter Notebooks
 └── README.md           # Descripción general del proyecto
 ```
+## 🧠 Descripción de los scripts
+
+### 🔹 `extract_noaa_api.py`
+Consulta los datasets disponibles desde la API del NOAA y guarda su descripción en `data/noaa_datasets.csv`. Es útil para explorar qué fuentes de datos están disponibles y con qué cobertura.
+
+### 🔹 `noaa_wind_miami_2015_2023.py`
+Extrae las observaciones de **velocidad media mensual del viento** para la estación NOAA de Miami (2015–2023) y guarda los datos crudos en `data/noaa_wind_miami_2015_2023.csv`.
+
+### 🔹 `clean_wind_data.py`
+Limpia el archivo anterior:
+- Elimina registros nulos
+- Filtra outliers 
+- Convierte fechas
+- Estándariza columnas  
+Guarda el archivo limpio en `data/noaa_wind_miami_cleaned.csv`.
+
+### 🔹 `get_top_wind_speed.py`
+Extrae para cada mes entre 2015 y 2023 el día con la mayor velocidad media del viento.  
+Guarda los picos mensuales en `data/noaa_top_speed_monthly.csv`.
+
+
 ## 🖼️ Visualizaciones generadas y su utilidad
 
 El script `visualize_wind_data.py` genera los siguientes gráficos automáticamente:
@@ -70,9 +91,21 @@ pip install requests pandas matplotlib seaborn
 2. Ejecutar scripts desde la raíz del proyecto:
 
 ```bash
-python scripts/extract_noaa_data.py
-python scripts/clean_noaa_data.py
-python scripts/visualize_wind_data.py
+# 1. Obtener metadatos (opcional)
+python Group4_data_analysis/scripts/extract_noaa_api.py
+
+# 2. Extraer datos de viento crudos
+python Group4_data_analysis/scripts/noaa_wind_miami_2015_2023.py
+
+# 3. Limpiar los datos
+python Group4_data_analysis/scripts/clean_wind_data.py
+
+# 4. Obtener máximos mensuales de viento
+python Group4_data_analysis/scripts/get_top_wind_speed.py
+
+# 5. Generar visualizaciones
+python Group4_data_analysis/scripts/visualize_wind_data.py
+
 ```
 
 ## 🔗 Fuente de datos
