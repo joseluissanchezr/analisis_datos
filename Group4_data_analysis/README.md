@@ -1,8 +1,8 @@
 # 🌬️ Análisis de Datos de Viento Marítimo (NOAA)
 
-Este repositorio contiene un proyecto desarrollado dentro del curso de Data Analysis, enfocado en la extracción, procesamiento y análisis de datos de viento marítimo proporcionados por la API pública del NOAA - National Data Buoy Center. El análisis se centra en estaciones ubicadas en proximidad a las costas españolas.
+Este repositorio contiene un proyecto desarrollado dentro del curso de Data Analysis, enfocado en la extracción, procesamiento y análisis de datos de viento marítimo proporcionados por la API pública del NOAA - National Data Buoy Center. El análisis se centra en estaciones costeras.
 
-⚠️ **Nota:** Aunque el análisis se planteó originalmente para estaciones ubicadas en las costas españolas, se utilizó una estación cercana a **Miami (Florida, EE.UU.)** debido a la **falta de disponibilidad de datos detallados en tiempo real** para España dentro de la fuente NOAA.
+⚠️ **Nota:** Aunque el análisis se planteó originalmente para estaciones ubicadas en las costas españolas, se utilizó una estación cercana a **Miami (Florida, EE.UU.)** debido a la **falta de disponibilidad actual de datos** para España dentro de la fuente NOAA.
 
 ---
 
@@ -21,29 +21,34 @@ Proyecto_Data_Analysis/
 ├── data/               # Archivos descargados (crudos y limpios)
 ├── scripts/            # Scripts Python: extracción, limpieza, visualización
 ├── figures/            # Gráficas generadas
-├── notebooks/          # (Opcional) Jupyter Notebooks
 └── README.md           # Descripción general del proyecto
 ```
-## 🧠 Descripción de los scripts
+## 🧭 Descripción del flujo del proyecto
 
-### 🔹 `extract_noaa_api.py`
-Consulta los datasets disponibles desde la API del NOAA y guarda su descripción en `data/noaa_datasets.csv`. Es útil para explorar qué fuentes de datos están disponibles y con qué cobertura.
+1. **Consulta de estaciones españolas**  
+   Se utilizó el script `Noaa_wind_stations_Spain.py` para obtener las estaciones registradas por NOAA en España. El resultado se guardó en el archivo `stations_espana.csv`.
 
-### 🔹 `noaa_wind_miami_2015_2023.py`
-Extrae las observaciones de **velocidad media mensual del viento** para la estación NOAA de Miami (2015–2023) y guarda los datos crudos en `data/noaa_wind_miami_2015_2023.csv`.
+2. **Filtrado por elevación**  
+   Con el script `Noaa_wind_stations_Spain_filtrado.py` se filtraron las estaciones con elevación menor a 50 metros, generando un archivo también llamado `stations_espana_filtrado.csv` actualizado.
 
-### 🔹 `clean_wind_data.py`
-Limpia el archivo anterior:
-- Elimina registros nulos
-- Filtra outliers 
-- Convierte fechas
-- Estándariza columnas  
-Guarda el archivo limpio en `data/noaa_wind_miami_cleaned.csv`.
+3. **Problemas con datos actuales**  
+   Al intentar consultar información para las estaciones filtradas, se observó que **no hay datos recientes disponibles en NOAA**. Por este motivo, se seleccionó como alternativa una estación activa ubicada en **Miami** para continuar el análisis.
 
-### 🔹 `get_top_wind_speed.py`
-Extrae para cada mes entre 2015 y 2023 el día con la mayor velocidad media del viento.  
-Guarda los picos mensuales en `data/noaa_top_speed_monthly.csv`.
+4. **Extracción de datos históricos**  
+   Primero, con `extract_noaa_api.py` se listaron los datasets disponibles que se pueden visualizar en `noaa_datasets.csv`. 
+   Luego, se usó `noaa_wind_miami_2015_2023.py` para consultar los datos GSOM (resumen mensual) de 2015 a 2023, generando un archivo `noaa_wind_miami_2015_2023.csv`.
 
+5. **Limpieza de datos**  
+   El script `clean_wind_data.py` se encargó de:
+   - Eliminar espacios y valores nulos
+   - Filtrar valores atípicos usando el método IQR
+   - Convertir la columna `date` al formato `datetime`
+   - Guardar el dataset limpio en `noaa_wind_miami_cleaned.csv`
+
+6. **Visualización de resultados**  
+   Finalmente, `visualize_wind_data.py` genera múltiples gráficos explicativos sobre el comportamiento del viento, los cuales se detallan a continuación.
+
+---
 
 ## 🖼️ Visualizaciones generadas y su utilidad
 
@@ -91,7 +96,6 @@ pip install requests pandas matplotlib seaborn
 2. Ejecutar scripts desde la raíz del proyecto:
 
 ```bash
-# 1. Obtener metadatos (opcional)
 python Group4_data_analysis/scripts/extract_noaa_api.py
 
 # 2. Extraer datos de viento crudos
@@ -105,7 +109,6 @@ python Group4_data_analysis/scripts/get_top_wind_speed.py
 
 # 5. Generar visualizaciones
 python Group4_data_analysis/scripts/visualize_wind_data.py
-
 ```
 
 ## 🔗 Fuente de datos
