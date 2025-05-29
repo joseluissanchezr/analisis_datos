@@ -111,6 +111,63 @@ python Group4_data_analysis/scripts/get_top_wind_speed.py
 python Group4_data_analysis/scripts/visualize_wind_data.py
 ```
 
+## Informe de correlación entre el Grupo 2 y el Grupo 4
+
+###  1. Objetivo del análisis
+
+El propósito de este análisis es evaluar la **correlación entre la velocidad del viento en Miami** (obtenida desde NOAA, Grupo 4) y la **producción eólica real en España** (obtenida desde la API de ESIOS, Grupo 2). Se ha tomado como año de referencia **2023**, ya que es el año más reciente disponible en ambas fuentes de datos.
+
+###  2. Problema encontrado con los datos originales
+
+Inicialmente, los datos del Grupo 2 y del Grupo 4 **no coincidían en el rango temporal**, lo que impedía cualquier intento de análisis conjunto. En concreto:
+
+- El código original del Grupo 2 permitía obtener datos solo de años completos.
+- Los datos disponibles más antiguos no coincidían con los del Grupo 4.
+
+###  3. Solución aplicada
+
+Para resolver esta incompatibilidad:
+
+- Se **adaptó el código del Grupo 2** para descargar únicamente datos correspondientes a **2023**, garantizando así su alineación temporal con los datos de velocidad del viento del Grupo 4.
+- Este nuevo script se ha nombrado como `download_clean_wind_data_group2.py` y se ha guardado en la carpeta `Group4_data_analysis/scripts`.
+- El archivo resultante con los datos procesados se ha guardado como `WIND_VALID_DATA.xlsx` en `Group4_data_analysis`.
+
+###  4. Cálculo de la correlación
+
+Para analizar la relación entre las dos variables se ha creado el script:
+
+- `correlation_group2_group4.py`, que:
+  - Carga los datos mensuales medios de ambas fuentes (producción eólica real y velocidad del viento).
+  - Realiza una **media mensual** de cada variable.
+  - Fusiona los dos DataFrames por fechas comunes.
+  - Calcula el **coeficiente de correlación de Pearson**.
+  - Genera una **gráfica de dispersión con línea de regresión** para representar visualmente la relación.
+  - La gráfica se guarda como imagen en `Group4_data_analysis/figures/correlation_group2_group4_2023.png`.
+
+###  5. Resultados obtenidos
+
+La gráfica muestra la relación entre la **velocidad media del viento mensual en Miami** y la **producción eólica mensual en España**, ambas correspondientes al año **2023**:
+- El coeficiente de correlación de Pearson fue **r = -0.52**, lo que indica una **correlación moderadamente negativa**.
+
+**📉 Interpretación:**
+
+- A mayor velocidad del viento en Miami, tiende a observarse una **menor producción eólica en España**.
+- Aunque no se trata de una relación causal, este patrón sugiere que existe una cierta **anticorrelación climática** entre ambas regiones, al menos en el año estudiado.
+- La nube de puntos presenta una dispersión apreciable, lo que implica que **la relación no es perfecta ni totalmente lineal**, pero sí relevante desde un punto de vista exploratorio.
+
+**🗂 Archivos generados:**
+
+- Datos limpios del Grupo 2: `Group4_data_analysis/WIND_VALID_DATA.xlsx`
+- Gráfico de correlación: `Group4_data_analysis/figures/correlation_group2_group4_2023.png`
+- Script de descarga y limpieza: `Group4_data_analysis/scripts/download_clean_wind_data_group2.py`
+- Script de correlación: `Group4_data_analysis/correlation_group2_group4.py`
+
+### ✅ Conclusión
+
+Gracias a la limpieza y alineación temporal de los datos, se ha podido ejecutar un análisis de correlación útil entre las fuentes del Grupo 2 y Grupo 4. Este trabajo no solo permite **explorar relaciones geográficas inesperadas**, sino que también demuestra la importancia del **preprocesamiento y sincronización de datos** en proyectos de análisis conjunto.
+
+
+
 ## 🔗 Fuente de datos
 
 Datos obtenidos desde:  
