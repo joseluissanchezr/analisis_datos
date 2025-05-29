@@ -1,4 +1,3 @@
-# === PART 1 ─ Basic Setup and Imports ===
 # DATA ANALYSIS PROJECT · GROUP 2
 # Description: Extraction and cleaning of hourly data from the ESIOS API
 # Indicators: 541 (forecast) and 551 (actual production)
@@ -57,7 +56,6 @@ print("Producción real descargada:\n", df_real.head())
 
 df = (pd.merge(df_forecast, df_real, on='datetime', how='outer')
         .sort_values('datetime'))
-
 
 
 def cleaning(df):
