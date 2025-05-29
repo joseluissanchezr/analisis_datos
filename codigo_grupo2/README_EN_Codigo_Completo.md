@@ -1,16 +1,17 @@
-#  README: Wind Power Production Analysis using the ESIOS API
+#  README: Wind Power Production Analysis using the ESIOS API 🌍⚡️
 
 ##  Overview
-This project is a Python script designed to **download, process, clean, and analyze** wind power **forecast and actual production data** in Spain. It utilizes the **ESIOS (REE)** API, fills in missing data through interpolation, removes outliers, and generates **interactive plots** and **correlation analysis** between forecasted and real wind power.
+This project uses a Python script named **`código_completo.py`** to extract, clean, and analyze hourly wind power **forecast and real production data** from the **ESIOS (REE)** API in Spain. It includes interpolation, outlier detection, correlation analysis, and multiple static and interactive visualizations. The latest version incorporates **daily energy aggregation**, **forecast error metrics**, and **comparisons with external data sources (Zona 7 – Castilla-La Mancha)**.
 
 ##  Project Structure
 ```
 wind-analysis/
-├── wind_data.py              # Main script
-├── README.md                 # Documentation (this file)
-├── WIND_DATAv2.xlsx          # Excel file with cleaned data
-├── forecast_vs_real_time.html      # Interactive time series plot
-└── forecast_vs_real_scatter.html   # Interactive correlation plot
+├── código_completo.py         # Main script 
+├── README_EN_Codigo_Completo.md   # Documentation (this file)
+├── WIND_DATAv2.xlsx           # Cleaned and normalized dataset
+├── forecast_vs_real_time.html      # Interactive time series visualization
+└── forecast_vs_real_scatter.html   # Interactive correlation visualization
+├── dashboard_eolico_completo.html   # Full interactive dashboard
 ```
 
 ##  Requirements
@@ -21,12 +22,12 @@ pip install pandas requests matplotlib seaborn plotly openpyxl
 ```
 
 ##  How to Run
-1. **Insert your ESIOS API token** into the `TOKEN = '...'` field in `wind_data.py`.  
-   You can obtain a free token at <https://www.esios.ree.es/>.
+1. **Replace the token** in the line `TOKEN = '...'` inside `código_completo.py` with your personal ESIOS API token.  
+   Tokens are available for free at: [https://www.esios.ree.es/](https://www.esios.ree.es/)
 
-2. Run the script:
+2. Execute the script:
 ```bash
-python wind_data.py
+python código_completo.py
 ```
 
 3. Enter the start and end dates in `dd/mm/yyyy` format when prompted.
@@ -35,48 +36,57 @@ python wind_data.py
    - A cleaned Excel file: `WIND_DATAv2.xlsx`
    - Two interactive `.html` plots that open in your browser.
 
-##  What the Script Does
+## Script Workflow
 
-### 1. Data Download
-- Indicator **541** → forecasted wind power.  
-- Indicator **551** → actual wind power production.
+### 1. Data Extraction 📥
+- Indicator **541** → Forecasted wind power
+- Indicator **551** → Actual wind power production
+- External dataset for **Zone 7 (Castilla-La Mancha)** obtained from `https://apidatos.ree.es/`
 
-### 2. Preprocessing
-- Converts dates to `datetime`.
-- Merges both series by hour (`merge`).
-- Interpolates missing data.
-- Removes outliers using Interquartile Range (IQR).
-- Re-interpolates after removing outliers.
+### 2. Preprocessing 🧼
+- Merge dataframes and convert timestamps
+- Interpolate missing values
+- Detect and remove outliers using the Interquartile Range (IQR)
+- Normalize values: forecast ÷ 4, real ÷ 12
+- Set future production values to zero
 
-### 3. Normalization and Cleaning
-- Applied corrections:  
-  - Forecast divided by 4.  
-  - Actual production divided by 12.
-- Future actual production values are set to 0 MW.
+### 3. Daily Aggregation & Error 🧮
+- Aggregates daily forecast and real production
+- Calculates **daily forecast error**: forecast − real
 
-### 4. Exporting Results
-- Cleaned data exported to `WIND_DATAv2.xlsx`.
+### 4. Visualization Outputs 📊 
 
-### 5. Correlation Analysis
-- Calculates Pearson correlation coefficient (r) between forecast and actual data.
-- Generates a scatter plot with a regression line.
+####  Static Plots (Matplotlib)
+- Forecast vs Real (scatter + regression)
+- Daily comparison bars
+- Comparative line plot with Zone 7 data
 
-### 6. Interactive Visualization
-- Time series plot: `forecast_vs_real_time.html`
-- Scatter plot: `forecast_vs_real_scatter.html`
+####  Interactive Plots (Plotly)
+- **Time series**: Forecast vs Real
+- **Scatter plot** with regression line
+- **Daily bar chart**: Forecast vs Real
+- **Error bar plot**: Daily error
+- **Comparative line plot**: Forecast, Real, Zone 7 (from another team)
+- **Full interactive dashboard** in `dashboard_eolico_completo.html`
 
-##  Sample Graphs Output
-| File | Description |
-|------|-------------|
-| `forecast_vs_real_time.html` | Time series comparing forecast and actual production |
-| `forecast_vs_real_scatter.html` | Correlation and trend between both variables |
+### 5. Dashboard Summary 🌐
+
+| Visualization | Description |
+|---------------|-------------|
+| `dashboard_eolico_completo.html` | Interactive 5-panel dashboard: includes forecast vs real, error, daily bars, and comparison with external Zone 7 data |
 
 ##  Academic Notes
-You can contrast this information in this link:
-https://www.esios.ree.es/es/analisis/551?vis=1&start_date=03-03-2023T00%3A00&end_date=05-03-2023T23%3A55&compare_start_date=02-03-2023T00%3A00&groupby=hour&compare_indicators=541
+This project exemplifies real-world applications in:
+- **Energy Analytics**
+- **API Data Collection**
+- **Statistical Cleaning**
+- **Daily Aggregation & Comparison**
+- **Scientific Visualization**
 
-This project demonstrates skills in **API usage**, **energy data analysis**, and **scientific visualization**.  
-Applicable in Energy Engineering, Environmental Sciences, Applied Statistics, and Data Science.
+It is particularly useful for students and professionals in **Energy Engineering**, **Environmental Sciences**, **Data Science**, and **Applied Statistics**.
+
+You may verify official data on the REE portal:  
+[https://www.esios.ree.es/es/analisis/551](https://www.esios.ree.es/es/analisis/551)
 
 ## License & Credits
 For academic use only.  
