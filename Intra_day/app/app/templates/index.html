@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+ 
+    <div class="box">
+        <!-- NB : classe element pour avoir des boîtes stylées -->
+        <!-- NB² : Pour être redirigé vers un autre site, fais le JS -->
+        
+        <h2> First Step : Retrieving data from <strong>www.omie.es</strong></h2>
+        <p>Important : You need to do that first and at least once in your life.</p>
+
+        <div class="element" id="one">
+            Let's compute Data Mining !
+        </div>
+        <script>
+            const guideElement = document.getElementById("one");
+            guideElement.addEventListener("click", () =>
+            {
+                window.location.href = "/datamining";
+            });
+        </script>
+
+        <br>
+
+        <h2> Second Step : Cleaning data</h2>
+        <p>Important : You may have bad results if you skip this part.</p>
+
+        <br>
+
+        <h2> Third Step : Analysing data</h2>
+        <p>Important : There are approximately many ways to represent data, so we had to choose a lower set.</p>
+
+        <br>
+    
+    </div>
+
+   
+    
+{% endblock %}
