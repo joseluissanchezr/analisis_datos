@@ -1,4 +1,3 @@
-# === PART 1 ─ Basic Setup and Imports ===
 # DATA ANALYSIS PROJECT · GROUP 2
 # Description: Extraction and cleaning of hourly data from the ESIOS API
 # Indicators: 541 (forecast) and 551 (actual production)
@@ -59,7 +58,6 @@ df = (pd.merge(df_forecast, df_real, on='datetime', how='outer')
         .sort_values('datetime'))
 
 
-
 def cleaning(df):
     df = df.copy()
     df.set_index('datetime', inplace=True)
@@ -82,6 +80,8 @@ df['datetime'] = df['datetime'].astype(str)
 
 df['indicator_551'] = df['indicator_551'] / 12     # real
 df['indicator_541'] = df['indicator_541'] / 4    # forecast
+
+df = df.drop(df.index[-1])
 
 df.to_excel("WIND_DATAv2.xlsx", index=False)
 print("Datos limpios exportados a 'WIND_DATAv2.xlsx'")
