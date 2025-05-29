@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="loading_screen" class="loading_container">
+    <div class="loading_content">
+    <div>Cleaning Data... <img src="../static/loading.gif" alt="test" width=30px style="margin:-7px 0px"></div>
+    </div>
+</div>
+
+<div class="box">
+
+    <h2> Results </h2>
+    {% if date %}
+    <p> You have just downloaded data of the series of {{n}} months ending by {{date}}. Congratulations !
+    {% else %}
+    <p>You decided to skip the data mining part !
+    {% endif %}
+    <br> Please be careful in the rest of your analysis to only ask for data you downloaded. </p>
+
+    <h2>
+        Data Cleaning
+    </h2>
+
+    <p>Now, we need to process the data in order to ensure quality visualisation results.
+        For that, the missing or aberrant data will be treated.
+    </p>
+
+    <div class="element" id="one">
+        Let's clean data !
+    </div>
+    
+    <br>
+
+    <script>
+        const guideElement = document.getElementById("one");
+        guideElement.addEventListener("click", () =>
+        {
+            window.location.href = "/visualisation_board";
+        });
+    </script>
+
+</div>
+
+<script>
+    // Loading screen
+    window.onpageshow = function(event){
+    if (event.persisted){
+        document.getElementById("loading_screen").style.display = "none"
+    }
+    }
+    document.getElementById("one").addEventListener("click", function(event){
+    document.getElementById("loading_screen").style.display = "block";
+    });
+</script> 
+
+{% endblock %}
