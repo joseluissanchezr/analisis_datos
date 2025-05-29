@@ -55,19 +55,23 @@ def filtrar_y_guardar(df, tipo_int, ruta_csv):
             df_limpio = df_limpio.drop(columns=["mes_anio"])
 
         case 3:  # Extremos registrados
-            # Filtrado según valores válidos de ráfaga, dirección y fecha
             cols_requeridas = ["rachMax_kmh", "dirRachMax_grados", "fecha_ocurrencia"]
             if not all(col in df.columns for col in cols_requeridas):
-                print("⚠️ Datos no tienen las columnas esperadas para filtro extremos registrados.")
+                print("⚠️ Datos no tienen las columnas esperadas para filtro de extremos registrados.")
                 df_limpio = df.copy()
             else:
+                df["fecha_ocurrencia"] = pd.to_datetime(df["fecha_ocurrencia"], errors="coerce")
+
                 def valido_extremo(row):
                     try:
-                        return (0 <= float(row["rachMax_kmh"]) <= 300 and
-                                0 <= float(row["dirRachMax_grados"]) <= 360 and
-                                datetime.strptime(row["fecha_ocurrencia"], "%Y-%m-%d"))
+                        return (
+                            0 <= float(row["rachMax_kmh"]) <= 300 and
+                            0 <= float(row["dirRachMax_grados"]) <= 360 and
+                            pd.notnull(row["fecha_ocurrencia"])
+                        )
                     except:
                         return False
+
                 df_limpio = df[df.apply(valido_extremo, axis=1)]
 
         case 4:  # Valores normales
