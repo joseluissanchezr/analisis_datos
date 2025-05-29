@@ -1,0 +1,69 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ============================================
+# STEP 1: Load datasets from Group 2 and Group 4.
+# ============================================
+
+# Load Group 2 (ESIOS) wind data
+esios_df = pd.read_excel("Group4_data_analysis/WIND_VALID_DATA.xlsx", parse_dates=["datetime"])
+
+# Load Group 4 (NOAA Miami) monthly wind speed
+noaa_df = pd.read_csv("Group4_data_analysis/data/noaa_wind_miami_2015_2023.csv", parse_dates=["date"])
+
+# ============================================
+# STEP 2: Prepare ESIOS data (Group 2)
+# ============================================
+
+# Convert to monthly average for actual production
+esios_df["month"] = esios_df["datetime"].dt.to_period("M").dt.to_timestamp()
+monthly_esios = esios_df.groupby("month")["indicator_551"].mean().reset_index()
+monthly_esios.rename(columns={"month": "date", "indicator_551": "monthly_esios_production"}, inplace=True)
+
+# ============================================
+# STEP 3: Prepare NOAA data (Group 4)
+# ============================================
+
+# Select only 2023 to match Group 2
+noaa_df["date"] = pd.to_datetime(noaa_df["date"])
+noaa_2023 = noaa_df[noaa_df["date"].dt.year == 2023]
+noaa_2023 = noaa_2023.rename(columns={"value": "monthly_noaa_wind"})
+
+# ============================================
+# STEP 4: Merge both datasets by month
+# ============================================
+
+merged = pd.merge(monthly_esios, noaa_2023, on="date", how="inner")
+print("\n🧾 Merged data preview:")
+print(merged.head())
+
+# ============================================
+# STEP 5: Correlation analysis
+# ============================================
+
+if not merged.empty:
+    correlation = merged["monthly_esios_production"].corr(merged["monthly_noaa_wind"])
+    print(f"\n📈 Pearson correlation coefficient (r): {correlation:.3f}")
+else:
+    print("⚠️ No overlapping dates found. Cannot compute correlation.")
+
+# ============================================
+# STEP 6: Plotting
+# ============================================
+
+if not merged.empty:
+    plt.figure(figsize=(8, 6))
+    sns.regplot(x="monthly_noaa_wind", y="monthly_esios_production", data=merged)
+    plt.title(f"Correlation between NOAA wind speed (Miami) and Spanish wind production\nYear: 2023 | r = {correlation:.2f}")
+    plt.xlabel("Average Monthly Wind Speed in Miami (m/s)")
+    plt.ylabel("Average Monthly Wind Production in Spain (MW)")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig("Group4_data_analysis/figures/correlation_group2_group4_2023.png")
+    plt.show()
+else:
+    print("❌ Cannot plot: merged dataset is empty.")
+
+
+
