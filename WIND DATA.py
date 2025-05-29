@@ -6,6 +6,9 @@ import re
 import unicodedata
 import csv
 from datetime import datetime
+from dateutil.relativedelta import relativedelta  # NUEVA IMPORTACIÓN
+from DATA_FILTER import filtrar_y_guardar
+from Graficas_interactivas_combinado import visualizar_datos_aemet
 
 # Configuración inicial de la API AEMET
 API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqaW5lbGEuZ29uemFsZXpAYWx1bW5vcy51cG0uZXMiLCJqdGkiOiJmZjU4ZTJlNi1iMjVhLTQ1ZTAtYTUzYi0xZDBmNDY3OGJhZDgiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTc0NjgyMjkxNywidXNlcklkIjoiZmY1OGUyZTYtYjI1YS00NWUwLWE1M2ItMWQwZjQ2NzhiYWQ4Iiwicm9sZSI6IiJ9.Cy_fCJ8NZSgQHadQEOoH-feniDOlu6CgaJ1ZBFX4y5c"
@@ -63,6 +66,22 @@ def pedir_parametros(tipo):
             print(f"Año inválido. Debe ser entre 1900 y {current_year}")
     return params
 
+# Función nueva: dividir en sub-rangos de hasta 6 meses
+def dividir_en_intervalos(fecha_inicio, fecha_fin, meses_max=6):
+    """
+    Divide el rango entre fecha_inicio y fecha_fin en subrangos de hasta 'meses_max' meses.
+    """
+    intervalos = []
+    actual_inicio = fecha_inicio
+    while actual_inicio < fecha_fin:
+        actual_fin = min(
+            actual_inicio + relativedelta(months=meses_max) - relativedelta(days=1),
+            fecha_fin
+        )
+        intervalos.append((actual_inicio, actual_fin))
+        actual_inicio = actual_fin + relativedelta(days=1)
+    return intervalos
+
 # Constructor de URLs para diferentes endpoints
 def obtener_url_datos(tipo, estacion_id, **kw):
     if tipo == "Climatologías diarias":
@@ -96,7 +115,6 @@ def descargar_json(datos_url):
 # Procesamiento específico para cada tipo de datos
 def procesar_registros(tipo, records):
     if tipo == "Extremos registrados":
-        # Estructura especial para ráfagas de viento
         n_registros = len(records["rachMax"])
         return pd.DataFrame({
             "estacion": [records["indicativo"]] * n_registros,
@@ -116,38 +134,25 @@ def procesar_registros(tipo, records):
                 )
             ]
         })
-    
     elif tipo == "Valores normales":
-        # Campos dinámicos para normales climáticos
         rows = []
         for registro in records:
-            fila = {
-                "estacion": registro.get("indicativo"),
-                "fecha": registro.get("fecha")
-            }
-            # Agregar TODOS los campos dinámicamente
+            fila = {"estacion": registro.get("indicativo"), "fecha": registro.get("fecha")}
             for clave, valor in registro.items():
                 if clave not in ["indicativo", "fecha"]:
                     fila[clave] = valor
             rows.append(fila)
         return pd.DataFrame(rows)
-    
     elif tipo == "Climatologías mensuales/anuales":
-        # Estructura genérica para datos mensuales
         rows = []
         for registro in records:
-            fila = {
-                "estacion": registro.get("indicativo"),
-                "fecha": registro.get("fecha")
-            }
+            fila = {"estacion": registro.get("indicativo"), "fecha": registro.get("fecha")}
             for clave, valor in registro.items():
                 if clave not in ["indicativo", "fecha"]:
                     fila[clave] = valor
             rows.append(fila)
         return pd.DataFrame(rows)
-    
     else:
-        # Procesamiento para datos diarios
         rows = []
         for r in records:
             base = {"estacion": r.get("indicativo"), "fecha": r.get("fecha")}
@@ -174,7 +179,13 @@ def main():
         "Extremos registrados"
     ]
     tipo = seleccionar_opcion(tipos, "¿Qué datos desea obtener?")
-
+    tipo_map = {
+        "Climatologías diarias": 1,
+        "Climatologías mensuales/anuales": 2,
+        "Valores normales": 4,
+        "Extremos registrados": 3,
+    }
+    tipo_int = tipo_map[tipo]
     estaciones = obtener_estaciones()
     provincias = sorted({e["provincia"] for e in estaciones if e.get("provincia")})
     provincia = seleccionar_opcion(provincias, "Seleccione una provincia:")
@@ -184,19 +195,54 @@ def main():
     estacion_id = esc.split("(")[-1].strip(")")
 
     params = pedir_parametros(tipo)
-    print("\n📡 Solicitando URL de descarga...")
-    url_datos = obtener_url_datos(tipo, estacion_id, **params)
-    time.sleep(1)
-    print("📥 Descargando datos...")
-    records = descargar_json(url_datos)
 
-    # Generación del archivo CSV final
+    print("\n📡 Solicitando datos...")
+
+    # Lógica especial para Climatologías diarias
+    if tipo == "Climatologías diarias":
+        fecha_ini = datetime.strptime(params["start"], "%Y-%m-%d")
+        fecha_fin = datetime.strptime(params["end"], "%Y-%m-%d")
+        intervalos = dividir_en_intervalos(fecha_ini, fecha_fin)
+
+        dfs = []
+        for ini, fin in intervalos:
+            print(f"⏳ Consultando desde {ini.date()} hasta {fin.date()}...")
+            url_datos = obtener_url_datos(
+                tipo,
+                estacion_id,
+                start=ini.strftime("%Y-%m-%d"),
+                end=fin.strftime("%Y-%m-%d")
+            )
+            time.sleep(1)  # respetar la API
+            records = descargar_json(url_datos)
+            df = procesar_registros(tipo, records)
+            dfs.append(df)
+
+        df_total = pd.concat(dfs, ignore_index=True)
+
+    else:
+        url_datos = obtener_url_datos(tipo, estacion_id, **params)
+        time.sleep(1)
+        records = descargar_json(url_datos)
+        df_total = procesar_registros(tipo, records)
+        
     df = procesar_registros(tipo, records)
     output_dir = os.path.expanduser(r"~\Documents\AEMET_output")
     os.makedirs(output_dir, exist_ok=True)
     nombre_csv = os.path.join(output_dir, slugify(tipo) + ".csv")
-    df.to_csv(nombre_csv, index=False, sep=';', decimal=',', quoting=csv.QUOTE_NONNUMERIC)
-    print(f"✅ Guardado {len(df)} registros en '{nombre_csv}'")
+    
+    
+    df_total.to_csv(nombre_csv, index=False, sep=';', decimal=',', quoting=csv.QUOTE_NONNUMERIC)
+    print(f"✅ Guardado {len(df_total)} registros en '{nombre_csv}'")
+    #LIMPIAMOS LOS DATOS Y GUARDAMOS EN EL CSV
+    filtrar_y_guardar(df, tipo_int, nombre_csv)
+
+
+    if tipo_int in [1, 2]:
+        visualizar_datos_aemet(tipo_int)
+   
 
 if __name__ == "__main__":
     main()
+
+ 
