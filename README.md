@@ -26,24 +26,29 @@ Maaja Smul
 🧼 Filtro y limpieza de datos personalizados a través de módulo externo.
 
 🛠️ Requisitos
+
 Python 3.8+
 
 Conexión a internet
 
 🗂️ Estructura del Proyecto
-bash
-Copy
-Edit
+
 📁 group3_data_analysis/
+
 ├── WIND DATA.py                         # Script principal
+
 ├── DATA_FILTER.py                       # Módulo para limpiar y guardar los datos
+
 ├── Graficas_interactivas_combinado.py   # Módulo para visualizar resultados
+
 ├── README.md                            # Este archivo
 
 ▶️ Cómo usar
+
 Ejecuta el script principal:
 
 WIND DATA.py
+
 Sigue el menú interactivo:
 
 Selecciona el tipo de datos:
@@ -65,6 +70,7 @@ Espera a que se descarguen y procesen los datos.
 Al finalizar, los datos se pueden guardar y visualizar mediante los módulos importados (DATA_FILTER.py y Graficas_interactivas_combinado.py).
 
 🧠 Funcionalidades Clave del Código
+
 División de fechas: evita errores en la API dividiendo solicitudes mayores a 6 meses.
 
 Procesamiento por tipo de dato: adapta la transformación de los datos según el endpoint seleccionado.
@@ -74,8 +80,10 @@ Normalización de nombres: para guardar archivos con nombres limpios y compatibl
 Modularidad: se separan funciones de filtrado y visualización en archivos externos reutilizables.
 
 🧼 Filtro y Limpieza
+
 La limpieza personalizada se realiza mediante el archivo DATA_FILTER.py, que puedes adaptar a tus necesidades (por ejemplo, eliminar valores nulos, convertir unidades, etc.).
 
 📈 Visualización
+
 El módulo Graficas_interactivas_combinado.py permite realizar gráficos de los datos descargados. Asegúrate de que esté correctamente configurado y de tener instaladas las librerías necesarias.
 
