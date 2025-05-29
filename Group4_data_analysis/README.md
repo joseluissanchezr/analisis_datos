@@ -113,17 +113,18 @@ python Group4_data_analysis/scripts/visualize_wind_data.py
 ---
 ## Análisis correlación existente entre el grupo 4 y el grupo 1.
 
-El script `CorrelationWithGropu1.py' tiene como objetivo estudiar la correlación entre la velocidad del viento registrada en Miami (datos de NOAA) hecho por el grupo 4 y la generación eléctrica de origen eólico en diferentes comunidades autónomas de España (datos del operador REE), dentro de un mismo periodo hecho por el grupo 1. Este script realiza automáticamente las siguientes acciones:
+El script `CorrelationWithGropu1.py' tiene como objetivo estudiar la correlación entre la velocidad del viento registrada en Miami (datos de NOAA) hecho por el grupo 4 y la generación eléctrica de origen eólico en diferentes comunidades autónomas de España (datos del operador REE), dentro de un mismo periodo hecho por el grupo 1. El funcionamiento es el siguiente:
 
-1. Ejecuta el script del Grupo 1 que permite seleccionar una comunidad autónoma y un rango de fechas para descargar los datos de generación eléctrica desde la API de REE. Es muy importante que a la hora de introducir el rango de fechas en la consola se pongan en este formato: YYYY-MM-DD HH:MM
+1. El usuario debe ejecutar primero el script del Grupo 1 (request_data_grupo1.py), que solicita: Selección de una comunidad autónoma e introducción de un rango de fechas con el formato: YYYY-MM-DD HH:MM. Se ha introducido el script del grupo 1 tambien en el script del grupo 4 para que ante posibles cambios realizados por el otro grupo, no afecte a este análisis.
+2. El script del Grupo 1 descargará un archivo .xlsx con los datos de generación y lo guardará en la raíz del proyecto.
+3. Despues se ejecuta el script principal de correlación (CorrelationWithGroup1.py) que realiza lo siguiente: Busca automáticamente el archivo de generación creado más reciente (generacion_...xlsx)
 2. Detecta la región a partir del nombre del archivo Excel generado.
 3. Mueve y organiza el archivo generado a la carpeta Group4_data_analysis/data para mantener una estructura limpia.
 4. Carga y transforma los datos de viento de NOAA (Miami, 2015–2023), agrupándolos por mes.
 5. Filtra los datos de REE para conservar únicamente los valores de generación eólica y los agrupa también por mes.
 6. Une ambos datasets por mes y calcula el coeficiente de correlación de Pearson (r).
-7. Exporta los resultados en la ruta Group4_data_analysis/data:
-      -Un archivo .csv con los valores combinados.
-      -Una imagen .png con un gráfico de dispersión y la recta de regresión.
+7. Exporta en la ruta Group4_data_analysis/data un archivo .csv con los valores combinados.
+8. Exporta en la ruta Group4_data_analysis/figures una imagen .png con un gráfico de dispersión y la recta de regresión.
 Ambos archivos se nombran automáticamente según la comunidad analizada. El script muestra en consola el valor de correlación obtenido. Esto indica si existe (o no) una relación lineal entre las dos fuentes de datos.
 **Ejemplo**: Se ha realizado el análisis con la Comunidad de Madrid en un periodo de fechas de 2022-02-01 00:00  →  2022-10-31 23:00 y se ha observado una correlación entre viento (Miami) y generación eólica (Madrid): 0.2695. Eso significa que existe una correlación débil y positiva entre ambas variables.Este valor no implica causalidad, ya que Miami y Madrid no tienen conexión meteorológica directa.La dispersión de los puntos en la imagen guardada lo demuestra: no siguen una línea clara, aunque haya cierta pendiente positiva.
 **Interpretación**: Dado que las regiones analizadas están separadas geográficamente por miles de kilómetros y no comparten sistemas meteorológicos directos, no se espera una relación causal entre ambas variables. Este resultado sirve como validación del procedimiento técnico (limpieza, integración y análisis de datos), más que como hallazgo climático.
