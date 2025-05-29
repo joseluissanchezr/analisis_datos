@@ -134,7 +134,7 @@ _______________________________________
 
 ###  1. Objetivo del análisis
 
-El propósito de este análisis es evaluar la **correlación entre la velocidad del viento en Miami** (obtenida desde NOAA, Grupo 4) y la **producción eólica real en España** (obtenida desde la API de ESIOS, Grupo 2). Se ha tomado como año de referencia **2023**, ya que es el año más reciente disponible en ambas fuentes de datos.
+El objetivo de este análisis es evaluar la **correlación entre la velocidad del viento en Miami** (obtenida desde NOAA, Grupo 4) y la **producción eólica real en España** (obtenida desde la API de ESIOS, Grupo 2). Se ha tomado como año de referencia **2023**, ya que es el año más reciente disponible en ambas fuentes de datos.
 
 ###  2. Problema encontrado con los datos originales
 

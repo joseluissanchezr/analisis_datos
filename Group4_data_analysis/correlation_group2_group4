@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ============================================
-# STEP 1: Load datasets from Group 2 and Group 4
+# STEP 1: Load datasets from Group 2 and Group 4.
 # ============================================
 
 # Load Group 2 (ESIOS) wind data

@@ -16,7 +16,7 @@ HEADERS = {
     'User-Agent': 'esios-api-client'
 }
 
-# Download only 2023 to match NOAA group 4 data
+# Download only 2023 to match NOAA group 4 data.
 start_date = datetime(2023, 1, 1)
 end_date = datetime(2023, 12, 31)
 
