@@ -15,9 +15,16 @@ HEADERS = {
     'User-Agent'  : 'esios-api-client'
 }
 
-start = datetime.strptime((input("Introduce una fecha Inicio en formato dd/mm/yyyy: ")), "%d/%m/%Y")
-end =  datetime.strptime((input("Introduce una fecha Fin en formato dd/mm/yyyy: ")), "%d/%m/%Y")
-
+while True:
+    try:
+        start = datetime.strptime(input("Enter start date (dd/mm/yyyy): "), "%d/%m/%Y")
+        end = datetime.strptime(input("Enter end date (dd/mm/yyyy): "), "%d/%m/%Y")
+        if start > end:
+            print(" Start date must be earlier than end date. Try again.\n")
+            continue
+        break
+    except ValueError:
+        print(" Invalid format. Please use dd/mm/yyyy. Try again.\n")
 
 # FUNCTION ORIGINAL CODE DATES
 
@@ -72,6 +79,10 @@ df = cleaning(df)     #Second pass after removing outliers
 df['datetime'] = df['datetime'].dt.tz_localize(None)
 df.loc[df['datetime'] > datetime.now(), 'indicator_551'] = 0
 df['datetime'] = df['datetime'].astype(str)
+
+df['indicator_551'] = df['indicator_551'] / 12     # real
+df['indicator_541'] = df['indicator_541'] / 4    # forecast
+
 df.to_excel("WIND_DATAv2.xlsx", index=False)
 print("Datos limpios exportados a 'WIND_DATAv2.xlsx'")
 
