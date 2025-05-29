@@ -1,10 +1,12 @@
-
-import pandas as pd
 import os
 import glob
+import pandas as pd
+import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 import numpy as np
 
+import plotly.io as pio
+pio.renderers.default = 'browser'
 
         
 def custom_autopct(pct, values):
@@ -18,57 +20,30 @@ def custom_autopct(pct, values):
         return f'{pct:.0f}%'
 
         
-        
 
 def graph_annuals(df):
     df['fecha_dt'] = pd.to_datetime(df['fecha'], errors='coerce')
     df = df.dropna(subset=['fecha_dt'])
 
     if df.empty or len(df) < 2:
-        print("❌ El DataFrame está vacío o tiene menos de 2 filas válidas para annuals.")
-        print(df.head())
+        print("❌ DataFrame vacío para anual.")
         return
 
-    year = df['fecha_dt'].dt.year.iloc[1]
-    station = df["estacion"].iloc[1]
-        
-    fig, axs = plt.subplots(3, 1, figsize=(12, 10), sharex=True)
-    
-    # Plot 1: Velocidad media
-    axs[0].plot(df['fecha_dt'], df['w_med'], label='Velocidad media (m/s)', color='blue')
-    axs[0].legend()
-    axs[0].set_ylabel('m/s')
-    
-    # Plot 2: Racha máxima
-    axs[1].plot(df['fecha_dt'], df['w_racha'], label='Racha máxima (m/s)', color='orange')
-    axs[1].legend()
-    axs[1].set_ylabel('m/s')
-    
-    # Plot 3: Recorrido viento (bar chart)
-    bars = axs[2].bar(df['fecha_dt'], df['w_rec'], label='Recorrido viento', width=5, color='green')
-    axs[2].legend()
-    axs[2].set_ylabel('m')
-    
-    # Annotate bar values
-    for bar in bars:
-        height = bar.get_height()
-        axs[2].text(
-            bar.get_x() + bar.get_width() / 2,
-            height,
-            f"{height:.1f}",
-            ha='center',
-            va='bottom'
-        )
-    
-    # Rotate x-axis labels on the last subplot
-    axs[2].tick_params(axis='x', rotation=45)
-    axs[2].set_xlabel('Fecha')
-    
-    # Adjust layout
-    plt.tight_layout()
-    axs[0].set_title(f"Variables de viento en {year} - Estación {station}")
-    plt.xlabel('Fecha')
-    plt.show()
+    year = df['fecha_dt'].dt.year.iloc[0]
+    station = df["estacion"].iloc[0]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['w_med'], mode='lines+markers', name='Velocidad media'))
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['w_racha'], mode='lines+markers', name='Racha máxima'))
+    fig.add_trace(go.Bar(x=df['fecha_dt'], y=df['w_rec'], name='Recorrido viento'))
+
+    fig.update_layout(
+        title=f"Climatología mensual - {year} - Estación {station}",
+        xaxis_title='Fecha',
+        yaxis_title='Valores',
+        legend_title_text='Variable'
+    )
+    fig.show()
     
     months = df['fecha_dt'].dt.month_name()
     
@@ -91,62 +66,31 @@ def graph_annuals(df):
     for autotext in autotexts:
         autotext.set_fontsize(11)
     plt.show()
-        
-            
-
-    
 
 def graph_daily(df):
     df['fecha_dt'] = pd.to_datetime(df['fecha'], errors='coerce')
     df = df.dropna(subset=['fecha_dt'])
 
     if df.empty or len(df) < 2:
-        print("❌ El DataFrame está vacío o tiene menos de 2 filas válidas para daily.")
-        print(df.head())
+        print("❌ DataFrame vacío para diaria.")
         return
 
-    date_1 = df['fecha_dt'].dt.date.iloc[0]
-    date_2 = df['fecha_dt'].dt.date.iloc[-1]
     station = df["estacion"].iloc[0]
-    
 
-    fig, axs = plt.subplots(3, 1, figsize=(12, 10), sharex=True)
-    
-    # Plot 1: Velocidad media
-    axs[0].plot(df['fecha_dt'], df['velmedia'], label='Velocidad media (m/s)', color='blue')
-    axs[0].legend()
-    axs[0].set_ylabel('m/s')
-    
-    # Plot 2: Racha máxima
-    axs[1].plot(df['fecha_dt'], df['racha'], label='Racha máxima (m/s)', color='orange')
-    axs[1].legend()
-    axs[1].set_ylabel('m/s')
-    
-    # Plot 3: Recorrido viento (bar chart)
-    bars = axs[2].bar(df['fecha_dt'], df['dir_racha'], label='Dirección de racha (°)', color='green')
-    axs[2].legend()
-    axs[2].set_ylabel('m')
-    
-    # Annotate bar values
-    for bar in bars:
-        height = bar.get_height()
-        axs[2].text(
-            bar.get_x() + bar.get_width() / 2,
-            height,
-            f"{height:.1f}",
-            ha='center',
-            va='bottom'
-        )
-    
-    # Rotate x-axis labels on the last subplot
-    axs[2].tick_params(axis='x', rotation=45)
-    axs[2].set_xlabel('Fecha')
-    
-    # Adjust layout
-    plt.tight_layout()
-    axs[0].set_title(f"Viento diario del {date_1} al {date_2} - Estación {station}")
-    plt.xlabel('Fecha')
-    plt.show()
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['velmedia'], mode='lines+markers', name='Vel. media'))
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['racha'], mode='lines+markers', name='Racha máx.'))
+    fig.add_trace(go.Bar(x=df['fecha_dt'], y=df['dir_racha'], name='Dir. racha', opacity=0.4, yaxis='y2'))
+
+    fig.update_layout(
+        title=f"Climatología diaria - Estación {station}",
+        xaxis_title='Fecha',
+        yaxis=dict(title='Vel. / Racha', side='left'),
+        yaxis2=dict(title='Dirección (°)', overlaying='y', side='right'),
+        legend_title_text='Variable'
+    )
+    fig.show()
     
     months = df['fecha_dt'].dt.month_name()
 
@@ -169,8 +113,37 @@ def graph_daily(df):
     for autotext in autotexts:
         autotext.set_fontsize(11)
     plt.show()
+    
+    # --- GRAPH 2 : velmedia with direction
+    df['dir_10'] = (df['dir_racha'] // 10 * 10).astype(int)
+    polar_df = df.groupby('dir_10')['velmedia'].mean().reset_index()
+    polar_df = polar_df.sort_values(by='dir_10')
 
+    all_dirs = pd.DataFrame({'dir_10': np.arange(0, 360, 10)})
+    polar_df = pd.merge(all_dirs, polar_df, on='dir_10', how='left').fillna(0)
 
+    fig_polar = go.Figure()
+
+    fig_polar.add_trace(go.Scatterpolar(
+        r=polar_df['velmedia'],
+        theta=polar_df['dir_10'],
+        mode='lines+markers',
+        name='Vel. media',
+        fill='toself',
+        marker=dict(color='blue')
+    ))
+
+    fig_polar.update_layout(
+        title=f"Distribución direccional - Velocidad media ({station})",
+        polar=dict(
+            angularaxis=dict(direction="clockwise", rotation=90),
+            radialaxis=dict(title='m/s')
+        ),
+        height=500,
+        showlegend=False
+    )
+
+    fig_polar.show()
 
 def graph_extremos(df):
     df['fecha_dt'] = pd.to_datetime(df['fecha_ocurrencia'], errors='coerce')
@@ -179,33 +152,19 @@ def graph_extremos(df):
     if df.empty or len(df) < 2:
         print("❌ DataFrame vacío para extremos.")
         return
-    
-    
-    fig, ax = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
-    ax[0].set_title("Extremos registrados")
-    ax[0].scatter(df['fecha_dt'], df["rachMax_kmh"], label="max wind run")
-    ax[0].legend()
-    ax[0].set_ylabel("Viento km/h")
-    
-    bars = ax[1].bar(df['fecha_dt'], df["dirRachMax_grados"], width=50)
-    
-    ax[1].tick_params(axis='x', rotation=45)
-    ax[1].set_ylabel("Dirección racha (°)")
-    ax[1].set_xlabel("Fecha")
-    
-    for bar in bars:
-        height = bar.get_height()
-        ax[1].text(
-            bar.get_x() + bar.get_width(),  # position horizontale (centre de la barre)
-            height,                              # position verticale (au sommet)
-            f"{height:.1f}",                     # texte (formaté à 1 décimale)
-            ha='center',                        # alignement horizontal
-            va='bottom'                         # alignement vertical
-        )
-    
-    plt.tight_layout()
-    plt.show()
 
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df['fecha_dt'], y=df['rachMax_kmh'], mode='markers', name='Racha máx (km/h)'))
+    fig.add_trace(go.Bar(x=df['fecha_dt'], y=df['dirRachMax_grados'], name='Dirección racha (°)', opacity=0.5, yaxis='y2'))
+
+    fig.update_layout(
+        title="Extremos registrados",
+        xaxis_title='Fecha',
+        yaxis=dict(title='Racha máxima (km/h)', side='left'),
+        yaxis2=dict(title='Dirección (°)', overlaying='y', side='right'),
+        legend_title_text='Variable'
+    )
+    fig.show()
 
 def graph_normales(df):
     columnas_viento = [
@@ -219,23 +178,21 @@ def graph_normales(df):
         return
 
     station = df["estacion"].iloc[0] if "estacion" in df.columns else "Desconocida"
-    
-    x = np.arange(len(df))
+    fig = go.Figure()
 
-    fig, axes = plt.subplots(len(columnas_viento), 1, figsize=(12, 2 * len(columnas_viento)), sharex=True)
-    fig.suptitle(f"Valores normales de viento - Estación {station}")
+    eje_x = df.index  # Eje X artificial: 0, 1, 2, ...
 
-    for i, col in enumerate(columnas_viento):
+    for col in columnas_viento:
         if col in df.columns:
-            axes[i].plot(x, df[col], label=col)
-            axes[i].legend()
-            axes[i].set_ylabel(col)
+            fig.add_trace(go.Scatter(x=eje_x, y=df[col], mode='lines+markers', name=col))
 
-    axes[-1].set_xlabel("Índice (sin fecha)")
-    plt.tight_layout(rect=[0, 0, 1, 0.96])
-    plt.show()
-    
-
+    fig.update_layout(
+        title=f"Valores normales de viento - Estación {station}",
+        xaxis_title='Índice (sin fecha)',
+        yaxis_title='Velocidad del viento (km/h o m/s)',
+        legend_title_text='Variable'
+    )
+    fig.show()
 
 def visualizar_datos_aemet(tipo_int):
     """
