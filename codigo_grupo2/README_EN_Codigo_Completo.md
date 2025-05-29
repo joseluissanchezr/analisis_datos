@@ -1,16 +1,16 @@
 #  README: Wind Power Production Analysis using the ESIOS API
 
 ##  Overview
-This project is a Python script designed to **download, process, clean, and analyze** wind power **forecast and actual production data** in Spain. It utilizes the **ESIOS (REE)** API, fills in missing data through interpolation, removes outliers, and generates **interactive plots** and **correlation analysis** between forecasted and real wind power.
+This project is a Python script named **`codigo_completo.py`**, designed to **extract, clean, and analyze** hourly wind power **forecast and real production data** from the **ESIOS (REE)** API in Spain. It handles data interpolation, outlier removal, and correlation analysis, and generates both **static and interactive visualizations**.
 
 ##  Project Structure
 ```
 wind-analysis/
-├── wind_data.py              # Main script
-├── README.md                 # Documentation (this file)
-├── WIND_DATAv2.xlsx          # Excel file with cleaned data
-├── forecast_vs_real_time.html      # Interactive time series plot
-└── forecast_vs_real_scatter.html   # Interactive correlation plot
+├── código_completo.py         # Main script (Spanish title)
+├── README_EN_Codigo_Completo.md   # Documentation (this file)
+├── WIND_DATAv2.xlsx           # Cleaned and normalized dataset
+├── forecast_vs_real_time.html      # Interactive time series visualization
+└── forecast_vs_real_scatter.html   # Interactive correlation visualization
 ```
 
 ##  Requirements
@@ -21,12 +21,12 @@ pip install pandas requests matplotlib seaborn plotly openpyxl
 ```
 
 ##  How to Run
-1. **Insert your ESIOS API token** into the `TOKEN = '...'` field in `wind_data.py`.  
-   You can obtain a free token at <https://www.esios.ree.es/>.
+1. **Replace the token** in the line `TOKEN = '...'` inside `código_completo.py` with your personal ESIOS API token.  
+   Tokens are available for free at: [https://www.esios.ree.es/](https://www.esios.ree.es/)
 
-2. Run the script:
+2. Execute the script:
 ```bash
-python wind_data.py
+python código_completo.py
 ```
 
 3. Enter the start and end dates in `dd/mm/yyyy` format when prompted.
@@ -72,11 +72,16 @@ python wind_data.py
 | `forecast_vs_real_scatter.html` | Correlation and trend between both variables |
 
 ##  Academic Notes
-You can contrast this information in this link:
-https://www.esios.ree.es/es/analisis/551?vis=1&start_date=03-03-2023T00%3A00&end_date=05-03-2023T23%3A55&compare_start_date=02-03-2023T00%3A00&groupby=hour&compare_indicators=541
+This project exemplifies real-world applications in:
+- **Energy Data Analytics**
+- **Time Series Processing**
+- **API Integration**
+- **Scientific Visualization**
 
-This project demonstrates skills in **API usage**, **energy data analysis**, and **scientific visualization**.  
-Applicable in Energy Engineering, Environmental Sciences, Applied Statistics, and Data Science.
+It is particularly useful for students and professionals in **Energy Engineering**, **Environmental Sciences**, **Data Science**, and **Applied Statistics**.
+
+You may verify official data on the REE portal:  
+[https://www.esios.ree.es/es/analisis/551](https://www.esios.ree.es/es/analisis/551)
 
 ## License & Credits
 For academic use only.  
