@@ -2,13 +2,19 @@
 Este proyecto permite consultar, descargar y visualizar de forma interactiva datos climatológicos proporcionados por la API de AEMET (Agencia Estatal de Meteorología de España). La herramienta es completamente interactiva desde la consola y está diseñada para facilitar el acceso a climatologías diarias, mensuales, valores normales y extremos registrados.
 
 👥 Desarrollado por
+
 Miguel Moure
+
 Jinela Gonzalez
+
 Javier Fauré
+
 Lisa Culot
+
 Maaja Smul
 
 🚀 Características
+
 🔍 Consulta por provincia y estación meteorológica.
 
 📆 Soporte para rangos de fechas y fragmentación en intervalos menores para respetar la API.
