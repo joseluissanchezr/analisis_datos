@@ -27,7 +27,6 @@ def plot_wind_bar_chart(df, station_name):
     """
     Plots a bar chart of wind speed, but only if the time range is <= 31 days.
     """
-    # Ensure datetime
     df = df.copy()
     df['referenceTime'] = pd.to_datetime(df['referenceTime'], errors='coerce')
     df = df.dropna(subset=['referenceTime'])
@@ -37,13 +36,13 @@ def plot_wind_bar_chart(df, station_name):
         print("No valid wind data to plot.")
         return
 
-    # Check date range
+    #check data range
     time_span = (df['referenceTime'].max() - df['referenceTime'].min()).days
     if time_span > 31:
         print(f"Bar chart skipped: selected time range is {time_span} days (max allowed is 31).")
         return
 
-    # Plot
+    #plot
     plt.figure(figsize=(12, 6))
     plt.bar(df['referenceTime'].dt.strftime('%Y-%m-%d'), df['value'])
     plt.title(f"Daily Max Wind Speed at {station_name}")

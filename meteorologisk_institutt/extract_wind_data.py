@@ -153,7 +153,7 @@ def main():
         df = fetch_wind_data(selected_station['id'], referencetime)
         df['referenceTime'] = pd.to_datetime(df['referenceTime'])
 
-        # Pivot so each element becomes a column for max and mean
+        #pivot so each element becomes a column for max and mean
         df_wide = df.pivot_table(index='referenceTime', columns='elementId', values='value').reset_index()
         df_wide.columns.name = None  # clean up
 
