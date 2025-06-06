@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 from datetime import datetime
 import os
-from wind_plot import plot_wind_timeseries, plot_wind_bar_chart
+from wind_plot import plot_mean_wind_timeseries, plot_wind_timeseries, plot_wind_bar_chart, plot_mean_wind_bar_chart
 
 
 # --------------config
@@ -99,7 +99,7 @@ def fetch_wind_data(source_id, referencetime):
         OBS_ENDPOINT,
         params={
             'sources': source_id,
-            'elements': 'max(wind_speed P1D)',
+            'elements': 'max(wind_speed P1D),mean(wind_speed P1D)',
             'referencetime': referencetime
         },
         auth=(CLIENT_ID, '')
@@ -107,6 +107,7 @@ def fetch_wind_data(source_id, referencetime):
     if r.status_code != 200:
         error = r.json().get("error", {})
         raise Exception(f"API error {r.status_code}: {error.get('message', '')} - {error.get('reason', '')}")
+    
     data = r.json()['data']
     rows = []
     for item in data:
@@ -114,6 +115,7 @@ def fetch_wind_data(source_id, referencetime):
             rows.append({
                 'sourceId': item['sourceId'],
                 'referenceTime': item['referenceTime'],
+                'elementId': obs['elementId'],
                 'value': obs['value'],
                 'unit': obs['unit']
             })
@@ -151,8 +153,14 @@ def main():
         df = fetch_wind_data(selected_station['id'], referencetime)
         df['referenceTime'] = pd.to_datetime(df['referenceTime'])
 
+        # Pivot so each element becomes a column for max and mean
+        df_wide = df.pivot_table(index='referenceTime', columns='elementId', values='value').reset_index()
+        df_wide.columns.name = None  # clean up
+
         plot_wind_timeseries(df, selected_name)
         plot_wind_bar_chart(df, selected_name)
+        plot_mean_wind_timeseries(df_wide, selected_name)
+        plot_mean_wind_bar_chart(df_wide, selected_name)
 
 
         output_dir = os.path.expanduser("~/Documents/Frost_output")
