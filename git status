@@ -1,0 +1,289 @@
+[33m2bcfc0d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mlimpieza_javier[m[33m, [m[1;31morigin/limpieza_javier[m[33m)[m Actualicé el README.md añadiendo lo correspondiente al grupo 2
+[33m129a63d[m VERSION FIANL NOTEBOOK JAVIER
+[33m94ec52f[m[33m ([m[1;32mmain[m[33m)[m Merge pull request #87 from majaasmul/patch-1
+[33ma3e796b[m small changes to readme and in general
+[33m93d1d72[m added plots
+[33mfc40c5c[m added readme file
+[33mb93b945[m text file
+[33m3830d7c[m exam_maja
+[33md4fe758[m Merge pull request #86 from majaasmul/patch-1
+[33mb9c470a[m Create frost_meteorologisk_institutt
+[33m5c5430a[m Merge pull request #85 from jfaure10/fix_fork
+[33m4c79467[m arreglar el caos del repo
+[33mc11def7[m Merge pull request #78 from albaarnoso/main
+[33m80ae02f[m Merge pull request #84 from Luk-Tas/main
+[33m66d7538[m Merge pull request #83 from DianaOrr/patch-3
+[33md7312ef[m Last Bug Fixes
+[33m35af90f[m Rename grupo_1/Group 1 Final Assignment_LLA.ipynb to grupo_1/Drafts and Tests/ Group 1 Final Assignment_LLA.ipynb
+[33m20e3363[m Rename grupo_1/Group 1 Final Assignment.ipynb to grupo_1/Drafts and Tests/ Group 1 Final Assignment.ipynb
+[33me887551[m Added code for task 4.
+[33m9c7aa29[m Update codigo_comleto.py
+[33m9e74e93[m second attempt
+[33ma810f4b[m Add files via upload
+[33m25f33ab[m Merge branch 'main' into main
+[33m45bb2ab[m Add Data Files from Group 2 and 4.
+[33md0655ba[m Merge pull request #81 from Maritevz/main
+[33m6e60399[m Merge pull request #80 from Veronicaupm/main
+[33mab317f3[m Merge branch 'joseluissanchezr:main' into main
+[33m9d8ffe5[m update
+[33m881a417[m Merge pull request #77 from MiniSantos2011/patch-1
+[33m1302fba[m Merge pull request #76 from Veronicaupm/main
+[33me30fbcc[m Update README_EN_Codigo_Completo.md with new dashboard and comparison features
+[33maf97436[m se ha introducido la parte de Informe de correlación entre el Grupo 2 y el Grupo 4 en el readme
+[33mc3726c4[m Rename grupo_1/Group 1 29.05_LLA.ipynb to grupo_1/Drafts and Tests/ Group 1 29.05_LLA.ipynb
+[33m1e91910[m Rename grupo_1/Group 1 29.05_LLA to grupo_1/Drafts and Tests/ Group 1 29.05_LLA
+[33m2074d69[m Add files via upload
+[33m8133959[m Update README_EN_Codigo_Completo.md with improved documentation
+[33m245c4ca[m Merge branch 'joseluissanchezr:main' into main
+[33m169d69e[m correlation and data cleaning scripts (Group 2 & 4)
+[33m7d18351[m Se actualizan errores menores codigo_comleto.py
+[33ma64def2[m update
+[33m8d3f87c[m Delete grupo_1/Group_1_Final_Assignment.ipynb
+[33mf69ea6c[m Add files via upload
+[33mac67695[m Merge pull request #75 from joseluissanchezr/revert-68-Jinela
+[33m7d3e9d4[m Revert "Jinela"
+[33m2e640bd[m Add files via upload
+[33m0d0d4b4[m Added task 2 to the final version of the document
+[33mdb9e418[m Merge pull request #68 from jfaure10/Jinela
+[33m5b019f0[m Merge pull request #74 from Luk-Tas/main
+[33m3d8650c[m Merge pull request #73 from Ivangm33/main
+[33m14bf139[m Merge branch 'main' of github.com:joseluissanchezr/analisis_datos
+[33mfcb691f[m correlation and data cleaning scripts (Group 2 & 4)
+[33mde8587f[m Merge branch 'joseluissanchezr:main' into main
+[33meb6d386[m Rename grupo_1/Group1_Final/Task2&3_Graphs_CleanData.ipynb to grupo_1/Group 1 Final Assignment.ipynb
+[33mf4a77b6[m Rename Task1_CodeForRequest.py to Task1_CodeForRequest.py
+[33m57a403b[m Rename grupo_1/task2_draft to grupo_1/Drafts and Tests/task2_draft
+[33m7b19178[m Rename grupo_1/Task3 draft x Data Analisis Assignment Group 1.ipynb to grupo_1/Drafts and Tests/Task3 draft x Data Analisis Assignment Group 1.ipynb
+[33m41a8a21[m Rename grupo_1/Task3 draft 27.05_3.LLA.ipynb to grupo_1/Drafts and Tests/Task3 draft 27.05_3.LLA.ipynb
+[33me14f683[m Rename grupo_1/Task3 draft 27.05_2.LLA.ipynb to grupo_1/Drafts and Tests/Task3 draft 27.05_2.LLA.ipynb
+[33m50f2592[m Rename grupo_1/Task3 draft 27.05.LLA.ipynb to grupo_1/Drafts and Tests/Task3 draft 27.05.LLA.ipynb
+[33m160bba7[m Rename grupo_1/Task2&3_Graphs_CleanData.ipynb to grupo_1/Drafts and Tests/Task2&3_Graphs_CleanData.ipynb
+[33m1f4bccf[m Rename grupo_1/Table_by_technology.py to grupo_1/Drafts and Tests/Table_by_technology.py
+[33m0767ea2[m Rename grupo_1/Grupo1_LLA.ipynb to grupo_1/Drafts and Tests/Grupo1_LLA.ipynb
+[33m7b55ed8[m Delete grupo_1/Drafts and Tests/Test
+[33maa2905e[m Create Test
+[33mc721acc[m Delete grupo_1/Data Analisis Assignment Group 1.ipynb
+[33md4e0ec6[m Actualizacion en nombre de todo el equipo del bucle y adaptación de datos
+[33m82bb8cf[m Merge pull request #72 from Veronicaupm/main
+[33m7cafa3b[m Add files via upload
+[33m0021c8a[m Add files via upload
+[33m9b8aa82[m Rename Task3_Graphs.ipynb to Task2&3_Graphs_CleanData.ipynb
+[33m29ac596[m Rename Task3 draft x Data Analisis Assignment Group 1 (1).ipynb to Task3_Graphs.ipynb
+[33mcd26377[m Rename grupo_1/Code_for_request.py to Task1_CodeForRequest.py
+[33m45af5de[m Merge pull request #69 from MarouanBerkouat/main
+[33m5a03fdc[m Merge pull request #71 from Karendlopez/main
+[33m909dc30[m Merge pull request #70 from Maritevz/main
+[33m0d1fe1c[m Add correlation analysis script and outputs for G4
+[33m27c1548[m Merge branch 'main' of github.com:Karendlopez/analisis_datos
+[33m225a5ba[m Add README with documentation of the ESIOS analysis script
+[33ma1668a0[m Merge pull request #6 from joseluissanchezr/main
+[33m677a37b[m Merge pull request #66 from MarouanBerkouat/main
+[33mfc5d7cb[m Merge pull request #65 from DianaOrr/patch-2
+[33me500326[m Merge branch 'joseluissanchezr:main' into main
+[33mba2fde6[m wind data con funcion de graficos
+[33m4f01926[m update y descripcion readme paso a paso
+[33m20c3110[m update readme
+[33m65b3e8d[m Update codigo_comleto.py
+[33m0adb9be[m Update and rename main.py to task2_draft
+[33m825eaae[m Update task_2
+[33m92fd56a[m Upload of task 2 draft
+[33m5545a22[m Merge pull request #5 from joseluissanchezr/main
+[33mf471ac8[m Add files via upload
+[33m6658484[m Add files via upload
+[33mfcc808b[m Merge pull request #64 from MarouanBerkouat/main
+[33m5821314[m Merge pull request #63 from MiniSantos2011/main
+[33m41100d1[m Add files via upload
+[33m2c83d9c[m Merge pull request #16 from jfaure10/Jinela
+[33m0f05ca9[m graficas interactivas con punto 1 y 2
+[33m3fc7d4b[m FUNCION DE FILTRO DE DATOS ACTUALIZADO
+[33m255d7dd[m Merge branch 'main' of https://github.com/jfaure10/group3_data_analysis
+[33mc0a3e75[m Delete grupo_1 directory
+[33m2c22266[m WIND DATA QUE LLAMA A LA FUNCION DE FILTRO Y LIMPIA LOS DATOS
+[33m8a4674f[m Delete import requests 2.py
+[33m13d5e2b[m Delete wind_data_daily.py
+[33m874e5bc[m Delete wind_data_instantanea.py
+[33me7a4ea0[m Delete README.md
+[33mbe5f551[m Delete PruebaMiguel.py
+[33m56abc21[m Delete Intra_day directory
+[33m315ece1[m Delete Indisponibilidades directory
+[33m6b6804d[m Delete Hechos_relevant directory
+[33m083f623[m Delete Day_ahead directory
+[33m13f2a85[m Actualizar WIND DATA.py desde MiguelMoure sin fusionar toda la rama
+[33mca05ffe[m Update Task3 draft x Data Analisis Assignment Group 1 (1).ipynb
+[33m4d0778e[m updates
+[33m2624d1e[m update readme
+[33m71d490b[m updates grpahs
+[33mf039591[m update visualising script and graphs
+[33me1257e0[m Merge pull request #15 from jfaure10/Jinela
+[33m0bc9b7c[m codigos de graficas interactivas en graphs
+[33maf3f5ec[m update visualizing plot script
+[33mc80785d[m Merge pull request #14 from jfaure10/Lisa
+[33m5555fa7[m Create Graphs.py
+[33md46a07e[m Delete Graphs.py
+[33mc100afa[m Merge pull request #4 from joseluissanchezr/main
+[33mfd82b21[m Update Graphs.py
+[33m75f8a06[m Create Graficas_interactivas_combinado.py
+[33mdade3ac[m Merge branch 'main' of https://github.com/MiniSantos2011/analisis_datos
+[33m7df0b68[m Exportación y análisis de correlación
+[33m076d02e[m Merge pull request #62 from Maritevz/main
+[33me01648f[m Merge pull request #61 from daouda2406/main
+[33m14c7760[m Merge pull request #60 from MarouanBerkouat/main
+[33m165ebd3[m Merge pull request #59 from Karendlopez/main
+[33m5c72db7[m top speed
+[33m9d6faa8[m Added full preprocessing logic: linear interpolation applied first to fill initial gaps, followed by outlier filtering using the IQR method. A second interpolation pass ensures time series continuity after outlier removal. Also set future values of real generation (indicator_551) to 0 MW from the current time onward, since no actual data exists beyond that point. Additionally, translated in-code comments from Spanish to English for clarity and consistency. The dataset is now ready for export and correlation analysis.
+[33ma91e0cb[m Graficas adicionales
+[33m7fccdd8[m Cleaning data script update
+[33mf45e5f7[m update clean data script
+[33m57b7bf9[m Update clean data
+[33m24f406a[m updare readme
+[33mf90d665[m Merge pull request #1 from joseluissanchezr/main
+[33m83d734d[m Merge pull request #3 from joseluissanchezr/main
+[33m0d783f8[m Merge pull request #1 from joseluissanchezr/main
+[33md60fb4a[m Merge branch 'joseluissanchezr:main' into main
+[33m9b47db8[m Merge pull request #58 from daouda2406/main
+[33mc0cbb0a[m Merge pull request #57 from Veronicaupm/main
+[33m371b77c[m Merge pull request #56 from JuanCamiloCervantes/main
+[33m0a14dd9[m Merge pull request #55 from MarouanBerkouat/main
+[33m048f1c2[m Merge pull request #54 from JavierFd12/main
+[33m0e00323[m fin essai
+[33md8b620e[m essai
+[33me2e1eb4[m FIN PRUEBA
+[33mee24bc0[m prueba
+[33mc08e73f[m Merge branch 'joseluissanchezr:main' into main
+[33mf283dbb[m Merge pull request #2 from joseluissanchezr/main
+[33mc0c6a45[m modificacion README
+[33m9b3cb59[m Agregar archivos de datos, gráficas y scripts de limpieza y visualización del grupo 4
+[33madb86c9[m Agregar archivos del Grupo 2 y modificaciones en scripts del Grupo 1
+[33mf49103d[m Codigo consulta estaciones españa
+[33mdd50674[m Agregar script extract_noaa_api.py
+[33m6d3f8eb[m PARTE 3 TRABAJO FINAL
+[33md64011b[m Merge pull request #1 from joseluissanchezr/main
+[33md0c85b7[m PARTE 3 TRABAJO FINAL
+[33mdfc285c[m Add files via upload
+[33m8770f1c[m Update Task3 draft x Data Analisis Assignment Group 1.ipynb
+[33ma65a821[m Merge pull request #52 from martinnbr/main
+[33m9a27975[m PARTE 2 ORIGINAL codigo_comleto.py
+[33meb4a781[m Merge pull request #51 from Ivangm33/main
+[33m274665a[m Primera parte codigo completo
+[33m1c001d8[m Merge branch 'joseluissanchezr:main' into main
+[33mb027fbe[m Merge pull request #50 from DianaOrr/main
+[33m0a32224[m Merge pull request #5 from DianaOrr/Grupo2
+[33m18e0515[m Rename wind_data.py to wind_data_pull.py
+[33mf4a74be[m Merge pull request #13 from jfaure10/Jinela
+[33mfdfc856[m Agregar opcion Graficas_interactivas.py
+[33m0666c59[m Merge pull request #49 from jfaure10/Maja
+[33m93cf29a[m Add files via upload
+[33md03410c[m new function: graph_normales
+[33mebde3a6[m Merge pull request #48 from Luk-Tas/main
+[33mec0c911[m Hot Fix of Request Script
+[33m6c1d2ff[m Added Markdown Task 4
+[33mad50b2f[m Merge pull request #47 from Luk-Tas/main
+[33m3b2c560[m API Part and Task 2
+[33mae8342e[m Merge pull request #43 from Luk-Tas/main
+[33m353beee[m Merge pull request #42 from Karendlopez/main
+[33m9ef1631[m Merge pull request #41 from jfaure10/Maja
+[33ma9e0566[m Merge pull request #40 from Ivangm33/patch-1
+[33m43d4ede[m Merge pull request #38 from Raf15563/patch-3
+[33mec06b7c[m Merge pull request #2 from joseluissanchezr/main
+[33m7437cc1[m Merge pull request #44 from MarouanBerkouat/main
+[33m84be7d5[m Merge pull request #46 from Raf15563/patch-5
+[33m220f3f4[m Create Table_by_technology.py
+[33m378dc9b[m Delete WIND DATA 2.py
+[33mcecedfa[m Merge pull request #12 from jfaure10/Maja
+[33mb29aa67[m Add README
+[33mefed10a[m Merge pull request #11 from jfaure10/javier-faure
+[33m8c0dfc8[m sin limitacion de 6 meses
+[33m81e28a4[m fin prueba
+[33mb930b85[m Merge branch 'joseluissanchezr:main' into main
+[33m0ce2419[m Primer_Código
+[33m29f63c4[m Merge pull request #39 from MarouanBerkouat/main
+[33mb6a3d6a[m Create Carpeta grupo 2
+[33mb3ce721[m prueba
+[33md4ff6ce[m Update Graphs.py
+[33ma839b7a[m Merge branch 'joseluissanchezr:main' into main
+[33mdcafe58[m Update Graphs.py
+[33m7fee462[m Update Code_for_request.py
+[33m8c32de9[m Merge branch 'main' of https://github.com/Luk-Tas/analisis_datos
+[33mb6ebba9[m Added a Main Document for the final Submission.
+[33ma4eeb77[m new function: graph_extreme
+[33mb09a849[m Merge pull request #37 from JuanCamiloCervantes/main
+[33md462c9f[m Merge pull request #1 from joseluissanchezr/main
+[33m843679a[m Merge pull request #1 from joseluissanchezr/main
+[33md08624b[m Primer código
+[33m387e562[m Carpetas grupo 4
+[33m084e50f[m Merge pull request #36 from jfaure10/Lisa
+[33m4e8c24d[m graph
+[33mf08c7f1[m Merge pull request #35 from Raf15563/patch-2
+[33mcb13043[m Create Code_for_request.py
+[33m0d9121a[m Merge pull request #34 from LucyLAlexander/main
+[33m91ebcd1[m Add files via upload
+[33m1fe48c3[m Add files via upload
+[33m35a7882[m Código para filtro de datos Miguel
+[33m7262f14[m Merge branch 'Grupo2' of https://github.com/DianaOrr/analisis_datos into Grupo2 t push origin Grupo2
+[33m9b3b3dc[m Subo correlationaplication.py con análisis de correlación
+[33m7ab777c[m Delete codigo_grupo2/WIND_DATA.csv
+[33m96239d0[m Delete codigo_grupo2/prueba.txt
+[33m575cb0f[m Delete codigo_grupo2/index.html
+[33m3e52450[m Merge pull request #4 from Ivangm33/rama3
+[33m40b59c9[m Actualización codigo y excel prueba
+[33m824af4f[m Merge pull request #10 from jfaure10/javier-faure
+[33m58dbbae[m Nueva actualizacion
+[33ma0ea811[m Merge pull request #9 from jfaure10/Jinela
+[33m7c43ee3[m actualizacion de codigo
+[33m52b9f99[m Merge pull request #8 from jfaure10/Jinela
+[33m3dddffd[m otras funciones
+[33mdc66557[m Merge pull request #7 from jfaure10/javier-faure
+[33m20dcb02[m Actualizacion de codigo
+[33m0530c9a[m Merge pull request #6 from jfaure10/Jinela
+[33mb389342[m Finalizar merge con main
+[33m9bf569e[m Finalizar merge con main
+[33m2c33bf5[m Delete grupo_1 directory
+[33m64e11e2[m Delete codigo_grupo2 directory
+[33m204f4b1[m Merge branch 'joseluissanchezr:main' into main
+[33m7eaa1fd[m actc
+[33m22a2a24[m act
+[33m5279d59[m Merge pull request #4 from jfaure10/Jinela
+[33m4267e1d[m Merge pull request #3 from jfaure10/javier-faure
+[33m9dd7314[m act
+[33mc593885[m 3 version del codigo
+[33m8edd855[m Resueltos conflictos con main
+[33m81cbd9f[m Merge pull request #2 from jfaure10/javier-faure
+[33m7f9fed8[m primera parte codigo
+[33m1bc194a[m cambio index
+[33m634b855[m preuba 22
+[33mbd931ed[m añadir archivo prueba
+[33m9e62216[m Eliminados archivos csv
+[33mf4117f9[m pureba2
+[33m70a90f7[m Prueba
+[33m6bc4216[m descripcion de variables a estudiar
+[33m9e38a2b[m descripcion de cada variable a estudiar
+[33m1839861[m codigo completo para datos instantaneos
+[33mc25a43e[m act en comentarios
+[33md841326[m Cambios prueba
+[33m4f9ebb4[m Cambio
+[33mf6f3691[m rd
+[33m50dff56[m mejora script de merge
+[33m4a61cc6[m Merge pull request #29 from Raf15563/main
+[33m58b28a4[m Merge pull request #1 from Maritevz/grupo2_marite
+[33m7b8ca2a[m Add files via upload
+[33m0e97409[m codigo de data diaria
+[33mf4e6b2d[m Merge pull request #1 from Raf15563/Raf15563-patch-1
+[33md15dd29[m Create test.py
+[33mf8edc09[m feat: primera contribución de Marite en wind_data.py
+[33m79ac99e[m CLave API, URL y Primera Funcion
+[33mef36cdf[m codigo
+[33m9b8c477[m Merge pull request #24 from jfaure10/Jinela
+[33m6095159[m Merge pull request #26 from DianaOrr/main
+[33m6cecb28[m renombramos carpeta a codigo_grupo2
+[33m6bd3e31[m añadir carpeta cogido_grupoB con proyecto wind_data
+[33m42106b3[m a
+[33m50840ec[m Update PruebaMiguel.py
+[33mcb033a8[m actualizacion
+[33me3b216c[m Actualizacion
+[33mf7a98e6[m Merge branch 'main' of https://github.com/jfaure10/group3_data_analysis into javier-faure
+[33m5df9175[m A
+[33m9aaf246[m Merge branch 'main' of https://github.com/jfaure10/group3_data_analysis
+[33m37d5c48[m Update Parte3.py
+[33m5387571[m guía de git
+[33ma73de7b[m Actualizacion
+[33m2f1c967[m Merge branch 'main' of https://github.com/jfaure10/group3_data
