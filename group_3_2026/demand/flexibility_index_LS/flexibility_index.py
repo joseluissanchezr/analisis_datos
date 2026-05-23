@@ -152,4 +152,32 @@ axes[1].legend()
 
 plt.suptitle('Demand Profile Comparison: Weekdays vs Weekends', fontsize=14, fontweight='bold')
 plt.tight_layout()
+
+
+# FLEXIBILITY SCORE
+# We can create a composite flexibility score based on the calculated metrics
+# We will create a simple composite index (from 0 to 100)
+# A country has a higher flexibility potential if:
+# 1. It has a lower Load Factor (more "peaky" curve needing optimization)
+# 2. It has a lower Peak-to-Valley ratio (deeper daily valleys to shift load)
+
+print("\nFINAL ENERGY DEMAND FLEXIBILITY SCORE (0 to 100):")
+for country in countries:
+    lf = df_flex[country].mean() / df_flex[country].max()
+    df_daily = df_flex[country].resample('D').agg(['min', 'max'])
+    p2v = (df_daily['min'] / df_daily['max']).mean()
+    
+    # 2. Mathematical formulation for the score
+    # We invert the metrics (1 - value) because lower ratios = higher flexibility potential/need.
+    # We give 50% weight to seasonal peakiness (Load Factor) and 50% to daily shifting room (Peak-to-Valley).
+    flexibility_score = ((1 - lf) + (1 - p2v)) / 2 * 100
+    
+    print(f"   * {country}: {flexibility_score:.1f} points")
+
+print("\n--> ANALYSIS CONCLUSION:")
+print("   * GERMANY presents the deepest daily valleys, making it the best suited for short-term Load Shifting.")
+print("   * FRANCE shows the lowest global load factor, indicating a critical need for seasonal Peak Shaving due to temperature sensitivity.")
+print("   * SPAIN displays the most stable macro-demand baseline, meaning its structural grid stress from demand variation is lower compared to its peers.")
+
+
 plt.show()
