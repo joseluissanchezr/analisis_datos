@@ -212,7 +212,7 @@ def analizar_convergencia(df):
 
 
 # -------------------------------------------------------------
-# FUNCIÓN PRINCIPAL (esqueleto — tus compañeras añadirán sus partes)
+# FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
 
 def analizar_todo():
