@@ -71,9 +71,6 @@ plt.xlim(0, 23)
 plt.legend(title='Country', fontsize=11)
 plt.tight_layout()
 
-# Show the plot
-plt.show()
-
 
 # FLEXIBILITY STATISTICS
 # Global Load Factor (GLF)
@@ -89,3 +86,20 @@ for country in countries:
     max_demand = df_flex[country].max()
     load_factor = mean_demand / max_demand
     print(f"   * {country}: {load_factor:.3f}")
+
+
+
+# Average Daily Peak-to-Valley Ratio
+# Measures how deep the nightly valley is compared to the daily peak
+# It shows the available structural room to shift consumption to off-peak hours
+print("\n2. AVERAGE DAILY PEAK-TO-VALLEY RATIO (Minimum / Maximum):")
+for country in countries:
+    df_daily = df_flex[country].resample('D').agg(['min', 'max'])
+    df_daily['peak_to_valley'] = df_daily['min'] / df_daily['max']
+    mean_peak_to_valley = df_daily['peak_to_valley'].mean()
+    print(f"   * {country}: {mean_peak_to_valley:.3f} (The valley represents {mean_peak_to_valley*100:.1f}% of the daily peak)")
+
+
+
+# Show the plot
+plt.show()
