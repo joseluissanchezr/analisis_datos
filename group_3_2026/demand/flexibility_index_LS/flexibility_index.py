@@ -73,3 +73,19 @@ plt.tight_layout()
 
 # Show the plot
 plt.show()
+
+
+# FLEXIBILITY STATISTICS
+# Global Load Factor (GLF)
+# The Global Load Factor is a common metric used to assess the variability of electricity demand
+# It is calculated as the ratio of the average demand to the peak demand over a specific period
+# A lower load factor indicates a more "peaky" demand curve,
+# which implies a higher need for flexibility in the energy system to manage these peaks effectively.
+countries = ['France', 'Germany', 'Spain']
+
+print("\n1. GLOBAL LOAD FACTOR (Mean / Maximum):")
+for country in countries:
+    mean_demand = df_flex[country].mean()
+    max_demand = df_flex[country].max()
+    load_factor = mean_demand / max_demand
+    print(f"   * {country}: {load_factor:.3f}")
