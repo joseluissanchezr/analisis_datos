@@ -82,7 +82,7 @@ def analizar_importexport(df):
     return resumen_mensual
 
 # -------------------------------------------------------------
-# INDICADOR 3: CORRELACIÓN DE PRECIOS
+# INDICADOR 2: CORRELACIÓN DE PRECIOS
 # -------------------------------------------------------------
 
 def analizar_correlacion(df):
@@ -141,7 +141,7 @@ def analizar_correlacion(df):
 
 
 # -------------------------------------------------------------
-# INDICADOR 4: CONVERGENCIA DE PRECIOS
+# INDICADOR 3: CONVERGENCIA DE PRECIOS
 # -------------------------------------------------------------
 
 def analizar_convergencia(df):
