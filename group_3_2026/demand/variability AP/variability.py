@@ -33,3 +33,19 @@ for df in [df_fr, df_de, df_es]:
 analyze_variability(df_fr, "Francia")
 analyze_variability(df_de, "Alemania")
 analyze_variability(df_es, "España")
+
+def plot_rolling_variability(df, country):
+    df = df.sort_values("datetime").reset_index(drop=True)
+    # Calculate the 24-hour rolling standard deviation to see how it fluctuates
+    df['rolling_std'] = df['demand_mwh'].rolling(window=24).std()
+
+    plt.figure(figsize=(14, 5))
+    plt.plot(df["datetime"], df['rolling_std'], label="Desviación Estándar (24h)", color="orange")
+    
+    plt.title(f"Variabilidad de la Demanda (Rolling 24h) - {country}")
+    plt.xlabel("Fecha")
+    plt.ylabel("Desviación Estándar (MWh)")
+    plt.legend()
+    plt.tight_layout()
+
+
