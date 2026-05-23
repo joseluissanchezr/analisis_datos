@@ -35,7 +35,7 @@ FR = "FR"       # Francia
 DE = "DE_LU"    # Alemania + Luxemburgo
 
 # RUTA AJUSTADA A TU PROYECTO: group4-2026/data/Raw
-CARPETA_RAW = os.path.join("group4-2026", "data", "Raw")
+CARPETA_RAW = os.path.join("data", "raw")
 
 # Creamos la carpeta si no existe todavía
 os.makedirs(CARPETA_RAW, exist_ok=True)
