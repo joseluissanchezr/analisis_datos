@@ -1,0 +1,7 @@
+entsoe-py
+pandas
+numpy
+matplotlib
+seaborn
+python-dotenv
+jupyter

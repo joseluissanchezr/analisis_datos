@@ -95,9 +95,27 @@ def descargar_capacidad(pais_origen, pais_destino, nombre_archivo):
         print(f"  ✓ Guardado en {ruta}")
         return df
     except Exception as error:
-        print(f"  ✗ Error descargando NTC {pais_origen}→{pais_destino}: {error}")
+        print(f"  ✗ Error descargando NTC, se intentará descargar intercambios programados: {error}")
+        descargar_intercambio_programado(pais_origen, pais_destino, nombre_archivo)
         return None
 
+def descargar_intercambio_programado(pais_origen, pais_destino, nombre_archivo):
+    print(f"Descargando intercambios comerciales (Scheduled) {pais_origen} → {pais_destino}...")
+    try:
+        datos = cliente.query_scheduled_exchanges(
+            country_code_from=pais_origen,
+            country_code_to=pais_destino,
+            start=FECHA_INICIO,
+            end=FECHA_FIN
+        )
+        df = datos.to_frame(name=f"scheduled_{pais_origen}_{pais_destino}_MW")
+        ruta = os.path.join(CARPETA_RAW, nombre_archivo)
+        df.to_csv(ruta)
+        print(f"  ✓ Guardado en {ruta}")
+        return df
+    except Exception as error:
+        print(f"  ✗ Error descargando intercambios {pais_origen}→{pais_destino}: {error}")
+        return None
 # -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
