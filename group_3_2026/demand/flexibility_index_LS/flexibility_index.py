@@ -63,12 +63,12 @@ for pais in ['France', 'Germany', 'Spain']:
     plt.plot(perfil_horario.index, perfil_horario[pais], marker='o', linewidth=2, label=pais)
 
 
-plt.title('Perfil Diario Promedio de la Demanda Eléctrica', fontsize=14, fontweight='bold')
-plt.xlabel('Hora del Día', fontsize=12)
-plt.ylabel('Demanda Promedio (MWh)', fontsize=12)
+plt.title('Average Daily Electricity Demand Profile', fontsize=14, fontweight='bold')
+plt.xlabel('Hour of the Day', fontsize=12)
+plt.ylabel('Average Demand (MWh)', fontsize=12)
 plt.xticks(range(0, 24))  # Forzar a que salgan todas las horas de la 0 a la 23
 plt.xlim(0, 23)
-plt.legend(title='País', fontsize=11)
+plt.legend(title='Country', fontsize=11)
 plt.tight_layout()
 
 # Show the plot
