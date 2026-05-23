@@ -60,10 +60,25 @@ def analizar_importexport(df):
     print("\nResumen mensual ES→FR:")
     print(resumen_mensual.round(1))
 
-    ruta = os.path.join(CARPETA_RESULTADOS, "importexport_mensual.csv")
+    ruta = os.path.join(CARPETA_RESULTADOS, "importexport_mensualESFR.csv")
     resumen_mensual.to_csv(ruta)
     print(f"\n✓ Guardado en {ruta}")
 
+
+    resumen_mensual = flujos_netos.resample("ME").agg(
+        media=("neto_FR_DE_MWh", "mean"),
+        total_exportado=("neto_FR_DE_MWh", lambda x: x[x > 0].sum()),
+        total_importado=("neto_FR_DE_MWh", lambda x: x[x < 0].sum()),
+        horas_exportando=("neto_FR_DE_MWh", lambda x: (x > 0).sum()),
+        horas_importando=("neto_FR_DE_MWh", lambda x: (x < 0).sum()),
+    )
+
+    print("\nResumen mensual FR→DE:")
+    print(resumen_mensual.round(1))
+
+    ruta = os.path.join(CARPETA_RESULTADOS, "importexport_mensualFRDE.csv")
+    resumen_mensual.to_csv(ruta)
+    print(f"\n✓ Guardado en {ruta}")
     return resumen_mensual
 
 # -------------------------------------------------------------
@@ -210,7 +225,7 @@ def analizar_convergencia(df):
 
     return resultado, resumen
 # -------------------------------------------------------------
-# INDICADOR 2: CONGESTIONES
+# INDICADOR 4: CONGESTIONES
 # -------------------------------------------------------------
 
 def analizar_congestiones(df):
