@@ -48,4 +48,7 @@ def plot_rolling_variability(df, country):
     plt.legend()
     plt.tight_layout()
 
-
+plot_rolling_variability(df_fr, "Francia")
+plot_rolling_variability(df_de, "Alemania")
+plot_rolling_variability(df_es, "España")
+plt.show()
