@@ -28,3 +28,8 @@ for df in [df_fr, df_de, df_es]:
         print(f"Amplitud Media Diaria (Max-Min): {avg_daily_amplitude:.0f} MWh")
         
         return cv, avg_daily_amplitude
+    
+    # Analyze variability for each country
+analyze_variability(df_fr, "Francia")
+analyze_variability(df_de, "Alemania")
+analyze_variability(df_es, "España")
