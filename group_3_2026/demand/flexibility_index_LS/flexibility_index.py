@@ -100,6 +100,56 @@ for country in countries:
     print(f"   * {country}: {mean_peak_to_valley:.3f} (The valley represents {mean_peak_to_valley*100:.1f}% of the daily peak)")
 
 
+# LOAD FACTOR SEGMENTATION BY WEEKDAYS AND WEEKENDS
 
-# Show the plot
+# Group the data by weekend flag and hour and calculate the mean demand for each country
+profile_days = df_flex.groupby(['is_weekend', 'hour'])[countries].mean()
+
+# Separate into Weekdays and Weekends
+weekday_profile = profile_days.loc[False]
+weekend_profile = profile_days.loc[True]
+
+# Calculate and print the Load Factor for both scenarios
+print("\nLOAD FACTOR SEGMENTATION:")
+for country in countries:
+    
+    df_weekdays = df_flex[df_flex['is_weekend'] == False][country]
+    df_weekends = df_flex[df_flex['is_weekend'] == True][country]
+    
+    lf_weekday = df_weekdays.mean() / df_weekdays.max()
+    lf_weekend = df_weekends.mean() / df_weekends.max()
+    
+    print(f"   * {country}:")
+    print(f"     - Weekdays Load Factor: {lf_weekday:.3f}")
+    print(f"     - Weekends Load Factor: {lf_weekend:.3f}")
+
+# Plotting the comparison
+fig, axes = plt.subplots(1, 2, figsize=(16, 6), sharey=True)
+sns.set_theme(style="whitegrid")
+
+colors = {'France': '#1f77b4', 'Germany': '#ff7f0e', 'Spain': '#2ca02c'}
+
+# Weekdays Plot
+for country in countries:
+    axes[0].plot(weekday_profile.index, weekday_profile[country], 
+                 marker='o', linewidth=2, color=colors[country], label=country)
+axes[0].set_title('Weekdays Average Demand Profile (Mon-Fri)', fontsize=12, fontweight='bold')
+axes[0].set_xlabel('Hour of the Day')
+axes[0].set_ylabel('Average Demand (MWh)')
+axes[0].set_xticks(range(0, 24))
+axes[0].set_xlim(0, 23)
+axes[0].legend()
+
+# Weekends Plot
+for country in countries:
+    axes[1].plot(weekend_profile.index, weekend_profile[country], 
+                 marker='^', linewidth=2, linestyle='--', color=colors[country], label=country)
+axes[1].set_title('Weekends Average Demand Profile (Sat-Sun)', fontsize=12, fontweight='bold')
+axes[1].set_xlabel('Hour of the Day')
+axes[1].set_xticks(range(0, 24))
+axes[1].set_xlim(0, 23)
+axes[1].legend()
+
+plt.suptitle('Demand Profile Comparison: Weekdays vs Weekends', fontsize=14, fontweight='bold')
+plt.tight_layout()
 plt.show()
