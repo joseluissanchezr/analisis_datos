@@ -18,8 +18,14 @@ import pandas as pd
 # CONFIGURACIÓN DE CARPETAS
 # -------------------------------------------------------------
 
-CARPETA_RAW = os.path.join("data", "raw")
-CARPETA_PROCESSED = os.path.join("data", "processed")
+# Obtencion de la ruta absoluta del directorio donde se encuentra este script
+DIR_ACTUAL = os.path.dirname(os.path.abspath(__file__))
+# Subimos dos niveles 
+DIR_RAIZ = os.path.dirname(os.path.dirname(DIR_ACTUAL))
+
+
+CARPETA_RAW = os.path.join(DIR_RAIZ, "data", "raw")
+CARPETA_PROCESSED = os.path.join(DIR_RAIZ, "data", "processed")
 os.makedirs(CARPETA_PROCESSED, exist_ok=True)
 
 # -------------------------------------------------------------
