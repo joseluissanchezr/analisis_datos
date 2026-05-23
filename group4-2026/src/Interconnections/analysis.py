@@ -209,7 +209,61 @@ def analizar_convergencia(df):
     print(f"✓ Guardado en {ruta_resumen}")
 
     return resultado, resumen
+# -------------------------------------------------------------
+# INDICADOR 2: CONGESTIONES
+# -------------------------------------------------------------
 
+def analizar_congestiones(df):
+    """
+    Detecta horas en que las interconexiones estaban congestionadas.
+    Una congestión ocurre cuando el flujo real supera el 90%
+    de la capacidad máxima de la línea (NTC).
+    """
+
+    print("\n--- ANÁLISIS DE CONGESTIONES ---")
+
+    resultado = pd.DataFrame(index=df.index)
+
+    # Porcentaje de uso de cada interconexión
+    resultado["uso_ES_FR_pct"] = (
+        df["flujo_ES_FR_MWh"].abs() / df["ntc_ES_FR_MW"] * 100
+    ).round(1)
+
+    resultado["uso_FR_DE_pct"] = (
+        df["flujo_FR_DE_MWh"].abs() / df["ntc_FR_DE_MW"] * 100
+    ).round(1)
+
+    # Horas congestionadas (uso >= 90%)
+    UMBRAL = 90
+    resultado["congestion_ES_FR"] = resultado["uso_ES_FR_pct"] >= UMBRAL
+    resultado["congestion_FR_DE"] = resultado["uso_FR_DE_pct"] >= UMBRAL
+
+    # Resumen por mes
+    resumen = resultado.resample("ME").agg(
+        horas_congestion_ES_FR=("congestion_ES_FR", "sum"),
+        horas_congestion_FR_DE=("congestion_FR_DE", "sum"),
+        uso_medio_ES_FR=("uso_ES_FR_pct", "mean"),
+        uso_medio_FR_DE=("uso_FR_DE_pct", "mean"),
+        uso_maximo_ES_FR=("uso_ES_FR_pct", "max"),
+        uso_maximo_FR_DE=("uso_FR_DE_pct", "max"),
+    ).round(1)
+
+    print("\nResumen mensual de congestiones:")
+    print(resumen)
+
+    top = resultado["uso_ES_FR_pct"].nlargest(10)
+    print("\nTop 10 horas de mayor uso en ES→FR (%):")
+    print(top)
+
+    ruta_detalle = os.path.join(CARPETA_RESULTADOS, "congestiones_detalle.csv")
+    ruta_resumen = os.path.join(CARPETA_RESULTADOS, "congestiones_mensual.csv")
+    resultado.to_csv(ruta_detalle)
+    resumen.to_csv(ruta_resumen)
+
+    print(f"\n✓ Guardado: {ruta_detalle}")
+    print(f"✓ Guardado: {ruta_resumen}")
+
+    return resultado, resumen
 
 # -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
@@ -227,6 +281,7 @@ def analizar_todo():
     analizar_importexport(df)
     analizar_correlacion(df)
     analizar_convergencia(df)
+    analizar_congestiones(df)
     print("\n" + "=" * 50)
     print("ANÁLISIS COMPLETADO")
     print("=" * 50)
