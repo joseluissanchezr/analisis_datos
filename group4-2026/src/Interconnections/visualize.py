@@ -25,9 +25,13 @@ import seaborn as sns
 # CONFIGURACIÓN GENERAL
 # -------------------------------------------------------------
 
-CARPETA_RESULTADOS = os.path.join("data", "processed", "resultados")
-CARPETA_PROCESSED  = os.path.join("data", "processed")
-CARPETA_FIGURAS    = "figures"
+# Rutas absolutas basadas en la ubicación del script
+DIR_SCRIPT = os.path.dirname(os.path.abspath(__file__))
+DIR_RAIZ   = os.path.dirname(os.path.dirname(DIR_SCRIPT))   # sube hasta group4-2026/
+
+CARPETA_RESULTADOS = os.path.join(DIR_RAIZ, "data", "processed", "resultados")
+CARPETA_PROCESSED  = os.path.join(DIR_RAIZ, "data", "processed")
+CARPETA_FIGURAS    = os.path.join(DIR_RAIZ, "figures")
 
 os.makedirs(CARPETA_FIGURAS, exist_ok=True)
 
