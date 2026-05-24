@@ -519,7 +519,47 @@ def grafica_precios_comparativo():
 
     plt.tight_layout()
     guardar_figura("precios_comparativo.png")
-    
+
+    # -------------------------------------------------------------
+# GRÁFICA 7 — HEATMAP DE CONGESTIONES FR-DE
+# -------------------------------------------------------------
+
+def grafica_heatmap_congestiones_fr_de():
+    """
+    Heatmap que muestra el porcentaje de uso de la interconexión
+    FR-DE por hora del día (eje Y) y por mes (eje X).
+
+    Complementa el heatmap ES-FR ya existente, completando
+    el análisis del corredor eléctrico europeo ES-FR-DE.
+
+    Interpretación:
+        Verde → uso bajo, línea con capacidad disponible.
+        Rojo  → uso cercano al 90%, riesgo de congestión.
+    """
+    print("\nGenerando heatmap_congestiones_fr_de.png...")
+
+    df = cargar_datos_limpios()
+    if df is None:
+        return
+
+    df["uso_FR_DE_pct"] = (
+        df["flujo_FR_DE_MWh"].abs() / df["ntc_FR_DE_MW"] * 100
+    ).clip(upper=120)
+
+    df_local = df[["uso_FR_DE_pct"]].copy()
+    df_local["hora"]    = df_local.index.hour
+    df_local["mes_num"] = df_local.index.month
+
+    meses_es = ["Ene","Feb","Mar","Abr","May","Jun",
+                "Jul","Ago","Sep","Oct","Nov","Dic"]
+
+    tabla = df_local.pivot_table(
+        index="hora",
+        columns="mes_num",
+        values="uso_FR_DE_pct",
+        aggfunc="mean"
+    )
+    tabla.columns = [meses_es[m - 1] for m in tabla.columns]
 # -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
