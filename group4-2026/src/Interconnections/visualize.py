@@ -648,7 +648,11 @@ def visualizar_todo():
     grafica_flujos_netos()
     grafica_heatmap_congestiones()
     grafica_correlacion_precios()
-    grafica_spread_vs_flujo()  
+    grafica_spread_vs_flujo()
+    grafica_convergencia_precios()
+    grafica_precios_comparativo()
+    grafica_heatmap_congestiones_fr_de()
+    grafica_balance_importexport()
 
     print("\n" + "=" * 50)
     print("Gráficas completadas")
