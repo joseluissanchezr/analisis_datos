@@ -20,8 +20,8 @@ import numpy as np
 # CONFIGURACIÓN
 # -------------------------------------------------------------
 
-CARPETA_PROCESSED = os.path.join("data", "processed")
-CARPETA_RESULTADOS = os.path.join("data", "processed", "resultados")
+CARPETA_PROCESSED = os.path.join("group4-2026", "data", "Processed")
+CARPETA_RESULTADOS = os.path.join("group4-2026", "data", "Processed", "resultados")
 
 os.makedirs(CARPETA_RESULTADOS, exist_ok=True)
 
@@ -29,7 +29,6 @@ os.makedirs(CARPETA_RESULTADOS, exist_ok=True)
 CAPACIDAD_MWH = 100        # capacidad máxima de la batería en MWh
 POTENCIA_MW = 25           # potencia máxima de carga/descarga en MW por hora
 EFICIENCIA = 0.90          # eficiencia del ciclo carga/descarga (90%)
-
 
 # -------------------------------------------------------------
 # CARGA DE DATOS
@@ -106,7 +105,7 @@ def simular_bateria(precios_serie, nombre_pais):
 
         elif precio > mediana and energia_actual > 0:
             # DESCARGAR: vendemos energía cara
-            energia_descargada = min(POTENCIA_MW, energia_actual)
+            energia_descargada = min(POTENCIA_MW, energia_actual) * EFICIENCIA
             energia_actual -= energia_descargada
             ingreso = energia_descargada * precio
             beneficio_acumulado += ingreso
