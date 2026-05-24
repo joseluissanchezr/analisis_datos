@@ -532,9 +532,8 @@ def grafica_heatmap_congestiones_fr_de():
     Complementa el heatmap ES-FR ya existente, completando
     el análisis del corredor eléctrico europeo ES-FR-DE.
 
-    Interpretación:
-        Verde → uso bajo, línea con capacidad disponible.
-        Rojo  → uso cercano al 90%, riesgo de congestión.
+        Verde implica uso bajo, línea con capacidad disponible.
+        Rojo implica uso cercano al 90%, riesgo de congestión.
     """
     print("\nGenerando heatmap_congestiones_fr_de.png...")
 
@@ -585,7 +584,58 @@ def grafica_heatmap_congestiones_fr_de():
     plt.tight_layout()
     guardar_figura("heatmap_congestiones_fr_de.png")
 
-    
+    # -------------------------------------------------------------
+# GRÁFICA 8 — BALANCE IMPORT/EXPORT ANUAL POR PAÍS
+# -------------------------------------------------------------
+
+def grafica_balance_importexport():
+    """
+    Gráfico de barras horizontales con el balance neto anual
+    de cada país en sus interconexiones.
+
+        Barra positiva -> el país exporta más de lo que importa
+        Barra negativa -> el país importa más de lo que exporta
+
+    Permite identificar de un vistazo qué países actúan como
+    exportadores netos y cuáles como importadores netos en 2024.
+    """
+    print("\nGenerando balance_importexport.png...")
+
+    df = cargar_datos_limpios()
+    if df is None:
+        return
+
+    # Balance anual: suma de todos los flujos netos del año
+    balance_ES = df["neto_ES_FR_MWh"].sum() / 1e6   # convertimos a TWh
+    balance_FR = -df["neto_ES_FR_MWh"].sum() / 1e6 + df["neto_FR_DE_MWh"].sum() / 1e6
+    balance_DE = -df["neto_FR_DE_MWh"].sum() / 1e6
+
+    paises  = ["España (ES)", "Francia (FR)", "Alemania (DE)"]
+    valores = [balance_ES, balance_FR, balance_DE]
+    colores = [COLOR_ES if v >= 0 else "#AAAAAA" for v in valores]
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    bars = ax.barh(paises, valores, color=colores, edgecolor="white", height=0.5)
+
+    # Etiquetas con el valor dentro de cada barra
+    for bar, val in zip(bars, valores):
+        ax.text(
+            val + (0.02 if val >= 0 else -0.02),
+            bar.get_y() + bar.get_height() / 2,
+            f"{val:.2f} TWh",
+            va="center",
+            ha="left" if val >= 0 else "right",
+            fontsize=11, fontweight="bold"
+        )
+
+    ax.axvline(0, color="black", linewidth=1)
+    ax.set_title("Balance neto anual de intercambios eléctricos por país (2024)",
+                 fontsize=13, fontweight="bold")
+    ax.set_xlabel("Balance neto (TWh)")
+
+    plt.tight_layout()
+    guardar_figura("balance_importexport.png")
 # -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
