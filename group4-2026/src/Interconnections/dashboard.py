@@ -127,6 +127,8 @@ impexp_display = impexp_men.copy()
 if not impexp_display.empty:
     # Formatear el índice para mostrar solo el mes/año
     impexp_display.index = impexp_display.index.strftime("%Y-%m")
+    # Añadir unidades [MWh] a todos los nombres de las columnas
+    impexp_display.columns = [f"{str(col)} [MWh]" for col in impexp_display.columns]
     # Asegurarnos de no mostrar columnas extras si no hacen falta, o formatear números
     st.dataframe(impexp_display.style.format("{:.2f}"), use_container_width=True)
 else:
@@ -159,6 +161,10 @@ col1, col2 = st.columns(2)
 # 5. Intercambios Mensuales (Import / Export)
 with col1:
     st.subheader("Intercambios Mensuales")
+    if country_pair == "ES-FR":
+        st.text(r"Datos de importación/exportación desde el punto de vista Español.")
+    else:
+        st.text(r"Datos de importación/exportación desde el punto de vista Frances.")
     if not impexp_men.empty:
         fig_impexp = go.Figure()
         fig_impexp.add_trace(go.Scatter(
@@ -189,6 +195,10 @@ import streamlit as st
 # 6. Intercambios Diarios
 with col2:
     st.subheader("Intercambios Diarios")
+    if country_pair == "ES-FR":
+        st.text(r"Datos de importación/exportación desde el punto de vista Español.")
+    else:
+        st.text(r"Datos de importación/exportación desde el punto de vista Frances.")
     if not dl.empty:
         neto_col = f"neto_{country_pair.replace('-', '_')}_MWh"
         
