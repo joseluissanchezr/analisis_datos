@@ -396,6 +396,60 @@ def grafica_spread_vs_flujo():
     plt.tight_layout()
     guardar_figura("spread_vs_flujo.png")
 
+    # -------------------------------------------------------------
+# GRÁFICA 5 — CONVERGENCIA DE PRECIOS (SPREAD)
+# -------------------------------------------------------------
+
+def grafica_convergencia_precios():
+    """
+    Gráfica de línea con la evolución diaria del spread absoluto
+entre los tres pares de países (ES-FR, FR-DE, ES-DE).
+
+    Spread pequeño (<5 EUR/MWh) → mercados bien integrados,
+    los precios convergen entre países.
+    Spread grande → mercados poco conectados o con congestión
+    en las interconexiones.
+
+La franja verde indica la zona de convergencia. Cuanto más
+tiempo pasen las líneas dentro de esa franja, mejor integrado
+está el mercado europeo.
+    """
+    print("\nGenerando convergencia_precios.png...")
+
+    df = cargar_datos_limpios()
+    if df is None:
+        return
+
+    spreads = pd.DataFrame({
+        "ES–FR": (df["precio_ES_EUR_MWh"] - df["precio_FR_EUR_MWh"]).abs(),
+        "FR–DE": (df["precio_FR_EUR_MWh"] - df["precio_DE_EUR_MWh"]).abs(),
+        "ES–DE": (df["precio_ES_EUR_MWh"] - df["precio_DE_EUR_MWh"]).abs(),
+    }).resample("D").mean()
+
+    UMBRAL = 5
+
+    fig, ax = plt.subplots(figsize=(13, 6))
+
+    ax.axhspan(0, UMBRAL, color="#2EC27E", alpha=0.12,
+               label=f"Zona convergencia (<{UMBRAL} EUR/MWh)")
+    ax.axhline(UMBRAL, color="#2EC27E", linewidth=1.2, linestyle="--", alpha=0.7)
+
+    for col, color in zip(spreads.columns, [COLOR_ES, COLOR_FR, COLOR_DE]):
+        ax.plot(spreads.index, spreads[col], label=col, color=color, linewidth=1.4)
+
+    ax.set_title("Convergencia de precios — Spread diario absoluto entre países (2024)",
+                 fontsize=13, fontweight="bold")
+    ax.set_ylabel("Spread absoluto (EUR/MWh)")
+    ax.set_xlabel("Fecha")
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    plt.xticks(rotation=30, ha="right")
+    ax.legend(loc="upper right")
+    ax.set_ylim(bottom=0)
+
+    plt.tight_layout()
+    guardar_figura("convergencia_precios.png")
+
 # -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
