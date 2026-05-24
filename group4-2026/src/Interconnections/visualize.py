@@ -315,22 +315,104 @@ def grafica_correlacion_precios():
 
 
 # -------------------------------------------------------------
+# GRÁFICA 4 — SPREAD DE PRECIOS vs FLUJO NETO (ES↔FR)
+# -------------------------------------------------------------
+
+def grafica_spread_vs_flujo():
+    """
+    Scatter plot que muestra la relación entre el spread de precios
+    (precio_ES - precio_FR) y el flujo neto entre ambos países.
+
+    Hipótesis económica:
+        En un mercado bien integrado, la electricidad debe fluir
+        del mercado barato hacia el mercado caro. Es decir:
+            - Spread positivo (ES más caro) → flujo negativo (FR→ES)
+            - Spread negativo (FR más caro) → flujo positivo (ES→FR)
+
+    Se espera una correlación negativa fuerte entre las dos variables.
+    Una correlación cercana a 0 indicaría que las interconexiones
+    no están permitiendo el arbitraje natural del mercado (por ejemplo,
+    por congestión persistente).
+    """
+    print("\nGenerando spread_vs_flujo.png...")
+
+    df = cargar_datos_limpios()
+    if df is None:
+        return
+
+    # Calculamos spread y juntamos con el flujo neto
+    spread = df["precio_ES_EUR_MWh"] - df["precio_FR_EUR_MWh"]
+    flujo  = df["neto_ES_FR_MWh"]
+
+    # Quitamos filas con NaN para regresión y correlación
+    datos = pd.DataFrame({"spread": spread, "flujo": flujo}).dropna()
+    correlacion = datos["spread"].corr(datos["flujo"])
+
+    # Ajuste lineal: y = pendiente·x + intercepto
+    pendiente, intercepto = np.polyfit(datos["spread"], datos["flujo"], 1)
+    x_linea = np.linspace(datos["spread"].min(), datos["spread"].max(), 100)
+    y_linea = pendiente * x_linea + intercepto
+
+    # Figura
+    fig, ax = plt.subplots(figsize=(11, 7))
+
+    # Scatter — alpha bajo porque hay miles de puntos solapados
+    ax.scatter(datos["spread"], datos["flujo"],
+               alpha=0.15, s=10, color=COLOR_ES,
+               edgecolors="none", label="Horas")
+
+    # Línea de tendencia
+    ax.plot(x_linea, y_linea,
+            color="black", linestyle="--", linewidth=2,
+            label=f"Tendencia lineal (pendiente = {pendiente:.1f})")
+
+    # Líneas de referencia en cero
+    ax.axhline(0, color="gray", linewidth=0.7, alpha=0.6)
+    ax.axvline(0, color="gray", linewidth=0.7, alpha=0.6)
+
+    # Anotaciones en los cuadrantes para facilitar la interpretación
+    ax.text(0.97, 0.97, "ES caro\nES exporta\n(esperado vacío)",
+            transform=ax.transAxes, ha="right", va="top",
+            fontsize=9, color="gray", alpha=0.7, style="italic")
+    ax.text(0.03, 0.03, "FR caro\nES importa\n(esperado vacío)",
+            transform=ax.transAxes, ha="left", va="bottom",
+            fontsize=9, color="gray", alpha=0.7, style="italic")
+    ax.text(0.97, 0.03, "ES caro → FR exporta\n(lógico)",
+            transform=ax.transAxes, ha="right", va="bottom",
+            fontsize=9, color="green", alpha=0.8, style="italic")
+    ax.text(0.03, 0.97, "FR caro → ES exporta\n(lógico)",
+            transform=ax.transAxes, ha="left", va="top",
+            fontsize=9, color="green", alpha=0.8, style="italic")
+
+    ax.set_title(
+        f"Relación entre spread de precios y flujo neto ES↔FR\n"
+        f"Correlación de Pearson: {correlacion:.3f}",
+        fontsize=13, fontweight="bold"
+    )
+    ax.set_xlabel("Spread precio (ES − FR) en EUR/MWh")
+    ax.set_ylabel("Flujo neto ES → FR en MWh/h")
+    ax.legend(loc="lower left")
+
+    plt.tight_layout()
+    guardar_figura("spread_vs_flujo.png")
+
+# -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
 
 def visualizar_todo():
     print("=" * 50)
-    print("VISUALIZACIÓN — GRUPO 4 (parte 1/2)")
+    print("VISUALIZACIÓN — GRUPO 4")
     print("=" * 50)
 
     grafica_flujos_netos()
     grafica_heatmap_congestiones()
     grafica_correlacion_precios()
+    grafica_spread_vs_flujo()  
 
     print("\n" + "=" * 50)
-    print("Gráficas 1–3 completadas")
+    print("Gráficas completadas")
     print(f"Archivos guardados en: {CARPETA_FIGURAS}/")
-    print("Ejecuta visualize_parte2.py para las gráficas 4 y 5")
     print("=" * 50)
 
 
