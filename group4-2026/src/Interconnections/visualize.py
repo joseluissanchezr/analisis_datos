@@ -213,22 +213,25 @@ def grafica_heatmap_congestiones():
     ).clip(upper=120)
 
     # Columnas auxiliares para pivotar
+    # Usamos número del mes (1-12) para evitar problemas con el locale del sistema.
     df_local = df[["uso_ES_FR_pct"]].copy()
-    df_local["hora"] = df_local.index.hour
-    df_local["mes"]  = df_local.index.strftime("%b")
+    df_local["hora"]    = df_local.index.hour
+    df_local["mes_num"] = df_local.index.month
 
-    # Respetamos el orden natural de los meses
-    meses_orden    = ["Jan","Feb","Mar","Apr","May","Jun",
-                      "Jul","Aug","Sep","Oct","Nov","Dec"]
-    meses_presentes = [m for m in meses_orden if m in df_local["mes"].unique()]
+    # Etiquetas en español, en orden natural Ene → Dic
+    meses_es = ["Ene","Feb","Mar","Abr","May","Jun",
+                "Jul","Ago","Sep","Oct","Nov","Dic"]
 
-    # Tabla pivote: filas = hora del día, columnas = mes
+    # Tabla pivote: filas = hora del día, columnas = número de mes
     tabla = df_local.pivot_table(
         index="hora",
-        columns="mes",
+        columns="mes_num",
         values="uso_ES_FR_pct",
         aggfunc="mean"
-    )[meses_presentes]
+    )
+
+    # Renombramos las columnas (1-12) a etiquetas en español ("Ene"-"Dic")
+    tabla.columns = [meses_es[m - 1] for m in tabla.columns]
 
     fig, ax = plt.subplots(figsize=(13, 7))
 
