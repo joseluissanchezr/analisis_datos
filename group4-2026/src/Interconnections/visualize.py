@@ -520,7 +520,7 @@ def grafica_precios_comparativo():
     plt.tight_layout()
     guardar_figura("precios_comparativo.png")
 
-    # -------------------------------------------------------------
+# -------------------------------------------------------------
 # GRÁFICA 7 — HEATMAP DE CONGESTIONES FR-DE
 # -------------------------------------------------------------
 
@@ -560,6 +560,32 @@ def grafica_heatmap_congestiones_fr_de():
         aggfunc="mean"
     )
     tabla.columns = [meses_es[m - 1] for m in tabla.columns]
+    fig, ax = plt.subplots(figsize=(13, 7))
+
+    sns.heatmap(
+        tabla,
+        ax=ax,
+        cmap="RdYlGn_r",
+        vmin=0, vmax=100,
+        linewidths=0.4,
+        linecolor="white",
+        cbar_kws={"label": "Uso de la interconexión (%)", "shrink": 0.85},
+        annot=False,
+    )
+
+    ax.set_title(
+        "Heatmap de uso de la interconexión FR–DE\n"
+        "(% de la capacidad NTC, media por hora y mes — 2024)",
+        fontsize=13, fontweight="bold"
+    )
+    ax.set_xlabel("Mes")
+    ax.set_ylabel("Hora del día (UTC)")
+    ax.set_yticklabels([f"{h:02d}:00" for h in range(24)], rotation=0, fontsize=9)
+
+    plt.tight_layout()
+    guardar_figura("heatmap_congestiones_fr_de.png")
+
+    
 # -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
