@@ -451,6 +451,76 @@ está el mercado europeo.
     guardar_figura("convergencia_precios.png")
 
 # -------------------------------------------------------------
+# GRÁFICA 6 — COMPARATIVA DE PRECIOS POR PAÍS
+# -------------------------------------------------------------
+
+def grafica_precios_comparativo():
+    """
+    Dos subgráficas en una sola figura:
+
+        Superior: evolución mensual del precio medio por país.
+        Inferior: boxplot con la distribución completa del periodo.
+
+    Permite comparar tanto la tendencia temporal como la
+    dispersión y los outliers de cada mercado.
+    """
+    print("\nGenerando precios_comparativo.png...")
+
+    df = cargar_datos_limpios()
+    if df is None:
+        return
+
+    precios = df[["precio_ES_EUR_MWh", "precio_FR_EUR_MWh", "precio_DE_EUR_MWh"]].copy()
+    mensual = precios.resample("ME").mean()
+    etiquetas = {
+        "precio_ES_EUR_MWh": "España (ES)",
+        "precio_FR_EUR_MWh": "Francia (FR)",
+        "precio_DE_EUR_MWh": "Alemania (DE)",
+    }
+    mensual = mensual.rename(columns=etiquetas)
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(13, 10))
+    fig.suptitle("Comparativa de precios day-ahead — ES / FR / DE (2024)",
+                 fontsize=14, fontweight="bold")
+
+    for col, color in zip(mensual.columns, [COLOR_ES, COLOR_FR, COLOR_DE]):
+        ax1.plot(mensual.index, mensual[col], marker="o", markersize=5,
+                 linewidth=2, color=color, label=col)
+
+    ax1.set_title("Evolución mensual del precio medio")
+    ax1.set_ylabel("Precio (EUR/MWh)")
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    ax1.xaxis.set_major_locator(mdates.MonthLocator())
+    ax1.tick_params(axis="x", rotation=30)
+    ax1.legend()
+
+    datos_boxplot = [
+        precios["precio_ES_EUR_MWh"].dropna().values,
+        precios["precio_FR_EUR_MWh"].dropna().values,
+        precios["precio_DE_EUR_MWh"].dropna().values,
+    ]
+    nombres = ["España (ES)", "Francia (FR)", "Alemania (DE)"]
+    colores  = [COLOR_ES, COLOR_FR, COLOR_DE]
+
+    bp = ax2.boxplot(
+        datos_boxplot,
+        labels=nombres,
+        patch_artist=True,
+        medianprops=dict(color="black", linewidth=2),
+        flierprops=dict(marker="o", markersize=2.5, alpha=0.3, linestyle="none"),
+    )
+
+    for patch, color in zip(bp["boxes"], colores):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.55)
+
+    ax2.set_title("Distribución completa del periodo")
+    ax2.set_ylabel("Precio (EUR/MWh)")
+
+    plt.tight_layout()
+    guardar_figura("precios_comparativo.png")
+    
+# -------------------------------------------------------------
 # FUNCIÓN PRINCIPAL
 # -------------------------------------------------------------
 
