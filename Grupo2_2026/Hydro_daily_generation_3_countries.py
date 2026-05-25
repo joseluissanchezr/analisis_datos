@@ -4,7 +4,14 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 
-API_KEY = "patCytbSzwwY9ZZhgner"
+import os
+# Electricity Maps API key
+API_KEY = os.getenv("ELECTRICITY_MAPS_API_KEY")
+
+if not API_KEY:
+    raise ValueError(
+        "Missing API key. Please set ELECTRICITY_MAPS_API_KEY as an environment variable."
+    )
 
 url = "https://api.electricitymaps.com/v3/electricity-source/hydro/past-range"
 
