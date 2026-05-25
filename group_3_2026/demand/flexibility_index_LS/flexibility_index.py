@@ -179,5 +179,5 @@ print("   * GERMANY presents the deepest daily valleys, making it the best suite
 print("   * FRANCE shows the lowest global load factor, indicating a critical need for seasonal Peak Shaving due to temperature sensitivity.")
 print("   * SPAIN displays the most stable macro-demand baseline, meaning its structural grid stress from demand variation is lower compared to its peers.")
 
-
+# Show the plots
 plt.show()
