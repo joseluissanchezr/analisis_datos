@@ -1,0 +1,1 @@
+ENTSOE_TOKEN=25bf941d-7adc-4a20-aa24-ba4f1836f7fd

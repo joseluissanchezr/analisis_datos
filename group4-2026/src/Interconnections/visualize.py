@@ -3,7 +3,7 @@
 # Módulo de visualización de resultados
 # Grupo 4 — Intercambios Internacionales
 # =============================================================
-# Genera 5 gráficas PNG a partir de los CSVs producidos por
+# Genera 8 gráficas PNG a partir de los CSVs producidos por
 # analysis.py. Los archivos se guardan en figures/.
 #)
 #
@@ -584,7 +584,7 @@ def grafica_heatmap_congestiones_fr_de():
     plt.tight_layout()
     guardar_figura("heatmap_congestiones_fr_de.png")
 
-    # -------------------------------------------------------------
+# -------------------------------------------------------------
 # GRÁFICA 8 — BALANCE IMPORT/EXPORT ANUAL POR PAÍS
 # -------------------------------------------------------------
 
