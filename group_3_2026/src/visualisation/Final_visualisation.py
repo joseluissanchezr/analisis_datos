@@ -97,6 +97,16 @@ html_content += """
 </body>
 </html>
 """
+html_content += """
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background-color: #e8f4f8; border-radius: 8px; border-left: 4px solid #3498db;">
+            <p style="margin: 0; font-size: 16px; color: #2c3e50;">
+                <strong>Note:</strong> To view the complete <em>Residual Demand</em> analysis, please run the residual demand scripts directly from your terminal.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+"""
 
 # Save in the same folder as this script
 output_filename = os.path.join(script_dir, "final_dashboard.html")
