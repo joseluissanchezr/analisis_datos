@@ -3,10 +3,19 @@
 
 import pandas as pd
 import requests
+import os
 from datetime import datetime, timedelta
 
+
 def get_precio_data():
-    API_KEY = "patCytbSzwwY9ZZhgner"
+    
+    API_KEY = os.getenv("ELECTRICITY_MAPS_API_KEY")
+
+    if not API_KEY:
+        raise ValueError(
+        "Missing API key. Please set ELECTRICITY_MAPS_API_KEY as an environment variable."
+    )
+
     url = "https://api.electricitymaps.com/v3/price-day-ahead/past-range"
     headers = {"auth-token": API_KEY}
     paises = ["ES", "FR", "DE"]
