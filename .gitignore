@@ -1,16 +1,2 @@
-# Archivo de configuración con tu Token (llave) de ENTSO-E
-.env
-
-# Carpetas de datos que NO deben subirse a GitHub
-data/raw/
-data/processed/
-
-# Cualquier otro archivo de Excel o CSV que se genere
-*.csv
-*.xlsx
-*.parquet
-
-# Archivos temporales de Python
-__pycache__/
-.DS_Store
 .ipynb_checkpoints/
+Grupo1_2026/data/

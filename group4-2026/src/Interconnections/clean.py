@@ -49,11 +49,7 @@ def cargar_csv(nombre_archivo):
 
     try:
         df = pd.read_csv(ruta, index_col=0, parse_dates=True)
-
-        if df.index.tz is None:
-            df.index = df.index.tz_localize("UTC")
-        else:
-            df.index = df.index.tz_convert("UTC")
+        df.index = pd.to_datetime(df.index, utc=True)
 
         return df
 
