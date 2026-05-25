@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# to start the code, be sure to be in the residual_demand_FP folder
+
 # Load dataset
 df = pd.read_csv(
     "eCO2mix_RTE_Annuel-Definitif_2024.csv",
